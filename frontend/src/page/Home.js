@@ -1,12 +1,60 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import Login from "./Login";
 import Footer from "../component/global/Footer";
 import "../styles/page/Home.css";
 
 const Home = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    setIsLoggingIn(urlParams.get("isLoggingIn") === "true");
+  }, [location]);
+
+  useEffect(() => {
+    const html = document.documentElement;
+
+    if (isLoggingIn) {
+      const scrollY = window.scrollY;
+      html.classList.add("modal-open");
+      html.style.top = `-${scrollY}px`;
+      html.dataset.scrollY = scrollY.toString();
+    } else {
+      const scrollY = html.dataset.scrollY || "0";
+      html.classList.remove("modal-open");
+      html.style.top = "";
+
+      setTimeout(() => {
+        window.scrollTo(0, parseInt(scrollY));
+      }, 0);
+    }
+
+    return () => {
+      const scrollY = html.dataset.scrollY || "0";
+      html.classList.remove("modal-open");
+      html.style.top = "";
+
+      setTimeout(() => {
+        window.scrollTo(0, parseInt(scrollY));
+      }, 0);
+    };
+  }, [isLoggingIn]);
+
+  const handleLoginClick = () => {
+    navigate("/?isLoggingIn=true");
+  };
+
+  const handleCloseLogin = () => {
+    navigate("/", { replace: true });
+  };
+
   return (
     <div className="home relative">
       {/* NAVBAR */}
-      <nav className="navbar-container fixed top-0 z-50 bg-white w-full">
+      <nav className="navbar-container fixed top-0 z-10 bg-white w-full">
         <div className="mx-auto max-w-screen-xl grid grid-cols-2 py-3 px-6">
           <div className="brand flex items-center">
             <img src="http://placehold.co/75" alt="" className="logo pe-5" />
@@ -17,7 +65,6 @@ const Home = () => {
           </div>
         </div>
       </nav>
-
       {/* BODY */}
       <div className="body-container relative flex flex-col min-h-screen justify-center">
         <div className="flex justify-center items-center ">
@@ -39,9 +86,10 @@ const Home = () => {
                 </button>
                 <button
                   type="button"
+                  onClick={handleLoginClick}
                   className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100"
                 >
-                  Alternative
+                  I already have an account
                 </button>
               </div>
             </div>
@@ -67,7 +115,6 @@ const Home = () => {
           </div>
         </div>
       </div>
-
       {/* VALUE BLOCKS */}
       <div className="value-blocks-container">
         <div className="grid grid-cols-5 py-20">
@@ -122,7 +169,6 @@ const Home = () => {
           </div>
         </div>
       </div>
-
       {/* DOWNLOAD PLUG */}
       <div className="download-plug-container text-center items-center pt-60 min-h-screen">
         <h3 className="pb-10">Train your brain, one flash at a time.</h3>
@@ -147,8 +193,12 @@ const Home = () => {
           </button>
         </div>
       </div>
-
       <Footer />
+      <div className={`modal-fade ${isLoggingIn ? "visible" : ""}`}>
+        <div className="modal-content">
+          <Login onClose={handleCloseLogin} />
+        </div>
+      </div>{" "}
     </div>
   );
 };

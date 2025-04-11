@@ -15,3 +15,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+html.modal-open {
+  position: fixed;
+  overflow-y: scroll;
+  width: 100%;
+}
