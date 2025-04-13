@@ -1,0 +1,49 @@
+/* animations.css */
+@keyframes slideUpCenter {
+  0% {
+    transform: translateY(0); /* Start at the center (0px down) */
+    opacity: 0; /* Fully transparent */
+  }
+  40% {
+    transform: translateY(0); /* Stay at the center */
+    opacity: 1; /* Fully visible */
+  }
+  100% {
+    transform: translateY(-150px); /* Move 100px up */
+    opacity: 1; /* Fully visible */
+  }
+}
+
+.animate-slide-up-center {
+  animation: slideUpCenter 1.5s ease-out forwards; /* The 'forwards' ensures it stays at the final position */
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 2s ease-in;
+}
+
+@keyframes slideRight {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+.slide-right {
+  animation: slideRight 1s ease-in;
+  overflow: ;
+}

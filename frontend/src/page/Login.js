@@ -1,10 +1,15 @@
 import React from "react";
 import { RxCross2 } from "react-icons/rx";
+import ColoredButton from "../component/global/ColoredButton";
 import Facebook from "../assets/global/036-facebook.png";
 import Google from "../assets/global/Google__G__logo.svg.png";
 
 const Login = ({ onClose }) => {
   const Cross = RxCross2;
+  const handleLoginClick = () => {
+    // login api
+  };
+
   return (
     <div className="login-container fixed inset-0 z-50 min-h-screen bg-slate-900 text-white">
       <button type="button" onClick={onClose} className="flex w-100 m-10">
@@ -38,12 +43,11 @@ const Login = ({ onClose }) => {
                   required
                 />
               </div>
-              <button
+              <ColoredButton
                 type="submit"
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm p-2.5 my-3 w-full dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-              >
-                Log in
-              </button>
+                onClick={handleLoginClick}
+                text={"Login"}
+              />
             </div>
           </form>
         </div>

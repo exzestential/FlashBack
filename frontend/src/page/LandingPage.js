@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import Nav from "../component/landingPage/Nav";
 import Login from "./Login";
+import ColoredButton from "../component/global/ColoredButton";
+import LightButton from "../component/global/LightButton";
 import Footer from "../component/global/Footer";
-import "../styles/page/Home.css";
+import "../styles/page/LandingPage.css";
 
-const Home = () => {
+const LandingPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -51,20 +54,14 @@ const Home = () => {
     navigate("/", { replace: true });
   };
 
+  const handleSignupClick = () => {
+    navigate("/register");
+  };
+
   return (
     <div className="home relative">
       {/* NAVBAR */}
-      <nav className="navbar-container fixed top-0 z-10 bg-white w-full">
-        <div className="mx-auto max-w-screen-xl grid grid-cols-2 py-3 px-6">
-          <div className="brand flex items-center">
-            <img src="http://placehold.co/75" alt="" className="logo pe-5" />
-            <h1 className="brand-name">Flashback</h1>
-          </div>
-          <div className="flex items-center justify-end">
-            <button>About</button>
-          </div>
-        </div>
-      </nav>
+      <Nav />
       {/* BODY */}
       <div className="body-container relative flex flex-col min-h-screen justify-center">
         <div className="flex justify-center items-center ">
@@ -73,24 +70,22 @@ const Home = () => {
               <img src="http://placehold.co/500" alt="" className="home-img" />
             </div>
             <div className="flex items-center justify-center flex-col">
-              <div className="grid grid-rows-3">
-                <h2>
-                  Flashback helps you master anything, anytime—one digital card
-                  at a time.
+              <div className="w-100">
+                <h2 className="text-center mb-10">
+                  Flashback helps you master anything, anytime, <br /> one
+                  digital card at a time.
                 </h2>
-                <button
-                  type="button"
-                  class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                >
-                  Get Started
-                </button>
-                <button
-                  type="button"
+              </div>
+              <div className="w-60">
+                <ColoredButton
+                  text={"Get Started"}
+                  onClick={handleSignupClick}
+                  style={"mb-5"}
+                />
+                <LightButton
+                  text={"I already have an account"}
                   onClick={handleLoginClick}
-                  className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100"
-                >
-                  I already have an account
-                </button>
+                />
               </div>
             </div>
           </div>
@@ -203,4 +198,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default LandingPage;
