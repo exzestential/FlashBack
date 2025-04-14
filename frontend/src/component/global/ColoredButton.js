@@ -41,6 +41,12 @@ const ColoredButton = ({
         focus:bg-sky-700 
         focus:shadow-none 
         focus:translate-y-1
+
+        disabled:opacity-50 
+        disabled:cursor-not-allowed 
+        disabled:hover:bg-sky-600 
+        disabled:hover:shadow-[0_4px_0_theme('colors.sky.700')] 
+        disabled:hover:translate-y-0
       `}
         disabled={disabled}
       >
