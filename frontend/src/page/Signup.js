@@ -1,10 +1,7 @@
 import React, { useState } from "react";
-import Back from "../component/global/Back";
-import ColoredButton from "../component/global/ColoredButton";
-import LightButton from "../component/global/LightButton";
+import { Back, ColoredButton, LightButton } from "../component/global"
 import Nav from "../component/landingPage/Nav";
-import Facebook from "../assets/global/036-facebook.png";
-import Google from "../assets/global/Google__G__logo.svg.png";
+import { Facebook, Google } from "../assets/global";
 import "../styles/page/Signup.css";
 
 const Signup = () => {
