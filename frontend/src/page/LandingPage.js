@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Nav from "../component/landingPage/Nav";
 import Login from "./Login";
-import ColoredButton from "../component/global/ColoredButton";
-import LightButton from "../component/global/LightButton";
-import Footer from "../component/global/Footer";
+import { ColoredButton, LightButton, Footer } from "../component/global";
 import "../styles/page/LandingPage.css";
 
 const LandingPage = () => {

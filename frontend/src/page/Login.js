@@ -1,8 +1,7 @@
 import React from "react";
 import { RxCross2 } from "react-icons/rx";
-import ColoredButton from "../component/global/ColoredButton";
-import Facebook from "../assets/global/036-facebook.png";
-import Google from "../assets/global/Google__G__logo.svg.png";
+import { ColoredButton } from "../component/global";
+import { Facebook, Google } from "../assets/global";
 
 const Login = ({ onClose }) => {
   const Cross = RxCross2;

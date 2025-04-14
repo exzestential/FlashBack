@@ -1,5 +1,10 @@
 export { default as Back } from "./Back";
-export { default as ColoredButton } from './ColoredButton';
-export { default as LightButton } from "./LightButton"
-export { default as Footer } from "./Footer"
-
+export { default as ColoredButton } from "./ColoredButton";
+export { default as Footer } from "./Footer";
+export { default as IconButton } from "./IconButton";
+export { default as LightButton } from "./LightButton";
+export { default as Loading } from "./Loading";
+export { default as Modal } from "./Modal";
+export { default as Notification } from "./Notification";
+export { default as ScrollBar } from "./ScrollBar";
+export { default as SideNav } from "./SideNav";
