@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Back, ColoredButton, LightButton } from "../component/global"
+import { Back, ColoredButton, LightButton } from "../component/global";
 import Nav from "../component/landingPage/Nav";
 import { Facebook, Google } from "../assets/global";
 import "../styles/page/Signup.css";
@@ -24,11 +24,13 @@ const Signup = () => {
     setDirection(isForward ? "forward" : "backward");
 
     setAnimating(true);
+
     setAnimationClass(isForward ? "slide-left" : "slide-right");
 
     setTimeout(() => {
       setStep(targetStep);
-      setAnimationClass(isForward ? "slide-right" : "slideLeft");
+
+      setAnimationClass(isForward ? "slide-in-right" : "slide-in-left");
 
       setTimeout(() => {
         setAnimating(false);
@@ -76,7 +78,7 @@ const Signup = () => {
           <button
             onClick={() => goToStep(step - 1)}
             disabled={animating}
-            className="fixed"
+            className="fixed z-50"
           >
             <Back />
           </button>
@@ -84,8 +86,11 @@ const Signup = () => {
       )}
 
       {step === 0 && (
-        <div className="flex flex-col items-center min-h-screen bg-white">
-          <div className="absolute top-1/4">
+        <div
+          className={`flex flex-col items-center min-h-screen bg-white ${animationClass} transition`}
+        >
+          {" "}
+          <div className="z-10 absolute top-1/4">
             <h2 className="text-center text-xl font-bold mb-10">I am a...</h2>
             <div className="grid grid-cols-3 gap-20">
               {["Student", "Teacher", "Other"].map((type) => (
@@ -123,7 +128,9 @@ const Signup = () => {
       )}
 
       {step === 1 && (
-        <div className="slide-right flex flex-col items-center min-h-screen bg-white transition">
+        <div
+          className={`flex flex-col items-center min-h-screen bg-white ${animationClass} transition`}
+        >
           <div className="absolute top-1/4">
             <h2 className="text-center text-xl font-bold mb-10">
               What are you interested in?
@@ -131,7 +138,6 @@ const Signup = () => {
             <div className="mx-96 mb-52">
               <div className="grid grid-cols-4 gap-14 place-items-center">
                 {interestItems.map((item) => {
-                  // When on step 1, force the "pressed" look
                   const isPressedStyle = form.interests.includes(item.name);
 
                   return (
@@ -171,7 +177,9 @@ const Signup = () => {
       )}
 
       {step === 2 && (
-        <div className="h-screen flex items-start justify-center pt-44 overflow-hidden bg-white">
+        <div
+          className={`h-screen flex items-start justify-center pt-44 overflow-hidden bg-white ${animationClass} transition`}
+        >
           <div className="animate-slide-up-center flex flex-col justify-end ">
             <h2 className="text-center text-xl font-bold mb-5 mt-32">
               Great! Let's set up your account!
@@ -247,7 +255,7 @@ const Signup = () => {
         </div>
       )}
 
-      {step < 3 && (
+      {step < 2 && (
         <div className="next fixed bottom-0 border-t-2 border-gray-200 w-full p-6 pe-10 bg-white">
           <div className="flex justify-end items-center">
             <ColoredButton
