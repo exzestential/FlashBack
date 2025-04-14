@@ -16,7 +16,7 @@ const Login = ({ onClose }) => {
       </button>
 
       <div className="flex flex-col items-center">
-        <h1>Login</h1>
+        <h1 className="mb-6">Login</h1>
 
         {/* LOGIN FOM */}
         <div>
@@ -27,7 +27,7 @@ const Login = ({ onClose }) => {
                   type="email"
                   id="email"
                   name="email"
-                  className="bg-slate-800 border border-slate-700 focus:ring-sky-700 focus:border-sky-700 focus:outline-none p-2.5 my-2.5 rounded-xl w-full"
+                  className="bg-slate-800 border border-slate-700 focus:ring-sky-700 focus:border-sky-700 focus:outline-none p-2.5 rounded-xl w-full"
                   placeholder="Email"
                   required
                 />
