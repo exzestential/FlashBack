@@ -4,6 +4,7 @@ const ColoredButton = ({
   text,
   type = "button",
   onClick,
+  disabled = false,
   style = "",
   img = "",
   imgClass = "",
@@ -41,6 +42,7 @@ const ColoredButton = ({
         focus:shadow-none 
         focus:translate-y-1
       `}
+        disabled={disabled}
       >
         <img src={img} className={imgClass} />
         {text}

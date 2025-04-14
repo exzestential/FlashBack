@@ -35,15 +35,31 @@
 }
 
 @keyframes slideRight {
-  0% {
-    transform: translateX(100%);
+  from {
+    transform: translateX(0);
+    opacity: 1;
   }
-  100% {
-    transform: translate(0);
+  to {
+    transform: translateX(100%);
+    opacity: 0;
   }
 }
 
 .slide-right {
-  animation: slideRight 1s ease-in;
-  overflow: ;
+  animation: slideRight 0.5s ease forwards;
+}
+
+@keyframes slideLeft {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+.slide-left {
+  animation: slideLeft 0.5s ease forwards;
 }

@@ -9,6 +9,9 @@ import "../styles/page/Signup.css";
 
 const Signup = () => {
   const [step, setStep] = useState(0);
+  const [animating, setAnimating] = useState(false);
+  const [animationClass, setAnimationClass] = useState("");
+  const [direction, setDirection] = useState("forward");
   const [form, setForm] = useState({
     userType: "",
     interests: [],
@@ -17,8 +20,25 @@ const Signup = () => {
     password: "",
   });
 
-  const next = () => setStep((prev) => prev + 1);
-  const prev = () => setStep((prev) => prev - 1);
+  const goToStep = (targetStep) => {
+    if (animating || targetStep === step) return;
+
+    const isForward = targetStep > step;
+    setDirection(isForward ? "forward" : "backward");
+
+    setAnimating(true);
+    setAnimationClass(isForward ? "slide-left" : "slide-right");
+
+    setTimeout(() => {
+      setStep(targetStep);
+      setAnimationClass(isForward ? "slide-right" : "slideLeft");
+
+      setTimeout(() => {
+        setAnimating(false);
+        setAnimationClass("");
+      }, 500);
+    }, 500);
+  };
 
   const handleChange = (key, value) => {
     setForm({ ...form, [key]: value });
@@ -52,11 +72,15 @@ const Signup = () => {
     // figure out the api lmaooo
   };
   return (
-    <div className="relative signup-container">
+    <div className="relative overflow-x-hidden signup-container">
       <Nav />
       {step > 0 && (
         <div>
-          <button onClick={prev} disabled={step === 0} className="fixed">
+          <button
+            onClick={() => goToStep(step - 1)}
+            disabled={animating}
+            className="fixed"
+          >
             <Back />
           </button>
         </div>
@@ -102,7 +126,7 @@ const Signup = () => {
       )}
 
       {step === 1 && (
-        <div className="slide-right flex flex-col items-center min-h-screen bg-white ">
+        <div className="slide-right flex flex-col items-center min-h-screen bg-white transition">
           <div className="absolute top-1/4">
             <h2 className="text-center text-xl font-bold mb-10">
               What are you interested in?
@@ -229,7 +253,12 @@ const Signup = () => {
       {step < 3 && (
         <div className="next fixed bottom-0 border-t-2 border-gray-200 w-full p-6 pe-10 bg-white">
           <div className="flex justify-end items-center">
-            <ColoredButton text={"Continue"} onClick={next} style={"px-14"} />
+            <ColoredButton
+              text={"Continue"}
+              onClick={() => goToStep(step + 1)}
+              disabled={animating}
+              style={"px-14"}
+            />
           </div>
         </div>
       )}
