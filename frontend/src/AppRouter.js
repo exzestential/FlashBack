@@ -10,7 +10,7 @@ const AppRouter = () => {
       <AnimatePresence exitBeforeEnter>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/register" element={<Signup />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="/verify" element={<Verification />} />
         </Routes>
       </AnimatePresence>

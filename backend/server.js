@@ -1,28 +1,16 @@
+// backend/server.js
 const express = require("express");
-const mysql = require("mysql2");
 const cors = require("cors");
+require("dotenv").config();
+
+const authRoutes = require("./routes/authRoutes");
+const verificationRoutes = require("./routes/verificationRoutes");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Create MySQL connection
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "your_db_name",
-});
+app.use("/api/auth", authRoutes);
+app.use("/api/auth", verificationRoutes);
 
-db.connect((err) => {
-  if (err) {
-    console.error("DB connection error:", err);
-    return;
-  }
-  console.log("Connected to MySQL via XAMPP!");
-});
-
-const PORT = 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+app.listen(5000, () => console.log("Server running on http://localhost:5000"));

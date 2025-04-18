@@ -57,7 +57,7 @@ const LandingPage = () => {
   };
 
   const handleSignupClick = () => {
-    navigate("/register");
+    navigate("/signup");
   };
 
   return (

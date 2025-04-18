@@ -18,7 +18,6 @@ const Signup = () => {
   const [form, setForm] = useState({
     userType: "",
     interests: [],
-    hasUniversityEmail: "",
     username: "",
     email: "",
     password: "",
