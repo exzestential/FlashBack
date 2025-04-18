@@ -1,0 +1,17 @@
+{
+  "name": "flashback",
+  "version": "1.0.0",
+  "description": "Flashback is a digital flashcards application built for IPT 101, designed to help users efficiently review and memorize information. This project leverages React for the frontend, Express.js for the backend, and MySQL (via XAMPP) for data storage, ensuring a seamless and dynamic user experience.",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd backend && npx nodemon server.js",
+    "client": "cd frontend && npm start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

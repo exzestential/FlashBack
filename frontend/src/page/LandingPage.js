@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+
 import Nav from "../component/landingPage/Nav";
+import LandingMascot from "../component/landingPage/LandingMascot";
 import Login from "./Login";
 import { ColoredButton, LightButton, Footer } from "../component/global";
 import "../styles/page/LandingPage.css";
@@ -70,13 +73,9 @@ const LandingPage = () => {
         {/* BODY */}
         <div className="body-container relative flex flex-col min-h-screen justify-center">
           <div className="flex justify-center items-center ">
-            <div className="grid grid-cols-2">
-              <div>
-                <img
-                  src="http://placehold.co/500"
-                  alt=""
-                  className="home-img"
-                />
+            <div className="grid grid-cols-3 ">
+              <div className="col-span-2 flex justify-center">
+                <LandingMascot />
               </div>
               <div className="flex items-center justify-center flex-col">
                 <div className="w-100">

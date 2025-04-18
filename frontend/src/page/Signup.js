@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 import { Back, ColoredButton, LightButton } from "../component/global";
 import Nav from "../component/landingPage/Nav";
@@ -7,6 +8,7 @@ import { Facebook, Google } from "../assets/global";
 import "../styles/page/Signup.css";
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [animating, setAnimating] = useState(false);
   const [animationClass, setAnimationClass] = useState("");
@@ -93,7 +95,7 @@ const Signup = () => {
   };
 
   const handleSignupClick = () => {
-    // figure out the api lmaooo
+    navigate("/verify");
   };
   return (
     <motion.div
