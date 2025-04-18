@@ -37,6 +37,20 @@ const LandingPage = () => {
       }, 0);
     }
 
+    const bcrypt = require("bcrypt");
+
+    const generateHash = async (password) => {
+      try {
+        const saltRounds = 10; // You can adjust the salt rounds as needed
+        const hash = await bcrypt.hash(password, saltRounds);
+        console.log("Hashed Password: ", hash);
+      } catch (error) {
+        console.error("Error generating hash:", error);
+      }
+    };
+
+    generateHash("testpassword"); // Replace 'testpassword' with any password
+
     return () => {
       const scrollY = html.dataset.scrollY || "0";
       html.classList.remove("modal-open");

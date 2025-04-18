@@ -1,0 +1,27 @@
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px); /* Start below */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0); /* Final position */
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.slide-up {
+  animation: slideUp 0.5s ease-out forwards;
+}
+
+.fade-out {
+  animation: fadeOut 3s 2s forwards;
+}

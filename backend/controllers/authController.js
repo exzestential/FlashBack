@@ -1,36 +1,150 @@
-// backend/controllers/AuthController.js
+const express = require("express");
 const bcrypt = require("bcrypt");
-const db = require("../config/db");
+const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
+const pool = require("../config/db");
+const nodemailer = require("nodemailer");
+const cors = require("cors");
+require("dotenv").config();
 
-exports.signup = async (req, res) => {
-  const { userType, interests, username, email, password } = req.body;
+const app = express();
+app.use(express.json());
+app.use(cookieParser());
+
+const SECRET_KEY = "your_secret_key"; // or use process.env.SECRET_KEY
+
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
+
+const checkEmail = async (req, res) => {
+  const { email } = req.body;
+
   try {
-    // 1. Hash the password
-    const hash = await bcrypt.hash(password, 10);
+    const [rows] = await pool.query("SELECT * FROM users WHERE email = ?", [
+      email,
+    ]);
 
-    // 2. Insert into DB
-    const sql = `INSERT INTO users (userType, interests, username, email, password)
-                 VALUES (?, ?, ?, ?, ?)`;
-    db.query(
-      sql,
-      [userType, JSON.stringify(interests), username, email, hash],
-      (err, result) => {
-        if (err) {
-          if (err.code === "ER_DUP_ENTRY") {
-            return res
-              .status(400)
-              .json({ message: "Username or email already in use" });
-          }
-          return res
-            .status(500)
-            .json({ message: "Database error", error: err });
-        }
-        res
-          .status(201)
-          .json({ message: "User created", userId: result.insertId });
-      }
-    );
+    if (rows.length > 0) {
+      return res.status(200).json({ registered: true });
+    } else {
+      return res.status(200).json({ registered: false });
+    }
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err });
+    console.error("Error checking email:", err);
+    res.status(500).json({ error: err.message });
   }
+};
+
+const generateVerificationCode = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+const verificationCodes = {};
+
+const sendVerificationCode = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const code = generateVerificationCode();
+    verificationCodes[email] = code;
+
+    await transporter.sendMail({
+      from: `"FlashBack" <${process.env.EMAIL}>`,
+      to: email,
+      subject: "Your Verification Code",
+      text: `Your verification code is ${code}. Please enter this code to verify your email.`,
+    });
+
+    res.status(200).send("Verification code sent!");
+  } catch (err) {
+    console.error("Error sending email:", err);
+    res.status(500).send("Failed to send verification code.");
+  }
+};
+
+const resendVerificationCode = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const code = generateVerificationCode();
+    verificationCodes[email] = code;
+
+    await transporter.sendMail({
+      from: `"FlashBack" <${process.env.EMAIL}>`,
+      to: email,
+      subject: "Your Verification Code",
+      text: `Your verification code is ${code}. Please enter this code to verify your email.`,
+    });
+
+    res.status(200).send("Verification code sent!");
+  } catch (err) {
+    console.error("Error sending email:", err);
+    res.status(500).send("Failed to send verification code.");
+  }
+};
+
+const verifyCode = (req, res) => {
+  const { email, code } = req.body;
+
+  if (verificationCodes[email] === code) {
+    delete verificationCodes[email];
+    return res.status(200).json({ message: "Email verified", verified: true });
+  }
+  return res.status(400).json({
+    message: `Invalid verification code.`,
+    //receivedCode: code, // Add received code in the response for debugging
+    //expectedCode: verificationCodes[email], // Add expected code in the response for comparison
+  });
+};
+
+const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const [rows] = await pool.query("SELECT * FROM users WHERE email = ?", [
+      email,
+    ]);
+
+    if (rows.length === 0) {
+      return res.status(401).json({ message: "Incorrect Email or Password." });
+    }
+
+    const user = rows[0];
+
+    if (user.password !== password) {
+      return res.status(401).json({ message: "Incorrect Email or Password." });
+    }
+
+    const sessionToken = jwt.sign({ userId: user.id }, SECRET_KEY, {
+      expiresIn: "1h",
+    });
+
+    res
+      .cookie("session_token", sessionToken, { httpOnly: true })
+      .status(200)
+      .json({ message: "Logged in successfully!" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error. Please try again later." });
+  }
+};
+
+module.exports = {
+  login,
+  sendVerificationCode,
+  resendVerificationCode,
+  verifyCode,
+  checkEmail,
 };

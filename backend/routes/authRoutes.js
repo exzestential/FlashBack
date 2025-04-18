@@ -1,15 +1,19 @@
-// backend/routes/authRoutes.js
 const express = require("express");
 const router = express.Router();
-const AuthCtrl = require("../controllers/authController");
 const {
-  sendCode,
+  login,
+  sendVerificationCode,
+  resendVerificationCode,
   verifyCode,
-} = require("../controllers/verificationController");
+  checkEmail,
+} = require("../controllers/authController");
 
-router.post("/signup", AuthCtrl.signup);
+router.post("/login", login);
 
-router.post("/send-code", sendCode);
+router.post("/send-code", sendVerificationCode);
+router.post("/resend-code", resendVerificationCode);
 router.post("/verify-code", verifyCode);
+
+router.post("/check-email", checkEmail);
 
 module.exports = router;
