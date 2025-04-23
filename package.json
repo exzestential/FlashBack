@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "cd backend && npx nodemon server.js",
-    "client": "cd frontend && npm start"
+    "server": "cd server && npx nodemon server.js",
+    "client": "cd client && npm start"
   },
   "keywords": [],
   "author": "",

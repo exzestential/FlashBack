@@ -29,7 +29,6 @@ Flashback is a digital flashcards application built for **IPT 101**, designed to
 - Express.js
 - Databases:
   - MySQL (XAMPP)
-  - PostgreSQL
 - Auth/Security:
   - JWT (Tokens)
   - Bcrypt (Hashing)
@@ -51,6 +50,7 @@ Flashback is a digital flashcards application built for **IPT 101**, designed to
 ```sh
 git clone https://github.com/your-username/flashback.git
 cd flashback
+npm install # Concurrent running
 ```
 
 ### **2️⃣ Install Dependencies**
@@ -91,19 +91,12 @@ SESSION_SECRET=your_session_secret
 
 ### **5️⃣ Run the Application**
 
-#### **Start the Backend Server**
+#### **Start Frontend client and the Backend Server**
 
-```sh
-cd server
-npm start
-```
-
-#### **Start the Frontend**
-
-```sh
-cd client
-npm start
-```
+    ```sh
+    cd Flashback # Make sure you are in the root folder
+    npm start # Runs the server and client simultaneously with Concurrent
+    ```
 
 ## Contributing
 
