@@ -25,12 +25,17 @@ const SideNav = () => {
       >
         {/* Brand + Collapse button */}
         <div className={`brand flex items-center`}>
-          {!collapsed && (
-            <div className="flex items-center">
-              <img src="http://placehold.co/50" className="pe-4" alt="Logo" />
-              <h1 className="text-xl font-bold">FlashBack</h1>
-            </div>
-          )}
+          <div
+            className={`flex items-center transition-all duration-300 ${
+              collapsed
+                ? "opacity-0 translate-x-[-10px] pointer-events-none"
+                : "opacity-100 translate-x-0"
+            }`}
+          >
+            <img src="http://placehold.co/50" className="pe-4" alt="Logo" />
+            <h1 className="text-xl font-bold">FlashBack</h1>
+          </div>
+
           <div className="flex items-center h-14">
             <button
               onClick={() => setCollapsed(!collapsed)}

@@ -94,7 +94,7 @@ const Signup = () => {
   };
 
   const handleSignupClick = () => {
-    setForm({ ...form, [key]: value });
+    navigate("/verify");
   };
   return (
     <motion.div
@@ -235,7 +235,6 @@ const Signup = () => {
                       </div>
                       <div>
                         <input
-                          key={name}
                           type="text"
                           id="username"
                           name="username"

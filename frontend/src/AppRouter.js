@@ -9,8 +9,8 @@ const AppRouter = () => {
     <Router>
       <AnimatePresence exitBeforeEnter>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/temp" element={<LandingPage />} />
+          <Route path="/temp" element={<Home />} />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/verify" element={<Verification />} />
         </Routes>
