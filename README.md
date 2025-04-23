@@ -6,9 +6,9 @@ Flashback is a digital flashcards application built for **IPT 101**, designed to
 
 - 📝 **Create & Manage Flashcards** – Users can create, edit, and organize flashcards into sets.
 - 🔍 **Search & Filter** – Quickly find specific flashcards.
-- 🎯 **Quiz Mode** – Test knowledge with interactive quizzes.
+- 🎯 **Quiz Mode** – Test knowledge with interactive quizzes. (Coming Soon)
 - 🌙 **Dark Mode Support** – Toggle between light and dark themes.
-- 📊 **Progress Tracking** – Monitor study progress over time.
+- 📊 **Progress Tracking** – Monitor study progress over time. (Coming Soon)
 
 ## Tech Stack
 
