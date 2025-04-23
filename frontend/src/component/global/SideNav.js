@@ -23,42 +23,45 @@ const SideNav = () => {
         transition-[width] duration-300 ease-in-out
         ${collapsed ? "w-20" : "w-64"}`}
       >
-        <div
-          className={`brand flex items-center ${
-            collapsed ? "justify-center" : ""
-          }`}
-        >
+        {/* Brand + Collapse button */}
+        <div className={`brand flex items-center`}>
           {!collapsed && (
             <div className="flex items-center">
               <img src="http://placehold.co/50" className="pe-4" alt="Logo" />
-              <h1>FlashBack</h1>
+              <h1 className="text-xl font-bold">FlashBack</h1>
             </div>
           )}
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className={`${collapsed ? "h-[50px]" : "ms-auto"}`}
-          >
-            <BiSidebar className="h-8 w-8 text-gray-400" />
-          </button>
+          <div className="flex items-center h-14">
+            <button
+              onClick={() => setCollapsed(!collapsed)}
+              className={`absolute right-6 ${
+                collapsed ? "mx-auto" : "ms-auto"
+              }`}
+            >
+              <BiSidebar className="h-8 w-8 text-gray-400" />
+            </button>
+          </div>
         </div>
 
-        <hr className="my-4"></hr>
+        <hr className="my-4" />
 
+        {/* Tabs */}
         <div className="options flex flex-col flex-grow">
-          <div className="space-y-4 flex-grow">
+          <div className="space-y-2 flex-grow">
             {tabs.map((tab, index) => (
               <SidebarTab
                 key={index}
                 icon={tab.icon}
                 label={tab.label}
                 collapsed={collapsed}
+                className=""
               />
             ))}
           </div>
 
           <SidebarTab
             icon={FaGear}
-            label={"Settings"}
+            label="Settings"
             collapsed={collapsed}
             className="mt-auto"
           />
@@ -68,23 +71,28 @@ const SideNav = () => {
   );
 };
 
-const SidebarTab = ({ icon: Icon, label, collapsed, className = "" }) => (
-  <div
-    className={`flex items-center p-2 hover:bg-gray-200 rounded-lg h-10 ${
-      collapsed ? "justify-center" : ""
-    }`}
-  >
-    <Icon className="w-5 h-5 text-gray-400" />
-    {!collapsed && (
+const SidebarTab = ({ icon: Icon, label, collapsed, className = "" }) => {
+  return (
+    <div
+      className={`relative h-10 px-3 flex items-center rounded-lg hover:bg-gray-200 transition-colors duration-300 ${className}`}
+    >
+      {/* Icon: Keep it consistent size, no shrinking */}
+      <div className="w-5 h-5 flex justify-center items-center z-10">
+        <Icon className="w-full h-full text-gray-400" />
+      </div>
+
+      {/* Label: absolutely positioned, fading out */}
       <span
-        className={`ms-3 transition-opacity duration-300 whitespace-nowrap ${
-          collapsed ? "opacity-0 invisible w-0" : "opacity-100 visible"
+        className={`absolute left-12 transition-all duration-300 whitespace-nowrap text-sm z-0 ${
+          collapsed
+            ? "opacity-0 translate-x-[-10px] pointer-events-none"
+            : "opacity-100 translate-x-0"
         }`}
       >
         {label}
       </span>
-    )}
-  </div>
-);
+    </div>
+  );
+};
 
 export default SideNav;
