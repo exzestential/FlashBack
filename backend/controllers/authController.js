@@ -141,10 +141,34 @@ const login = async (req, res) => {
   }
 };
 
+const signup = async (req, res) => {
+  const { userType, username, email, password, interests } = req.body;
+  const interestString = JSON.stringify(interests);
+
+  try {
+    const query = `
+      INSERT INTO users (userType, username, email, password, interests)
+      VALUES (?, ?, ?, ?, ?)
+    `;
+
+    const values = [userType, username, email, password, interestString];
+
+    await pool.query(query, values);
+
+    res.status(201).json({ message: "User registered successfully" });
+  } catch (err) {
+    console.error("Error registering user:", err);
+    res
+      .status(500)
+      .json({ message: "Server error. Please try signing up again" });
+  }
+};
+
 module.exports = {
   login,
   sendVerificationCode,
   resendVerificationCode,
   verifyCode,
   checkEmail,
+  signup,
 };

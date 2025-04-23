@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { motion } from "framer-motion";
 
-import Nav from "../component/landingPage/Nav";
-import LandingMascot from "../component/landingPage/LandingMascot";
-import Login from "./Login";
+import { Nav, LandingMascot } from "../component/landingPage";
 import { ColoredButton, LightButton, Footer } from "../component/global";
+import Login from "./Login";
 import "../styles/page/LandingPage.css";
 
 const LandingPage = () => {
@@ -36,20 +34,6 @@ const LandingPage = () => {
         window.scrollTo(0, parseInt(scrollY));
       }, 0);
     }
-
-    const bcrypt = require("bcrypt");
-
-    const generateHash = async (password) => {
-      try {
-        const saltRounds = 10; // You can adjust the salt rounds as needed
-        const hash = await bcrypt.hash(password, saltRounds);
-        console.log("Hashed Password: ", hash);
-      } catch (error) {
-        console.error("Error generating hash:", error);
-      }
-    };
-
-    generateHash("testpassword"); // Replace 'testpassword' with any password
 
     return () => {
       const scrollY = html.dataset.scrollY || "0";

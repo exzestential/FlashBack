@@ -6,6 +6,7 @@ const {
   resendVerificationCode,
   verifyCode,
   checkEmail,
+  signup,
 } = require("../controllers/authController");
 
 router.post("/login", login);
@@ -13,6 +14,7 @@ router.post("/login", login);
 router.post("/send-code", sendVerificationCode);
 router.post("/resend-code", resendVerificationCode);
 router.post("/verify-code", verifyCode);
+router.post("/signup", signup);
 
 router.post("/check-email", checkEmail);
 

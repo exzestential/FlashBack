@@ -3,8 +3,8 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
 import { Back, ColoredButton, LightButton } from "../component/global";
-import Nav from "../component/landingPage/Nav";
 import { Facebook, Google } from "../assets/global";
+import { Nav } from "../component/landingPage";
 import "../styles/page/Signup.css";
 
 const Signup = () => {
@@ -17,10 +17,10 @@ const Signup = () => {
   const [direction, setDirection] = useState("forward");
   const [form, setForm] = useState({
     userType: "",
-    interests: [],
     username: "",
     email: "",
     password: "",
+    interests: [],
   });
 
   const goToStep = (targetStep) => {
@@ -94,7 +94,7 @@ const Signup = () => {
   };
 
   const handleSignupClick = () => {
-    navigate("/verify");
+    setForm({ ...form, [key]: value });
   };
   return (
     <motion.div
@@ -235,6 +235,7 @@ const Signup = () => {
                       </div>
                       <div>
                         <input
+                          key={name}
                           type="text"
                           id="username"
                           name="username"
