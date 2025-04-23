@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 import Nav from "../component/landingPage/Nav";
 import LandingMascot from "../component/landingPage/LandingMascot";
@@ -37,19 +36,7 @@ const LandingPage = () => {
       }, 0);
     }
 
-    const bcrypt = require("bcrypt");
 
-    const generateHash = async (password) => {
-      try {
-        const saltRounds = 10; // You can adjust the salt rounds as needed
-        const hash = await bcrypt.hash(password, saltRounds);
-        console.log("Hashed Password: ", hash);
-      } catch (error) {
-        console.error("Error generating hash:", error);
-      }
-    };
-
-    generateHash("testpassword"); // Replace 'testpassword' with any password
 
     return () => {
       const scrollY = html.dataset.scrollY || "0";
@@ -76,10 +63,10 @@ const LandingPage = () => {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }} // Start with opacity 0
-      animate={{ opacity: 1 }} // Animate to opacity 1
-      exit={{ opacity: 0 }} // Fade out when leaving
-      transition={{ duration: 0.5 }} // Set the duration of the fade
+      initial={{ opacity: 0 }} 
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }} 
     >
       <div className="home relative">
         {/* NAVBAR */}
