@@ -1,0 +1,180 @@
+Skeleton loader
+Spinner
+Typography
+Homepage (tabs)
+
+Home tabs:
+1. To Review
+2. All Decks
+3. Folders
+4. Favourites
+Deck Section
+Card Section 
+6. Statistics 
+
+Home Settings Dropdown:
+
+Sort Decks by ›
+   Date Modified
+   Last Studied
+   A–Z
+Select 
+Theme ›
+   Light
+   Dark
+   System
+Reset Layout
+Recently Deleted
+Help & Feedback
+
+
+discover tabs:
+1. Based on you interests 🔥 
+2. Browse By category
+3. My School
+4. Trending Now
+
+Floating + Button, tool tip - Create Deck
+
+When I Do a create deck option, itll be a floating button at the bottom right. Open a modal and then Name the deck. Thisll make an empty deck card. When I click it, it'll have a plus icon in the middle and some text
+
+CARD TO OPEN
+
+<- Deck Title       Save Icon(✔️)Vertical Ellipses Icon
+
+            Card 1 of X
+
+Fromt Card              Back card
+
+  Text                    Text
+                   
+         Image+            Image+
+
+
+Notes...                  Add Tag...
+
+B I U List Hyperlink Text Alignment Highlighting 
+
+< Prev         + New Card                Next >
+
+
+Ellipses options:
+1. Duplicate
+2. Delete
+3. Preview
+4. Reset Card
+
+Auto-save
+Drag to swap cards
+Optional:
+Toast-based Undo (Simple & Effective)
+
+After actions like:
+“Card deleted”
+“Sides swapped”
+“Card duplicated”
+
+Show a temporary toast at the bottom:
+“Card duplicated. [Undo]”
+
+
+DECK TO CARD
+
+so like the deck floats to the middle of the screen, and then grows bigger until the screen is white and then The study ui fades in 
+
+
+<- Deck Title                Settings
+
+                1/X
+
+New Again Hard Good Easy (numbers colored)
+
+        
+                Card
+
+
+
+            Show Answer
+Again     Hard      Good       Easy
+1 min     6mins    10 mins     1 day
+
+< Prev                               Next >
+
+
+Settings:
+1. Shuffle
+2. Card Orientation (front or back)
+3. Delete Card
+4. Browse Cards
+5. Reset Study Progress
+
+
+Right Side Panel: Study Stats & Info
+
+1. Progress Tracker
+[○○●●●●●] 
+Text: 12 of 50 cards studied
+
+2. Next Reviews (Spaced Repetition Mode)
+Next: 
+2 cards in 10 mins
+5 cards tomorrow
+
+3. Tags on Current Card
+Tag Chips: Biochem, Chapter 3
+
+4. Card Notes or Reminders
+Let users jot down 1-2 short thoughts
+(“Review chapter 4 again tomorrow”)
+
+
+5. Quick Actions
+Shuffle
+Flip orientation
+Pause session
+Theme toggle
+
+
+
+CARD BROWSER
+
+Mmake the front of the card show, flip on hover, and then permanent flip on click, and then double click to open in editor
+
+Add a text strip right below the search bar that fades out:
+
+> “Click a card to flip. Double-click to edit.”
+
+drag and drop reorder
+
+<– Deck Name                             Settings
+
+[ Search cards...         🔍 ]   ← full width or 80% width
+
+[ Grid/List toggle ] [ Filter Tags ▼ ] [ Sort ▼ ]
+
+[ Card 1 ]  [ Card 2 ]  [ Card 3 ]
+
+Floating add button
+
+Settings:
+1. Sort By:
+Newest First
+Oldest First
+A–Z / Z–A
+Custom (if drag-and-drop reordering is allowed)
+
+
+2. View Mode
+Grid / List toggle
+
+
+4. Card Orientation
+Show Front Only
+Show Back Only
+Show Both
+
+5. Bulk Actions Mode
+Enable checkbox select for:
+Delete multiple
+Move to another deck/folder
+Tag multiple cards

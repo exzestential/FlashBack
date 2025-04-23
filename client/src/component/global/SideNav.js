@@ -1,13 +1,20 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { FaHome, FaBook, FaPlay, FaPlus, FaBell, FaUser } from "react-icons/fa";
 import { FaEarthAmericas, FaGear } from "react-icons/fa6";
 import { BiSidebar } from "react-icons/bi";
 
 const SideNav = () => {
+  const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
 
+  const handleClick = () => {
+    navigate("/");
+  };
+
   const tabs = [
-    { label: "Home", icon: FaHome, link: "#" },
+    { label: "Home", icon: FaHome, link: "/" },
     { label: "My decks", icon: FaBook, link: "#" },
     { label: "Study", icon: FaPlay, link: "#" },
     { label: "Create", icon: FaPlus, link: "#" },
@@ -25,8 +32,9 @@ const SideNav = () => {
       >
         {/* Brand + Collapse button */}
         <div className={`brand flex items-center`}>
-          <div
-            className={`flex items-center transition-all duration-300 ${
+          <a
+            onClick={handleClick}
+            className={`flex items-center cursor-pointer transition-all duration-300 ${
               collapsed
                 ? "opacity-0 translate-x-[-10px] pointer-events-none"
                 : "opacity-100 translate-x-0"
@@ -34,7 +42,7 @@ const SideNav = () => {
           >
             <img src="http://placehold.co/50" className="pe-4" alt="Logo" />
             <h1 className="text-xl font-bold">FlashBack</h1>
-          </div>
+          </a>
 
           <div className="flex items-center h-14">
             <button
@@ -58,6 +66,7 @@ const SideNav = () => {
                 key={index}
                 icon={tab.icon}
                 label={tab.label}
+                link={tab.link}
                 collapsed={collapsed}
                 className=""
               />
@@ -76,10 +85,16 @@ const SideNav = () => {
   );
 };
 
-const SidebarTab = ({ icon: Icon, label, collapsed, className = "" }) => {
+const SidebarTab = ({ icon: Icon, label, link, collapsed, className = "" }) => {
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate(link);
+  };
+
   return (
-    <div
-      className={`relative h-10 px-3 flex items-center rounded-lg hover:bg-gray-200 transition-colors duration-300 ${className}`}
+    <a
+      className={`relative h-10 px-3 flex items-center rounded-lg hover:bg-gray-200 transition-colors duration-300 cursor-pointer ${className}`}
+      onClick={handleClick}
     >
       {/* Icon: Keep it consistent size, no shrinking */}
       <div className="w-5 h-5 flex justify-center items-center z-10">
@@ -96,7 +111,7 @@ const SidebarTab = ({ icon: Icon, label, collapsed, className = "" }) => {
       >
         {label}
       </span>
-    </div>
+    </a>
   );
 };
 
