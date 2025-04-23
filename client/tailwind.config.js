@@ -4,7 +4,11 @@ module.exports = {
     "./node_modules/flowbite-react/**/*.js",
   ],
   theme: {
-    extend: {},
+    extend: {
+      screens: {
+        110: "1600px", // Custom breakpoint for 110% zoom
+      },
+    },
   },
   plugins: [],
 };

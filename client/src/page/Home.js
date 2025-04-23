@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { SideNav, Tabs } from "../component/global";
-import AnimatedTabPanels from "../components/AnimatedTabPanels";
+
+import { SideNav, Tabs, AnimatedTabPanels } from "../component/global";
+import { DeckCard } from "../component/flashcard";
 
 const Home = () => {
   const tabs = ["Review", "Decks", "Folders", "Favourites", "Statistics"];
@@ -9,7 +10,30 @@ const Home = () => {
 
   // prepare panels array for AnimatedTabPanels
   const panels = [
-    { key: "Review", content: <div>Review content…</div> },
+    {
+      key: "Review",
+      content: (
+        <div className="mx-40">
+          <div class="grid grid-cols-1 my-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 110:grid-cols-5 gap-10">
+            <DeckCard />
+            <DeckCard />
+            <DeckCard />
+            <DeckCard />
+            <DeckCard />
+            <DeckCard />
+            <DeckCard />
+            <DeckCard />
+            <DeckCard />
+            <DeckCard />
+            <DeckCard />
+            <DeckCard />
+            <DeckCard />
+            <DeckCard />
+            <DeckCard />
+          </div>
+        </div>
+      ),
+    },
     { key: "Decks", content: <div>Decks content…</div> },
     { key: "Folders", content: <div>Folders content…</div> },
     { key: "Favourites", content: <div>Favourites content…</div> },
@@ -19,9 +43,9 @@ const Home = () => {
   return (
     <div className="page-container flex min-h-screen">
       <SideNav />
-      <div className="home w-full">
-        <div className="user-welcome p-4 flex items-center">
-          <img src="http://placehold.co/75?text=Profile" alt="Profile" />
+      <div className="home w-full flex flex-col">
+        <div className="user-welcome p-3 flex items-center">
+          <img src="http://placehold.co/65?text=Profile" alt="Profile" />
           <div>
             <p>Welcome {"{user}"}</p>
             <p>gay</p>
@@ -36,12 +60,13 @@ const Home = () => {
             setActiveIndex(tabs.indexOf(tab));
           }}
         />
-
-        <AnimatedTabPanels
-          panels={panels}
-          activeIndex={activeIndex}
-          height="h-32"
-        />
+        <div className="bg-gray-100 grow overflow-auto">
+          <AnimatedTabPanels
+            panels={panels}
+            activeIndex={activeIndex}
+            height="h-full"
+          />
+        </div>
       </div>
     </div>
   );

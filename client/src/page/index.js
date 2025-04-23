@@ -1,4 +1,3 @@
-export { default as CreateCard } from "./CreateCard";
 export { default as Decks } from "./Decks";
 export { default as Discover } from "./Discover";
 export { default as EditCard } from "./EditCard";
