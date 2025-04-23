@@ -60,10 +60,10 @@ const LandingPage = () => {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }} // Start with opacity 0
-      animate={{ opacity: 1 }} // Animate to opacity 1
-      exit={{ opacity: 0 }} // Fade out when leaving
-      transition={{ duration: 0.5 }} // Set the duration of the fade
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
     >
       <div className="home relative">
         {/* NAVBAR */}
