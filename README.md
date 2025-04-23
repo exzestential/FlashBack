@@ -48,14 +48,14 @@ cd flashback
 #### **Frontend**
 
 ```sh
-cd client  # Navigate to frontend directory
+cd frontend  # Navigate to frontend directory
 npm install
 ```
 
 #### **Backend**
 
 ```sh
-cd server  # Navigate to backend directory
+cd backend # Navigate to backend directory
 npm install
 ```
 
