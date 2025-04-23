@@ -12,27 +12,35 @@ Flashback is a digital flashcards application built for **IPT 101**, designed to
 
 ## Tech Stack
 
-### **Frontend:**
-
+### **Frontend**:
 - React.js
 - React Router DOM
 - Tailwind CSS
-- Flowbite (UI components)
+- Flowbite & Flowbite React (UI)
+- Framer Motion (Animations)
+- Lottie Files (Animated Illustrations)
+- React Icons
+- Axios (HTTP)
 
-### **Backend:**
-
+### **Backend**:
 - Node.js
 - Express.js
-- MySQL (via XAMPP)
-- JSON Web Token (JWT) for authentication
-- bcrypt (Password hashing)
+- Databases:
+  - MySQL (XAMPP)
+  - PostgreSQL
+- Auth/Security:
+  - JWT (Tokens)
+  - Bcrypt (Hashing)
+  - Express-Session & Cookies
+- Nodemailer (Email)
+- CORS
 
-### **Other Dependencies:**
+### **Dev Tools**:
+- Concurrently (Run FE+BE)
+- Nodemon (Auto-Reload)
+- React Scripts (Build)
+- PostCSS & Autoprefixer (CSS)## Tech Stack
 
-- Axios (API calls)
-- Express-session (User session management)
-- Cookie-parser (Handling cookies)
-- PostCSS & Autoprefixer (CSS processing)
 
 ## Installation & Setup
 
