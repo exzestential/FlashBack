@@ -1,10 +1,20 @@
 import React, { useState } from "react";
 import { SideNav, Tabs } from "../component/global";
+import AnimatedTabPanels from "../components/AnimatedTabPanels";
 
 const Home = () => {
   const tabs = ["Review", "Decks", "Folders", "Favourites", "Statistics"];
   const [activeTab, setActiveTab] = useState(tabs[0]);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  // prepare panels array for AnimatedTabPanels
+  const panels = [
+    { key: "Review", content: <div>Review content…</div> },
+    { key: "Decks", content: <div>Decks content…</div> },
+    { key: "Folders", content: <div>Folders content…</div> },
+    { key: "Favourites", content: <div>Favourites content…</div> },
+    { key: "Statistics", content: <div>Statistics content…</div> },
+  ];
 
   return (
     <div className="page-container flex min-h-screen">
@@ -27,28 +37,11 @@ const Home = () => {
           }}
         />
 
-        <div className="relative overflow-hidden h-32">
-          {tabs.map((tab, i) => {
-            const x = i === activeIndex ? 0 : i < activeIndex ? -100 : 100;
-
-            return (
-              <div
-                key={tab}
-                className="absolute inset-0 p-4 bg-white transition-all duration-500 ease-in-out"
-                style={{
-                  transform: `translateX(${x}%)`,
-                  opacity: i === activeIndex ? 1 : 0,
-                }}
-              >
-                {tab === "Review" && <div>Review content…</div>}
-                {tab === "Decks" && <div>Decks content…</div>}
-                {tab === "Folders" && <div>Folders content…</div>}
-                {tab === "Favourites" && <div>Favourites content…</div>}
-                {tab === "Statistics" && <div>Statistics content…</div>}
-              </div>
-            );
-          })}
-        </div>
+        <AnimatedTabPanels
+          panels={panels}
+          activeIndex={activeIndex}
+          height="h-32"
+        />
       </div>
     </div>
   );
