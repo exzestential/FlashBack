@@ -6,9 +6,9 @@ Flashback is a digital flashcards application built for **IPT 101**, designed to
 
 - 📝 **Create & Manage Flashcards** – Users can create, edit, and organize flashcards into sets.
 - 🔍 **Search & Filter** – Quickly find specific flashcards.
-- 🎯 **Quiz Mode** – Test knowledge with interactive quizzes.
+- 🎯 **Quiz Mode** – Test knowledge with interactive quizzes. (Coming Soon)
 - 🌙 **Dark Mode Support** – Toggle between light and dark themes.
-- 📊 **Progress Tracking** – Monitor study progress over time.
+- 📊 **Progress Tracking** – Monitor study progress over time. (Coming Soon)
 
 ## Tech Stack
 
@@ -41,6 +41,7 @@ Flashback is a digital flashcards application built for **IPT 101**, designed to
 ```sh
 git clone https://github.com/your-username/flashback.git
 cd flashback
+npm install # Install the scripts for easier running
 ```
 
 ### **2️⃣ Install Dependencies**
@@ -55,7 +56,7 @@ npm install
 #### **Backend**
 
 ```sh
-cd server  # Navigate to backend directory
+cd server # Navigate to backend directory
 npm install
 ```
 
@@ -81,18 +82,10 @@ SESSION_SECRET=your_session_secret
 
 ### **5️⃣ Run the Application**
 
-#### **Start the Backend Server**
+#### **Start Client Frontend and the Backend Server**
 
 ```sh
-cd server
-npm start
-```
-
-#### **Start the Frontend**
-
-```sh
-cd client
-npm start
+npm start # Make sure you are in the root Flashback folder
 ```
 
 ## Contributing
