@@ -1,9 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-import { ColoredButton } from "../component/global";
+import { ColoredButton } from "../../component/global";
 
-import Nav from "../component/landingPage/Nav";
+import Nav from "../../component/landingPage/Nav";
 const Verification = () => {
   return (
     <motion.div

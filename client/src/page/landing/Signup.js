@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Back, ColoredButton, LightButton } from "../../component/global";
 import { Facebook, Google } from "../../assets/global";
 import { Nav } from "../../component/landingPage";
-import "../styles/page/Signup.css";
+import "../../styles/page/Signup.css";
 
 const Signup = () => {
   const navigate = useNavigate();
