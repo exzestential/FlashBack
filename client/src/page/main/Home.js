@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 
-import { SideNav, Tabs, AnimatedTabPanels } from "../../component/global";
+import { SideNav } from "../../component/global";
+import { AnimatedTabPanels, Tabs, UserInfo } from "../../component/mainPage";
 import Review from "../../component/homeTabs/Review";
 
 const Home = () => {
@@ -21,34 +23,35 @@ const Home = () => {
   ];
 
   return (
-    <div className="page-container flex min-h-screen">
-      <SideNav />
-      <div className="home w-full flex flex-col">
-        <div className="user-welcome p-3 flex items-center">
-          <img src="http://placehold.co/65?text=Profile" alt="Profile" />
-          <div>
-            <p>Welcome {"{user}"}</p>
-            <p>gay</p>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="page-container flex min-h-screen">
+        <SideNav />
+        <div className="home w-full flex flex-col">
+          <UserInfo />
+
+          <Tabs
+            tabs={tabs}
+            activeTab={activeTab}
+            setActiveTab={(tab) => {
+              setActiveTab(tab);
+              setActiveIndex(tabs.indexOf(tab));
+            }}
+          />
+          <div className="bg-gray-100 grow overflow-auto">
+            <AnimatedTabPanels
+              panels={panels}
+              activeIndex={activeIndex}
+              height="h-full"
+            />
           </div>
         </div>
-
-        <Tabs
-          tabs={tabs}
-          activeTab={activeTab}
-          setActiveTab={(tab) => {
-            setActiveTab(tab);
-            setActiveIndex(tabs.indexOf(tab));
-          }}
-        />
-        <div className="bg-gray-100 grow overflow-auto">
-          <AnimatedTabPanels
-            panels={panels}
-            activeIndex={activeIndex}
-            height="h-full"
-          />
-        </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

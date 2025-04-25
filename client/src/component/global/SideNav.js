@@ -1,22 +1,16 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import { FaHome, FaBook, FaPlay, FaPlus, FaBell, FaUser } from "react-icons/fa";
 import { FaEarthAmericas, FaGear } from "react-icons/fa6";
 import { BiSidebar } from "react-icons/bi";
 
 const SideNav = () => {
-  const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
 
-  const handleClick = () => {
-    navigate("/");
-  };
-
   const tabs = [
-    { label: "Home", icon: FaHome, link: "/" },
-    { label: "Explore", icon: FaEarthAmericas, link: "#" },
-    { label: "My decks", icon: FaBook, link: "#" },
+    { label: "Home", icon: FaHome, link: "/home" },
+    { label: "Explore", icon: FaEarthAmericas, link: "/discover" },
     { label: "Study", icon: FaPlay, link: "#" },
     { label: "Create", icon: FaPlus, link: "#" },
     { label: "Notifications", icon: FaBell, link: "#" },
@@ -32,17 +26,17 @@ const SideNav = () => {
       >
         {/* Brand + Collapse button */}
         <div className={`brand flex items-center`}>
-          <a
-            onClick={handleClick}
+          <Link
             className={`flex items-center cursor-pointer transition-all duration-300 ${
               collapsed
                 ? "opacity-0 translate-x-[-10px] pointer-events-none"
                 : "opacity-100 translate-x-0"
             }`}
+            to={"/"}
           >
             <img src="http://placehold.co/50" className="pe-4" alt="Logo" />
             <h1 className="text-xl font-bold">FlashBack</h1>
-          </a>
+          </Link>
 
           <div className="flex items-center h-14">
             <button
@@ -86,19 +80,22 @@ const SideNav = () => {
 };
 
 const SidebarTab = ({ icon: Icon, label, link, collapsed, className = "" }) => {
-  const navigate = useNavigate();
-  const handleClick = () => {
-    navigate(link);
-  };
+  const location = useLocation();
+  const isActive = location.pathname === link;
 
   return (
-    <a
-      className={`relative h-10 px-3 flex items-center rounded-lg hover:bg-gray-200 transition-colors duration-300 cursor-pointer ${className}`}
-      onClick={handleClick}
+    <Link
+      className={`relative h-10 px-3 flex items-center rounded-lg hover:bg-gray-200 transition-colors duration-300 cursor-pointer ${className}  
+     ${isActive ? "bg-sky-700 text-white pointer-events-none" : ""} `}
+      to={link}
     >
       {/* Icon: Keep it consistent size, no shrinking */}
       <div className="w-5 h-5 flex justify-center items-center z-10">
-        <Icon className="w-full h-full text-gray-400" />
+        <Icon
+          className={`w-full h-full      ${
+            location.pathname === link ? " text-white" : "text-gray-400 "
+          } text-gray-400`}
+        />
       </div>
 
       {/* Label: absolutely positioned, fading out */}
@@ -111,7 +108,7 @@ const SidebarTab = ({ icon: Icon, label, link, collapsed, className = "" }) => {
       >
         {label}
       </span>
-    </a>
+    </Link>
   );
 };
 

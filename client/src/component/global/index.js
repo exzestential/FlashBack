@@ -7,6 +7,4 @@ export { default as Loading } from "./Loading";
 export { default as Modal } from "./Modal";
 export { default as Notification } from "./Notification";
 export { default as SideNav } from "./SideNav";
-export { default as Tabs } from "./Tabs";
-export { default as AnimatedTabPanels } from "./AnimatedTabPanel";
 export { default as FloatingButton } from "./FloatingButton";
