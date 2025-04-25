@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { SideNav, Tabs, AnimatedTabPanels } from "../component/global";
-import { DeckCard } from "../component/flashcard";
+import Review from "../component/homeTabs/Review";
 
 const Home = () => {
   const tabs = ["Review", "Decks", "Folders", "Favourites", "Statistics"];
@@ -12,27 +12,7 @@ const Home = () => {
   const panels = [
     {
       key: "Review",
-      content: (
-        <div className="mx-40">
-          <div class="grid grid-cols-1 my-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 110:grid-cols-5 gap-10">
-            <DeckCard />
-            <DeckCard />
-            <DeckCard />
-            <DeckCard />
-            <DeckCard />
-            <DeckCard />
-            <DeckCard />
-            <DeckCard />
-            <DeckCard />
-            <DeckCard />
-            <DeckCard />
-            <DeckCard />
-            <DeckCard />
-            <DeckCard />
-            <DeckCard />
-          </div>
-        </div>
-      ),
+      content: <Review />,
     },
     { key: "Decks", content: <div>Decks content…</div> },
     { key: "Folders", content: <div>Folders content…</div> },
