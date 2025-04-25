@@ -3,7 +3,7 @@ import { FaFacebookSquare, FaInstagram, FaTwitter } from "react-icons/fa";
 import { FaApple } from "react-icons/fa6";
 import { IoLogoGooglePlaystore } from "react-icons/io5";
 import Qrcode from "../../assets/global/Rickrolling_QR_code.png";
-import "../../styles/component/global/Footer.css";
+import "./Footer.css";
 
 const Footer = () => {
   return (

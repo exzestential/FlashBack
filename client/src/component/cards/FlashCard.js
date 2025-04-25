@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "../../styles/component/flashcard/FlashCard.css";
+import "./FlashCard.css";
 
 export default function FlipCard() {
   const [isFlipped, setIsFlipped] = useState(false);

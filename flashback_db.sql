@@ -28,6 +28,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `theme_preference` varchar(20) DEFAULT NULL,
   `last_login` datetime DEFAULT NULL,
+  `user_type` varchar(20) DEFAULT NULL,  -- Adding userType field
+  `interests` JSON DEFAULT NULL,  -- Adding interests field as JSON
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)

@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
-import { Back, ColoredButton, LightButton } from "../../component/global";
+import {
+  Back,
+  ColoredButton,
+  LightButton,
+  Notification,
+  Loader,
+} from "../../component/global";
 import { Facebook, Google } from "../../assets/global";
 import { Nav } from "../../component/landingPage";
-import "../../styles/page/Signup.css";
+import "./Signup.css";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -22,6 +29,9 @@ const Signup = () => {
     password: "",
     interests: [],
   });
+
+  const [notification, setNotification] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const goToStep = (targetStep) => {
     if (animating || targetStep === step) return;
@@ -51,13 +61,12 @@ const Signup = () => {
       setFadeNextClass("fade-in");
     } else {
       setFadeNextClass("fade-out");
-      // Wait for fade-out to finish before hiding
-      setTimeout(() => setShowNextButton(false), 300); // match your CSS duration
+      setTimeout(() => setShowNextButton(false), 300);
     }
   }, [step]);
 
   const handleChange = (key, value) => {
-    setForm({ ...form, [key]: value });
+    setForm((prevForm) => ({ ...prevForm, [key]: value }));
   };
 
   const toggleInterest = (interest) => {
@@ -93,9 +102,54 @@ const Signup = () => {
     return true;
   };
 
-  const handleSignupClick = () => {
-    navigate("/verify");
+  const handleSignupClick = async () => {
+    localStorage.setItem("userData", JSON.stringify(form));
+    const email = form.email;
+
+    setIsLoading(true);
+    try {
+      // Check if the email already exists
+      const emailCheckResponse = await axios.post(
+        "http://localhost:5000/auth/check-email",
+        {}
+      );
+
+      if (emailCheckResponse.data.registered) {
+        setIsLoading(false);
+        // Notify the user if the email is already registered
+        setNotification((prevNotification) => [
+          ...prevNotification,
+          {
+            id: Date.now(),
+            message: "Email already exists. Please use another email.",
+          },
+        ]);
+        return;
+      }
+
+      // If email is not registered, proceed with sending verification code
+      await axios.post("http://localhost:5000/auth/send-code", {
+        email,
+      });
+
+      setIsLoading(false);
+      navigate("/verify");
+    } catch (err) {
+      setIsLoading(false);
+      console.error(
+        "Error during email check or sending verification code:",
+        err
+      );
+      setNotification((prevNotification) => [
+        ...prevNotification,
+        {
+          id: Date.now(),
+          message: "An error occurred. Please try again later.",
+        },
+      ]);
+    }
   };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -105,6 +159,8 @@ const Signup = () => {
     >
       <div className="relative overflow-x-hidden signup-container">
         <Nav />
+
+        {/* Back Button */}
         {step > 0 && (
           <div>
             <button
@@ -117,6 +173,7 @@ const Signup = () => {
           </div>
         )}
 
+        {/* UserType */}
         {step === 0 && (
           <div
             className={`flex flex-col items-center min-h-screen bg-white ${animationClass} transition`}
@@ -159,6 +216,7 @@ const Signup = () => {
           </div>
         )}
 
+        {/* Interests */}
         {step === 1 && (
           <div
             className={`flex flex-col items-center min-h-screen bg-white ${animationClass} transition`}
@@ -211,6 +269,7 @@ const Signup = () => {
           </div>
         )}
 
+        {/* Login Form */}
         {step === 2 && (
           <div
             className={`h-screen flex items-start justify-center pt-44 overflow-hidden bg-white ${animationClass} transition`}
@@ -228,6 +287,10 @@ const Signup = () => {
                           type="email"
                           id="email"
                           name="email"
+                          value={form.email}
+                          onChange={(e) =>
+                            handleChange(e.target.name, e.target.value)
+                          }
                           className="bg-gray-100 border border-gray-200 focus:ring-sky-700 focus:border-sky-700 focus:outline-none p-2.5 rounded-xl w-full"
                           placeholder="Email"
                           required
@@ -238,6 +301,10 @@ const Signup = () => {
                           type="text"
                           id="username"
                           name="username"
+                          value={form.username}
+                          onChange={(e) =>
+                            handleChange(e.target.name, e.target.value)
+                          }
                           className="bg-gray-100 border border-gray-200 focus:ring-sky-700 focus:border-sky-700 focus:outline-none p-2.5 my-2.5 rounded-xl w-full"
                           placeholder="Username"
                           required
@@ -248,13 +315,17 @@ const Signup = () => {
                           type="password"
                           id="password"
                           name="password"
+                          value={form.password}
+                          onChange={(e) =>
+                            handleChange(e.target.name, e.target.value)
+                          }
                           className="bg-gray-100 border border-gray-200 focus:ring-sky-700 focus:border-sky-700 focus:outline-none p-2.5 rounded-xl w-full"
                           placeholder="Password"
                           required
                         />
                       </div>
                       <ColoredButton
-                        type="submit"
+                        type="button"
                         onClick={handleSignupClick}
                         text={"Sign up"}
                         style={"mt-4"}
@@ -314,11 +385,17 @@ const Signup = () => {
             </div>
           </div>
         )}
+
+        {notification.length > 0 && (
+          <Notification
+            notification={notification}
+            setNotification={setNotification}
+          />
+        )}
+        <Loader isLoading={isLoading} />
       </div>
     </motion.div>
   );
 };
-
-//           <button className="flex flex-col items-center justify-center p-10 border-4 border-gray-100 shadow-xl rounded-3xl ">
 
 export default Signup;

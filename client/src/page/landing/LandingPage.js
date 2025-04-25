@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Nav, LandingMascot } from "../../component/landingPage";
 import { ColoredButton, LightButton, Footer } from "../../component/global";
 import Login from "./Login";
-import "../../styles/page/LandingPage.css";
+import "./LandingPage.css";
 
 const LandingPage = () => {
   const navigate = useNavigate();

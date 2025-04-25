@@ -2,9 +2,28 @@ import React from "react";
 import { motion } from "framer-motion";
 
 import { ColoredButton } from "../../component/global";
+import { Nav } from "../../component/landingPage";
 
-import Nav from "../../component/landingPage/Nav";
 const Verification = () => {
+  // Code input
+  // const handleChange = (e, index) => {
+  //   const newValues = [...values];
+  //   newValues[index] = e.target.value.slice(0, 1);
+  //   setValues(newValues);
+
+  //   if (e.target.value && index < 5) {
+  //     inputRefs.current[index + 1].current.focus(); // Move to next input field
+  //   }
+  // };
+
+  // const handleBackspace = (e, index) => {
+  //   if (e.key === "Backspace" && values[index] === "") {
+  //     if (index > 0) {
+  //       inputRefs.current[index - 1].current.focus(); // Move to previous input field if backspace is pressed
+  //     }
+  //   }
+  // };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
