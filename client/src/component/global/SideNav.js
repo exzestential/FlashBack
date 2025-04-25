@@ -15,10 +15,10 @@ const SideNav = () => {
 
   const tabs = [
     { label: "Home", icon: FaHome, link: "/" },
+    { label: "Explore", icon: FaEarthAmericas, link: "#" },
     { label: "My decks", icon: FaBook, link: "#" },
     { label: "Study", icon: FaPlay, link: "#" },
     { label: "Create", icon: FaPlus, link: "#" },
-    { label: "Explore", icon: FaEarthAmericas, link: "#" },
     { label: "Notifications", icon: FaBell, link: "#" },
     { label: "Profile", icon: FaUser, link: "#" },
   ];

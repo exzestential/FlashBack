@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
-import { Back, ColoredButton, LightButton } from "../component/global";
-import { Facebook, Google } from "../assets/global";
-import { Nav } from "../component/landingPage";
+import { Back, ColoredButton, LightButton } from "../../component/global";
+import { Facebook, Google } from "../../assets/global";
+import { Nav } from "../../component/landingPage";
 import "../styles/page/Signup.css";
 
 const Signup = () => {

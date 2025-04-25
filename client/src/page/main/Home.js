@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-import { SideNav, Tabs, AnimatedTabPanels } from "../component/global";
-import Review from "../component/homeTabs/Review";
+import { SideNav, Tabs, AnimatedTabPanels } from "../../component/global";
+import Review from "../../component/homeTabs/Review";
 
 const Home = () => {
   const tabs = ["Review", "Decks", "Folders", "Favourites", "Statistics"];

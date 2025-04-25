@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 
-import { Nav, LandingMascot } from "../component/landingPage";
-import { ColoredButton, LightButton, Footer } from "../component/global";
+import { Nav, LandingMascot } from "../../component/landingPage";
+import { ColoredButton, LightButton, Footer } from "../../component/global";
 import Login from "./Login";
 import "../styles/page/LandingPage.css";
 
