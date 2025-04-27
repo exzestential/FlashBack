@@ -91,19 +91,13 @@ SESSION_SECRET=your_session_secret
 
 ### **5️⃣ Run the Application**
 
-#### **Start the Backend Server**
+#### **Navigate to root Flashback folder**
 
 ```sh
-cd server
+cd FlashBack
 npm start
 ```
 
-#### **Start the Frontend**
-
-```sh
-cd client
-npm start
-```
 
 ## Contributing
 
