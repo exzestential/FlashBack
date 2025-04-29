@@ -2,7 +2,14 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { LandingPage, Signup, Verification, Home, Discover } from "./page";
+import {
+  LandingPage,
+  Signup,
+  Verification,
+  Home,
+  Discover,
+  EditCard,
+} from "./page";
 
 const AppRouter = () => {
   return (
@@ -14,6 +21,7 @@ const AppRouter = () => {
           <Route path="/signup" element={<Signup />} />
           <Route path="/verify" element={<Verification />} />
           <Route path="/discover" element={<Discover />} />
+          <Route path="/edit-card" element={<EditCard />} />
         </Routes>
       </AnimatePresence>
     </Router>

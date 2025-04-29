@@ -4,17 +4,13 @@
   height: 8px; /* Adjust height for horizontal scrollbar */
 }
 
-::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Track background */
-}
-
 ::-webkit-scrollbar-thumb {
-  background: #888; /* Thumb color */
-  border-radius: 10px; /* Rounded corners */
+  background-color: rgba(0, 0, 0, 0.3); /* semi-transparent black */
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; /* Thumb hover color */
+  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
 }
 
 @keyframes fadeIn {

@@ -2,7 +2,7 @@ import React from "react";
 
 const UserInfo = () => {
   return (
-    <div className="user-welcome mb-3 mt-5 mx-32 w-full flex items-center">
+    <div className="user-welcome mb-3 pt-5 px-32 w-full flex items-center">
       <img
         src="http://placehold.co/65?text=Profile"
         alt="Profile"

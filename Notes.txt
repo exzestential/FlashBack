@@ -3,6 +3,12 @@ Spinner
 Typography
 Homepage (tabs)
 
+Finish verification page
+fix notification component
+fix loader component
+make second loader component with lottie animation
+replace study with card browser if in cardbrowser page
+
 Home tabs:
 1. To Review
 2. All Decks

@@ -7,4 +7,6 @@ export { default as Loader } from "./Loader";
 export { default as Modal } from "./Modal";
 export { default as Notification } from "./Notification";
 export { default as SideNav } from "./SideNav";
-export { default as FloatingButton } from "./FloatingButton";
+export { default as Save } from "./Save";
+export { default as Options } from "./Options";
+export { default as Forward } from "./Forward";

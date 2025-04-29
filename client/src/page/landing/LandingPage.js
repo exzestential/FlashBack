@@ -87,6 +87,7 @@ const LandingPage = () => {
                     text={"Get Started"}
                     onClick={handleSignupClick}
                     style={"mb-5"}
+                    fullWidth
                   />
                   <LightButton
                     text={"I already have an account"}

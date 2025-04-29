@@ -1,7 +1,7 @@
 import { useState } from "react";
-import "./FlashCard.css";
+import "./FlipCard.css";
 
-export default function FlipCard() {
+const FlipCard = () => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   const handleClick = () => {
@@ -49,4 +49,6 @@ export default function FlipCard() {
       </div>
     </div>
   );
-}
+};
+
+export default FlipCard;

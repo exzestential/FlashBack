@@ -32,6 +32,19 @@ const Signup = () => {
 
   const [notification, setNotification] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+
+  const [emailRequirementsMet, setEmailRequirementsMet] = useState({
+    hasAtSymbol: false,
+    validDomain: false,
+  });
+
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [passwordRequirementsMet, setPasswordRequirementsMet] = useState({
+    length: false,
+    uppercase: false,
+    number: false,
+  });
 
   const goToStep = (targetStep) => {
     if (animating || targetStep === step) return;
@@ -102,8 +115,68 @@ const Signup = () => {
     return true;
   };
 
+  const emailRequirements = {
+    hasAtSymbol: /@/,
+    validDomain: /\.[a-z]{2,}$/i, // basic domain check like .com or .org
+  };
+
+  const handleEmailChange = (e) => {
+    const newEmail = e.target.value;
+
+    setForm((prevForm) => ({ ...prevForm, email: newEmail }));
+
+    setEmailRequirementsMet({
+      hasAtSymbol: emailRequirements.hasAtSymbol.test(newEmail),
+      validDomain: emailRequirements.validDomain.test(newEmail),
+    });
+  };
+
+  const passwordRequirements = {
+    length: /.{8,}/, // at least 8 characters
+    uppercase: /[A-Z]/, // contains uppercase
+    number: /\d/, // contains number
+  };
+
+  const handlePasswordChange = (e) => {
+    const newPassword = e.target.value;
+    setForm((prevForm) => ({ ...prevForm, password: newPassword }));
+
+    setPasswordRequirementsMet({
+      length: passwordRequirements.length.test(newPassword),
+      uppercase: passwordRequirements.uppercase.test(newPassword),
+      number: passwordRequirements.number.test(newPassword),
+    });
+  };
+
+  useEffect(() => {
+    if (
+      passwordRequirementsMet.length &&
+      passwordRequirementsMet.uppercase &&
+      passwordRequirementsMet.number
+    ) {
+      const timeout = setTimeout(() => {
+        setIsFocused(false);
+      }, 500);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [passwordRequirementsMet]);
+
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
+  const isFormComplete =
+    passwordRequirementsMet.length &&
+    passwordRequirementsMet.uppercase &&
+    passwordRequirementsMet.number &&
+    emailRequirementsMet.hasAtSymbol &&
+    emailRequirementsMet.validDomain;
+
   const handleSignupClick = async () => {
     localStorage.setItem("userData", JSON.stringify(form));
+    const test = localStorage.getItem("userData");
+    console.log(test);
     const email = form.email;
 
     setIsLoading(true);
@@ -166,9 +239,11 @@ const Signup = () => {
             <button
               onClick={() => goToStep(step - 1)}
               disabled={animating}
-              className="fixed z-50"
+              className="fixed z-50 "
             >
-              <Back />
+              <div className="absolute mt-32 ms-80">
+                <Back />
+              </div>
             </button>
           </div>
         )}
@@ -283,14 +358,19 @@ const Signup = () => {
                   <form action="#" method="POST">
                     <div>
                       <div>
+                        {form.email &&
+                          (!emailRequirementsMet.hasAtSymbol ||
+                            !emailRequirementsMet.validDomain) && (
+                            <p className="text-red-500 text-xs pt-0 pb-1">
+                              Please enter a valid email address.
+                            </p>
+                          )}
                         <input
                           type="email"
                           id="email"
                           name="email"
                           value={form.email}
-                          onChange={(e) =>
-                            handleChange(e.target.name, e.target.value)
-                          }
+                          onChange={handleEmailChange}
                           className="bg-gray-100 border border-gray-200 focus:ring-sky-700 focus:border-sky-700 focus:outline-none p-2.5 rounded-xl w-full"
                           placeholder="Email"
                           required
@@ -316,19 +396,54 @@ const Signup = () => {
                           id="password"
                           name="password"
                           value={form.password}
-                          onChange={(e) =>
-                            handleChange(e.target.name, e.target.value)
-                          }
+                          onFocus={handleFocus}
+                          onChange={handlePasswordChange}
                           className="bg-gray-100 border border-gray-200 focus:ring-sky-700 focus:border-sky-700 focus:outline-none p-2.5 rounded-xl w-full"
                           placeholder="Password"
                           required
                         />
+                        {isFocused && (
+                          <div
+                            className="password-requirements text-sm absolute bg-white border border-gray-300 text-gray-700 rounded-lg shadow-md p-2"
+                            style={{ zIndex: 10 }}
+                          >
+                            <p
+                              className={`${
+                                passwordRequirementsMet.length
+                                  ? "text-lime-500"
+                                  : ""
+                              }`}
+                            >
+                              At least 8 characters
+                            </p>
+                            <p
+                              className={`${
+                                passwordRequirementsMet.uppercase
+                                  ? "text-lime-500"
+                                  : ""
+                              }`}
+                            >
+                              At least one uppercase letter
+                            </p>
+                            <p
+                              className={`${
+                                passwordRequirementsMet.number
+                                  ? "text-lime-500"
+                                  : ""
+                              }`}
+                            >
+                              At least one number
+                            </p>
+                          </div>
+                        )}
                       </div>
                       <ColoredButton
                         type="button"
                         onClick={handleSignupClick}
                         text={"Sign up"}
                         style={"mt-4"}
+                        disabled={!isFormComplete}
+                        fullWidth
                       />
                     </div>
                   </form>

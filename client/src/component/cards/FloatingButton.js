@@ -1,35 +1,23 @@
 import React from "react";
 
-const ColoredButton = ({
-  text,
-  type = "button",
-  onClick,
-  disabled = false,
-  fullWidth = false, // NEW PROP
-  style = "",
-  img = "",
-  imgClass = "",
-}) => {
+const FloatingButton = ({ onClick }) => {
   const handleClick = (e) => {
     e.currentTarget.blur();
     onClick?.();
   };
 
   return (
-    <div className={fullWidth ? "w-full" : ""}>
+    <div>
       <button
-        type={type}
         onClick={handleClick}
-        className={`
-          ${style}
+        className="
           cursor-pointer
           flex items-center justify-center
-          text-white text-sm 
+          text-white text-7xl
           bg-sky-600 
           shadow-[0_4px_0_theme('colors.sky.700')]
           p-2.5
-          ${fullWidth ? "w-full" : ""}
-          rounded-lg         
+          rounded-full        
           transition 
           hover:bg-sky-500 
           hover:shadow-[0_4px_0_theme('colors.sky.600')] 
@@ -42,14 +30,19 @@ const ColoredButton = ({
           disabled:hover:bg-sky-600 
           disabled:hover:shadow-[0_4px_0_theme('colors.sky.700')] 
           disabled:hover:translate-y-0
-        `}
-        disabled={disabled}
+          absolute
+          bottom-0
+          right-0
+          m-10
+          h-24
+          w-24
+          pb-7
+        "
       >
-        {img && <img src={img} className={imgClass} />}
-        {text}
+        +
       </button>
     </div>
   );
 };
 
-export default ColoredButton;
+export default FloatingButton;

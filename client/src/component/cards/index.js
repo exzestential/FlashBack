@@ -1,2 +1,5 @@
 export { default as DeckCard } from "./DeckCard";
-export { default as FlashCard } from "./FlashCard";
+export { default as FlipCard } from "./FlipCard";
+export { default as SingleCard } from "./SingleCard";
+export { default as TextFormatting } from "./TextFormatting";
+export { default as FloatingButton } from "./FloatingButton";

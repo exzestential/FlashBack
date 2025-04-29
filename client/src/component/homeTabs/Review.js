@@ -1,5 +1,5 @@
 import React from "react";
-import { DeckCard, FlashCard } from "../cards";
+import { DeckCard, FlipCard } from "../cards";
 
 const Review = () => {
   return (
@@ -7,7 +7,7 @@ const Review = () => {
       <div class="grid grid-cols-1 my-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 110:grid-cols-5 gap-10">
         <DeckCard />
         <DeckCard />
-        <FlashCard />
+        <FlipCard />
       </div>
     </div>
   );

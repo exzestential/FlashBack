@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { SideNav } from "../../component/global";
 import { AnimatedTabPanels, Tabs, UserInfo } from "../../component/mainPage";
 import Review from "../../component/homeTabs/Review";
+import { FloatingButton } from "../../component/cards";
 
 const Home = () => {
   const tabs = ["Review", "Decks", "Folders", "Favourites", "Statistics"];
@@ -31,7 +32,7 @@ const Home = () => {
     >
       <div className="page-container flex min-h-screen">
         <SideNav />
-        <div className="home w-full flex flex-col">
+        <div className="relative home w-full flex flex-col">
           <UserInfo />
 
           <Tabs
@@ -50,6 +51,7 @@ const Home = () => {
             />
           </div>
         </div>
+        <FloatingButton />
       </div>
     </motion.div>
   );

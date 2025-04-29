@@ -50,7 +50,7 @@ const Notification = ({ notification, setNotification }) => {
       {notification.map((item) => (
         <div
           key={item.id}
-          className={`notification-item bg-cyan-400 text-white px-5 py-2.5 rounded shadow-md text-sm max-w-[300px] ${
+          className={`notification-item bg-blue-700 text-white px-5 py-2.5 rounded shadow-md text-sm max-w-[300px] ${
             fadingNotifications.includes(item.id) ? "fade-out-active" : ""
           }`}
         >

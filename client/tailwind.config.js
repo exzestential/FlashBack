@@ -15,6 +15,9 @@ module.exports = {
         "albert-sans": ["Albert sans", "sans-serif"],
         futura: ["Futura", "sans-serif"],
       },
+      colors: {
+        midnight: "#4961aa", // Add custom color to the existing palette
+      },
     },
   },
   plugins: [],
