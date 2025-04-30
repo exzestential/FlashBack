@@ -1,26 +1,20 @@
 const express = require("express");
 const router = express.Router();
-const {
-  login,
-  checkSession,
-  logout,
-  sendVerificationCode,
-  resendVerificationCode,
-  verifyCode,
-  checkEmail,
-  register,
-} = require("../controllers/authController");
-const authenticate = require("../middleware/authMiddleware");
+const authController = require("../controllers/authController");
+const { authenticateToken } = require("../middleware/authMiddleware");
 
-router.post("/login", login);
+// Authentication routes
+router.post("/login", authController.login);
+router.post("/register", authController.register);
+router.get("/logout", authController.logout);
 
-router.post("/send-code", sendVerificationCode);
-router.post("/resend-code", resendVerificationCode);
-router.post("/verify-code", verifyCode);
-router.post("/register", register);
+// Email verification routes
+router.post("/check-email", authController.checkEmail);
+router.post("/send-verification", authController.sendVerificationCode);
+router.post("/resend-verification", authController.resendVerificationCode);
+router.post("/verify-code", authController.verifyCode);
 
-router.post("/check-email", checkEmail);
-
-router.get("/check-session", authenticate, checkSession);
+// Session check route (protected)
+router.get("/check-session", authenticateToken, authController.checkSession);
 
 module.exports = router;

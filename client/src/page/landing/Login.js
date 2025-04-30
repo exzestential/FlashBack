@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../utils/axios";
+import { jwtDecode } from "jwt-decode";
 
 import { ColoredButton, Close } from "../../component/global";
 import { Facebook, Google } from "../../assets/global";
@@ -9,15 +10,55 @@ import { Header } from "../../component/presets";
 const Login = ({ onClose }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+
     try {
-      const res = await api.post("/auth/login", { email, password });
-      alert(res.data.message);
-      navigate("/home"); // or wherever you want to redirect
+      // Make login request to backend API - using our configured api instance
+      const response = await api.post("/api/auth/login", { email, password });
+
+      console.log("Login response:", response.data);
+
+      if (response.data && response.data.token) {
+        // Store token in localStorage
+        localStorage.setItem("token", response.data.token);
+
+        // Store userId directly from response if available
+        if (response.data.userId) {
+          localStorage.setItem("userId", response.data.userId);
+        } else {
+          // Decode the token to get user ID as fallback
+          try {
+            const decoded = jwtDecode(response.data.token);
+            localStorage.setItem("userId", decoded.userId);
+          } catch (decodeErr) {
+            console.error("Error decoding token:", decodeErr);
+            setError("Authentication error: Invalid token format");
+            setIsLoading(false);
+            return;
+          }
+        }
+
+        // Show success message and redirect
+        console.log("Login successful, redirecting to home");
+        navigate("/home");
+      } else {
+        setError("Login failed: No token received");
+      }
     } catch (err) {
-      alert(err.response?.data?.message || "Login failed");
+      console.error("Login error:", err);
+      setError(
+        err.response?.data?.message ||
+          "Login failed. Please check your credentials."
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -34,15 +75,22 @@ const Login = ({ onClose }) => {
       <div className="flex flex-col items-center justify-center min-h-screen">
         <Header title="Login" />
 
-        {/* LOGIN FOM */}
+        {/* LOGIN FORM */}
         <div className="w-80">
-          <form action="#" method="POST">
+          <form onSubmit={handleLogin}>
+            {error && (
+              <div className="bg-red-500 bg-opacity-20 border border-red-400 text-red-100 px-4 py-2 rounded-xl mb-4">
+                {error}
+              </div>
+            )}
+
             <div>
               <div>
                 <input
                   type="email"
                   id="email"
                   name="email"
+                  value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="bg-slate-800 border border-slate-700 focus:ring-sky-700 focus:border-sky-700 focus:outline-none p-2.5 rounded-xl w-full"
                   placeholder="Email"
@@ -54,6 +102,7 @@ const Login = ({ onClose }) => {
                   type="password"
                   id="password"
                   name="password"
+                  value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="bg-slate-800 border border-slate-700 focus:ring-sky-700 focus:border-sky-700 focus:outline-none p-2.5 my-2.5 rounded-xl w-full"
                   placeholder="Password"
@@ -63,9 +112,9 @@ const Login = ({ onClose }) => {
               <div className="flex justify-center mt-4">
                 <ColoredButton
                   type="submit"
-                  onClick={handleLogin}
-                  text={"Login"}
+                  text={isLoading ? "Logging in..." : "Login"}
                   style="w-40"
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -74,12 +123,12 @@ const Login = ({ onClose }) => {
 
         {/* ALTERNATIVE LOGIN */}
         <div>
-          <div className="grid grid-cols-7 items-center gap-4">
+          <div className="grid grid-cols-7 items-center gap-4 mt-6">
             <hr className="col-span-3" />
             <p>or</p>
             <hr className="col-span-3" />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 mt-4">
             <button className="flex items-center justify-center bg-transparent border border-sky-700 rounded-xl p-2.5">
               <img src={Facebook} alt="" className="h-5 rounded-full me-2" />
               Facebook

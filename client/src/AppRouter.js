@@ -17,7 +17,7 @@ const AppRouter = () => {
     <Router>
       <AnimatePresence exitBeforeEnter>
         <Routes>
-          <Route path="/home" element={<Home />} />
+          <Route path="/home/" element={<Home />} />
           <Route path="/" element={<LandingPage />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/verify" element={<Verification />} />
