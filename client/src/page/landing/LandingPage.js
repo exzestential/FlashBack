@@ -92,6 +92,7 @@ const LandingPage = () => {
                   <LightButton
                     text={"I already have an account"}
                     onClick={handleLoginClick}
+                    fullWidth
                   />
                 </div>
               </div>

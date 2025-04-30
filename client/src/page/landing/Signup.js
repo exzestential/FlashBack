@@ -23,7 +23,7 @@ const Signup = () => {
   const [fadeNextClass, setFadeNextClass] = useState("fade-in");
   const [direction, setDirection] = useState("forward");
   const [form, setForm] = useState({
-    userType: "",
+    user_type: "",
     username: "",
     email: "",
     password: "",
@@ -108,7 +108,7 @@ const Signup = () => {
 
   const canContinue = () => {
     if (step === 0) {
-      return form.userType !== "";
+      return form.user_type !== "";
     } else if (step === 1) {
       return form.interests.length > 0;
     }
@@ -184,7 +184,7 @@ const Signup = () => {
       // Check if the email already exists
       const emailCheckResponse = await axios.post(
         "http://localhost:5000/auth/check-email",
-        {}
+        { email } // Send email in the request body
       );
 
       if (emailCheckResponse.data.registered) {
@@ -197,7 +197,7 @@ const Signup = () => {
             message: "Email already exists. Please use another email.",
           },
         ]);
-        return;
+        return; // Stop the flow if the email is already registered
       }
 
       // If email is not registered, proceed with sending verification code
@@ -206,7 +206,7 @@ const Signup = () => {
       });
 
       setIsLoading(false);
-      navigate("/verify");
+      navigate("/verify"); // Navigate to verification if email is not registered
     } catch (err) {
       setIsLoading(false);
       console.error(
@@ -248,7 +248,7 @@ const Signup = () => {
           </div>
         )}
 
-        {/* UserType */}
+        {/* user_type */}
         {step === 0 && (
           <div
             className={`flex flex-col items-center min-h-screen bg-white ${animationClass} transition`}
@@ -260,14 +260,14 @@ const Signup = () => {
                 {["Student", "Teacher", "Other"].map((type) => (
                   <button
                     key={type}
-                    onClick={() => handleChange("userType", type)}
+                    onClick={() => handleChange("user_type", type)}
                     className={`
                   flex flex-col items-center
                   w-52 pt-10 pb-8 rounded-lg
                   text-sm text-slate-900
                   transition
                   ${
-                    form.userType === type
+                    form.user_type === type
                       ? "bg-gray-100 shadow-[0_-6px_0_theme('colors.gray.200')] translate-y-2"
                       : `
                         border-4 border-gray-100

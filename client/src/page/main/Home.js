@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 
-import { SideNav } from "../../component/global";
+import { SideNav, Modal } from "../../component/global";
 import { AnimatedTabPanels, Tabs, UserInfo } from "../../component/mainPage";
 import Review from "../../component/homeTabs/Review";
 import { FloatingButton } from "../../component/cards";
@@ -10,6 +10,7 @@ const Home = () => {
   const tabs = ["Review", "Decks", "Folders", "Favourites", "Statistics"];
   const [activeTab, setActiveTab] = useState(tabs[0]);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isModalOpen, setModalOpen] = useState(false);
 
   // prepare panels array for AnimatedTabPanels
   const panels = [
@@ -22,6 +23,11 @@ const Home = () => {
     { key: "Favourites", content: <div>Favourites content…</div> },
     { key: "Statistics", content: <div>Statistics content…</div> },
   ];
+
+  const handleCreate = () => {
+    alert("Item created!");
+    setModalOpen(false);
+  };
 
   return (
     <motion.div
@@ -51,7 +57,25 @@ const Home = () => {
             />
           </div>
         </div>
-        <FloatingButton />
+        <FloatingButton onClick={() => setModalOpen(true)} />
+
+        <Modal
+          isOpen={isModalOpen}
+          onClose={() => setModalOpen(false)}
+          cancelText="Go Back"
+          confirmText="Create"
+          onConfirm={handleCreate}
+        >
+          <h2 className="text-xl font-semibold mb-4">Create New Deck</h2>
+
+          <input
+            type="text"
+            id="first_name"
+            className="bg-gray-100 border border-gray-200 focus:ring-sky-700 focus:border-sky-700 focus:outline-none p-2.5 rounded-xl w-full"
+            placeholder="Enter Name..."
+            required
+          />
+        </Modal>
       </div>
     </motion.div>
   );

@@ -18,6 +18,7 @@ const Verification = () => {
 
   useEffect(() => {
     console.log("email: ", email);
+    console.log("form:", form);
   }, []);
 
   const [notification, setNotification] = useState([]);
@@ -108,8 +109,8 @@ const Verification = () => {
         setIsLoading(true);
 
         setTimeout(() => {
-          navigate(`/signup?email=verified`, {
-            state: { email: email },
+          navigate("/email-verified", {
+            state: { form },
           });
           setIsLoading(false);
         }, 500);

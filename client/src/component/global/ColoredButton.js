@@ -16,7 +16,7 @@ const ColoredButton = ({
   };
 
   return (
-    <div className={fullWidth ? "w-full" : ""}>
+    <div>
       <button
         type={type}
         onClick={handleClick}
@@ -25,22 +25,22 @@ const ColoredButton = ({
           cursor-pointer
           flex items-center justify-center
           text-white text-sm 
-          bg-sky-600 
-          shadow-[0_4px_0_theme('colors.sky.700')]
+          bg-sky-500 
+          shadow-[0_4px_0_theme('colors.sky.600')]
           p-2.5
           ${fullWidth ? "w-full" : ""}
           rounded-lg         
           transition 
-          hover:bg-sky-500 
-          hover:shadow-[0_4px_0_theme('colors.sky.600')] 
+          hover:bg-sky-400 
+          hover:shadow-[0_4px_0_theme('colors.sky.500')] 
           hover:translate-y-[1px] 
-          focus:bg-sky-700 
+          focus:bg-sky-600 
           focus:shadow-none 
           focus:translate-y-1
           disabled:opacity-50 
           disabled:cursor-not-allowed 
-          disabled:hover:bg-sky-600 
-          disabled:hover:shadow-[0_4px_0_theme('colors.sky.700')] 
+          disabled:hover:bg-sky-500 
+          disabled:hover:shadow-[0_4px_0_theme('colors.sky.600')] 
           disabled:hover:translate-y-0
         `}
         disabled={disabled}

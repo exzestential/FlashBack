@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 
-function Header({ title }) {
+function Header({ title, style = "" }) {
   return React.createElement(
-    'h1',
-    { className: 'text-3xl font-bold text-blue-600 mb-4 font-albert-sans' },
+    "h1",
+    { className: `text-3xl font-bold ${style} mb-4 font-albert-sans` },
     title
   );
 }

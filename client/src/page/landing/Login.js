@@ -1,25 +1,41 @@
-import React from "react";
-import { RxCross2 } from "react-icons/rx";
-import { ColoredButton } from "../../component/global";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../../utils/axios";
+
+import { ColoredButton, Close } from "../../component/global";
 import { Facebook, Google } from "../../assets/global";
+import { Header } from "../../component/presets";
 
 const Login = ({ onClose }) => {
-  const Cross = RxCross2;
-  const handleLoginClick = () => {
-    // login api
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    try {
+      const res = await api.post("/auth/login", { email, password });
+      alert(res.data.message);
+      navigate("/home"); // or wherever you want to redirect
+    } catch (err) {
+      alert(err.response?.data?.message || "Login failed");
+    }
   };
 
   return (
     <div className="login-container fixed inset-0 z-50 min-h-screen bg-slate-900 text-white">
-      <button type="button" onClick={onClose} className="flex w-100 m-10">
-        <Cross style={{ color: "white", fontSize: "40px" }} />
+      <button
+        type="button"
+        onClick={onClose}
+        className="absolute top-3 right-4 text-gray-500 hover:text-gray-800"
+      >
+        <Close style={{ color: "white", fontSize: "40px" }} />
       </button>
 
-      <div className="flex flex-col items-center">
-        <h1 className="mb-6">Login</h1>
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <Header title="Login" />
 
         {/* LOGIN FOM */}
-        <div>
+        <div className="w-80">
           <form action="#" method="POST">
             <div>
               <div>
@@ -27,6 +43,7 @@ const Login = ({ onClose }) => {
                   type="email"
                   id="email"
                   name="email"
+                  onChange={(e) => setEmail(e.target.value)}
                   className="bg-slate-800 border border-slate-700 focus:ring-sky-700 focus:border-sky-700 focus:outline-none p-2.5 rounded-xl w-full"
                   placeholder="Email"
                   required
@@ -37,16 +54,20 @@ const Login = ({ onClose }) => {
                   type="password"
                   id="password"
                   name="password"
+                  onChange={(e) => setPassword(e.target.value)}
                   className="bg-slate-800 border border-slate-700 focus:ring-sky-700 focus:border-sky-700 focus:outline-none p-2.5 my-2.5 rounded-xl w-full"
                   placeholder="Password"
                   required
                 />
               </div>
-              <ColoredButton
-                type="submit"
-                onClick={handleLoginClick}
-                text={"Login"}
-              />
+              <div className="flex justify-center mt-4">
+                <ColoredButton
+                  type="submit"
+                  onClick={handleLogin}
+                  text={"Login"}
+                  style="w-40"
+                />
+              </div>
             </div>
           </form>
         </div>

@@ -86,7 +86,7 @@ const SidebarTab = ({ icon: Icon, label, link, collapsed, className = "" }) => {
   return (
     <Link
       className={`relative h-10 px-3 flex items-center rounded-lg hover:bg-gray-200 transition-colors duration-300 cursor-pointer ${className}  
-     ${isActive ? "bg-sky-700 text-white pointer-events-none" : ""} `}
+     ${isActive ? "bg-sky-500 text-white pointer-events-none" : ""} `}
       to={link}
     >
       {/* Icon: Keep it consistent size, no shrinking */}

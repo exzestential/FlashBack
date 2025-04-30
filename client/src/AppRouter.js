@@ -10,6 +10,7 @@ import {
   Discover,
   EditCard,
 } from "./page";
+import EmailVerified from "./page/misc/EmailVerified";
 
 const AppRouter = () => {
   return (
@@ -20,6 +21,7 @@ const AppRouter = () => {
           <Route path="/" element={<LandingPage />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/verify" element={<Verification />} />
+          <Route path="/email-verified" element={<EmailVerified />} />
           <Route path="/discover" element={<Discover />} />
           <Route path="/edit-card" element={<EditCard />} />
         </Routes>

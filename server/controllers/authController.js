@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-const SECRET_KEY = "your_secret_key"; // or use process.env.SECRET_KEY
+const SECRET_KEY = process.env.SECRET_KEY || "supersecretkey";
 
 app.use(
   cors({
@@ -123,35 +123,78 @@ const login = async (req, res) => {
 
     const user = rows[0];
 
-    if (user.password !== password) {
+    // Compare the hashed password with the input password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
       return res.status(401).json({ message: "Incorrect Email or Password." });
     }
 
-    const sessionToken = jwt.sign({ userId: user.id }, SECRET_KEY, {
+    // If passwords match, generate the token
+    const token = jwt.sign({ userId: user.id }, SECRET_KEY, {
       expiresIn: "1h",
     });
 
+    // Send the session token as a cookie
     res
-      .cookie("session_token", sessionToken, { httpOnly: true })
+      .cookie("session_token", token, {
+        httpOnly: true,
+        secure: false, // true in production with HTTPS
+        sameSite: "strict",
+        maxAge: 3600000,
+      })
       .status(200)
       .json({ message: "Logged in successfully!" });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ error: "Server error. Please try again later." });
   }
 };
 
-const signup = async (req, res) => {
-  const { userType, username, email, password, interests } = req.body;
+const checkSession = async (req, res) => {
+  const token = req.cookies.session_token;
+  if (!token) {
+    return res.status(401).json({ message: "No session token provided." });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.SECRET_KEY); // Verify the token
+
+    const [rows] = await pool.query("SELECT * FROM users WHERE id = ?", [
+      decoded.userId,
+    ]);
+
+    if (rows.length === 0) {
+      return res.status(401).json({ message: "Invalid session." });
+    }
+
+    res.status(200).json({ message: "Session is valid.", user: rows[0] });
+  } catch (err) {
+    return res
+      .status(401)
+      .json({ message: "Invalid or expired session token." });
+  }
+};
+
+const logout = (req, res) => {
+  res
+    .clearCookie("session_token")
+    .status(200)
+    .json({ message: "Logged out successfully" });
+};
+
+const register = async (req, res) => {
+  const { user_type, username, email, password, interests } = req.body;
   const interestString = JSON.stringify(interests);
 
   try {
+    // Hash the password before storing it
+    const hashedPassword = await bcrypt.hash(password, 10); // 10 is a safe default saltRounds
+
     const query = `
-      INSERT INTO users (userType, username, email, password, interests)
+      INSERT INTO users (user_type, username, email, password, interests)
       VALUES (?, ?, ?, ?, ?)
     `;
 
-    const values = [userType, username, email, password, interestString];
+    const values = [user_type, username, email, hashedPassword, interestString];
 
     await pool.query(query, values);
 
@@ -166,9 +209,11 @@ const signup = async (req, res) => {
 
 module.exports = {
   login,
+  checkSession,
+  logout,
   sendVerificationCode,
   resendVerificationCode,
   verifyCode,
   checkEmail,
-  signup,
+  register,
 };
