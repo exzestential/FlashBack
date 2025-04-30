@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 import { SideNav } from "../../component/global";
 import { AnimatedTabPanels, Tabs, UserInfo } from "../../component/mainPage";
-import Review from "../../component/homeTabs/Review";
+import Review from "./homeTabs/Review";
 import { FloatingButton } from "../../component/cards";
 
 const Home = () => {

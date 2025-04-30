@@ -92,6 +92,7 @@ const LandingPage = () => {
                   <LightButton
                     text={"I already have an account"}
                     onClick={handleLoginClick}
+                    style={"mb-5"}
                   />
                 </div>
               </div>
