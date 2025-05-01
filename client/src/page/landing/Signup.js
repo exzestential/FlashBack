@@ -175,46 +175,67 @@ const Signup = () => {
 
   const handleSignupClick = async () => {
     localStorage.setItem("userData", JSON.stringify(form));
-    const test = localStorage.getItem("userData");
-    console.log(test);
+    console.log(
+      "Form saved in localStorage:",
+      localStorage.getItem("userData")
+    );
+
     const email = form.email;
+    const username = form.username; // ✅ Add this line
 
     setIsLoading(true);
     try {
       // Check if the email already exists
       const emailCheckResponse = await axios.post(
-        "http://localhost:5000/auth/check-email",
-        { email } // Send email in the request body
+        "http://localhost:5000/api/auth/check-email",
+        { email }
       );
 
       if (emailCheckResponse.data.registered) {
         setIsLoading(false);
-        // Notify the user if the email is already registered
-        setNotification((prevNotification) => [
-          ...prevNotification,
+        setNotification((prev) => [
+          ...prev,
           {
             id: Date.now(),
             message: "Email already exists. Please use another email.",
           },
         ]);
-        return; // Stop the flow if the email is already registered
+        return;
       }
 
-      // If email is not registered, proceed with sending verification code
-      await axios.post("http://localhost:5000/auth/send-code", {
+      // ✅ Check username
+      const usernameCheckResponse = await axios.post(
+        "http://localhost:5000/api/auth/check-username",
+        { username }
+      );
+
+      if (usernameCheckResponse.data.registered) {
+        setIsLoading(false);
+        setNotification((prev) => [
+          ...prev,
+          {
+            id: Date.now(),
+            message: "Username already exists. Please use another username.",
+          },
+        ]);
+        return;
+      }
+
+      // ✅ Proceed to send verification
+      await axios.post("http://localhost:5000/api/auth/send-verification", {
         email,
       });
 
       setIsLoading(false);
-      navigate("/verify"); // Navigate to verification if email is not registered
+      navigate("/verify");
     } catch (err) {
       setIsLoading(false);
       console.error(
-        "Error during email check or sending verification code:",
-        err
+        "Error during signup process:",
+        err.response?.data || err.message
       );
-      setNotification((prevNotification) => [
-        ...prevNotification,
+      setNotification((prev) => [
+        ...prev,
         {
           id: Date.now(),
           message: "An error occurred. Please try again later.",

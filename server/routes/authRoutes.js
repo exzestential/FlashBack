@@ -10,6 +10,7 @@ router.get("/logout", authController.logout);
 
 // Email verification routes
 router.post("/check-email", authController.checkEmail);
+router.post("/check-username", authController.checkUsername);
 router.post("/send-verification", authController.sendVerificationCode);
 router.post("/resend-verification", authController.resendVerificationCode);
 router.post("/verify-code", authController.verifyCode);

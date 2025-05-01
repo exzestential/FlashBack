@@ -50,11 +50,14 @@ const Verification = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/auth/resend-code", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email }), // Send the email to resend the code
-      });
+      const response = await fetch(
+        "http://localhost:5000/api/auth/resend-verification",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: email }), // Send the email to resend the code
+        }
+      );
 
       if (response.ok) {
         setNotification((prevNotification) => [
@@ -99,11 +102,14 @@ const Verification = () => {
     const code = values.join("");
 
     try {
-      const response = await fetch("http://localhost:5000/auth/verify-code", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email, code }), // Send email and code to the backend
-      });
+      const response = await fetch(
+        "http://localhost:5000/api/auth/verify-code",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: email, code }), // Send email and code to the backend
+        }
+      );
 
       if (response.ok) {
         setIsLoading(true);

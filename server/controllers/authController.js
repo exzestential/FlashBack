@@ -36,6 +36,25 @@ const checkEmail = async (req, res) => {
   }
 };
 
+const checkUsername = async (req, res) => {
+  const { username } = req.body;
+
+  try {
+    const [rows] = await pool.query("SELECT * FROM users WHERE username = ?", [
+      username,
+    ]);
+
+    if (rows.length > 0) {
+      return res.status(200).json({ registered: true });
+    } else {
+      return res.status(200).json({ registered: false });
+    }
+  } catch (err) {
+    console.error("Error checking email:", err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
 const generateVerificationCode = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
@@ -202,5 +221,6 @@ module.exports = {
   resendVerificationCode,
   verifyCode,
   checkEmail,
+  checkUsername,
   register,
 };

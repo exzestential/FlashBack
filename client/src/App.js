@@ -10,7 +10,7 @@ const App = () => {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const res = await api.get("/auth/check-session");
+        const res = await api.get("/api/auth/check-session");
         console.log("User session:", res.data);
       } catch (err) {
         console.log("Not logged in");
