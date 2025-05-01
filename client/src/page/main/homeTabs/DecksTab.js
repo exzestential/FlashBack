@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { DeckCard, FlipCard } from "../../../component/cards";
+import { DeckCard } from "../../../component/cards";
 
-const Decks = () => {
+const DecksTab = () => {
   const [decks, setDecks] = useState([]);
 
   useEffect(() => {
@@ -28,4 +28,4 @@ const Decks = () => {
   );
 };
 
-export default Decks;
+export default DecksTab;

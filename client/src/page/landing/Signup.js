@@ -10,7 +10,7 @@ import {
   Notification,
   Loader,
 } from "../../component/global";
-import { Facebook, Google } from "../../assets/global";
+import { Facebook, Google } from "../../assets";
 import { Nav } from "../../component/landingPage";
 import "./Signup.css";
 

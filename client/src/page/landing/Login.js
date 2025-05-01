@@ -4,7 +4,7 @@ import api from "../../utils/axios";
 import { jwtDecode } from "jwt-decode";
 
 import { ColoredButton, Close } from "../../component/global";
-import { Facebook, Google } from "../../assets/global";
+import { Facebook, Google } from "../../assets/";
 import { Header } from "../../component/presets";
 
 const Login = ({ onClose }) => {
@@ -46,7 +46,6 @@ const Login = ({ onClose }) => {
         }
 
         // Show success message and redirect
-        console.log("Login successful, redirecting to home");
         navigate("/home");
       } else {
         setError("Login failed: No token received");

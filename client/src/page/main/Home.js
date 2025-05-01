@@ -5,11 +5,20 @@ import api from "../../utils/axios";
 
 import { SideNav, Modal } from "../../component/global";
 import { AnimatedTabPanels, Tabs, UserInfo } from "../../component/mainPage";
-import Decks from "./homeTabs/Decks";
 import { FloatingButton } from "../../component/cards";
+import DecksTab from "./homeTabs/DecksTab";
+import FoldersTab from "./homeTabs/FoldersTab";
 
 const Home = () => {
-  const tabs = ["Decks", "Folders", "Favourites", "Statistics"];
+  const panels = [
+    { key: "Decks", content: <DecksTab /> },
+    { key: "Folders", content: <FoldersTab /> },
+    { key: "Favourites", content: <div>Favourites content...</div> },
+    { key: "Statistics", content: <div>Statistics content...</div> },
+  ];
+
+  // Derive tabs from panels
+  const tabs = panels.map((panel) => panel.key);
   const [activeTab, setActiveTab] = useState(tabs[0]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isModalOpen, setModalOpen] = useState(false);
@@ -55,7 +64,7 @@ const Home = () => {
           localStorage.removeItem("token");
           localStorage.removeItem("userId");
           // Redirect to login after a short delay
-          setTimeout(() => navigate("/login"), 1500);
+          setTimeout(() => navigate("/?isLoggingIn=true"), 1500);
         }
       }
     };
@@ -91,14 +100,6 @@ const Home = () => {
       </div>
     );
   }
-
-  // prepare panels array for AnimatedTabPanels
-  const panels = [
-    { key: "Decks", content: <Decks /> },
-    { key: "Folders", content: <div>Folders content…</div> },
-    { key: "Favourites", content: <div>Favourites content…</div> },
-    { key: "Statistics", content: <div>Statistics content…</div> },
-  ];
 
   const handleCreate = () => {
     alert("Item created!");

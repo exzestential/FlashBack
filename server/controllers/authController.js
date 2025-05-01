@@ -138,7 +138,7 @@ const login = async (req, res) => {
       { userId: user.user_id },
       process.env.JWT_SECRET_KEY,
       {
-        expiresIn: "1h",
+        expiresIn: "12h",
       }
     );
 
@@ -148,7 +148,7 @@ const login = async (req, res) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production", // true in production with HTTPS
         sameSite: "strict",
-        maxAge: 3600000, // 1 hour
+        maxAge: 43200000, // 12 hours
       })
       .status(200)
       .json({
