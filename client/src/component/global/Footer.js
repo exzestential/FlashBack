@@ -85,7 +85,7 @@ const Footer = () => {
         </div>
       </div>
 
-      <hr class="border-t-2 border-gray-300 mx-20" />
+      <hr className="border-t-2 border-gray-300 mx-20" />
       <div className="flex justify-center gap-5 py-10">
         <p>© 2024 FlashBack. All Rights Reserved .</p>
         <p>Checkout: https://github.com/exzestential/FlashBack</p>

@@ -91,6 +91,12 @@ const Signup = () => {
     });
   };
 
+  const userType = [
+    { name: "Teacher", imgSrc: "http://placehold.co/100" },
+    { name: "Student", imgSrc: "http://placehold.co/100" },
+    { name: "Other", imgSrc: "http://placehold.co/100" },
+  ];
+
   const interestItems = [
     { name: "AI", imgSrc: "http://placehold.co/100" },
     { name: "ML", imgSrc: "http://placehold.co/100" },
@@ -278,17 +284,17 @@ const Signup = () => {
             <div className="z-10 absolute top-1/4">
               <h2 className="text-center text-xl font-bold mb-10">I am a...</h2>
               <div className="grid grid-cols-3 gap-20">
-                {["Student", "Teacher", "Other"].map((type) => (
+                {userType.map((type) => (
                   <button
                     key={type}
-                    onClick={() => handleChange("user_type", type)}
+                    onClick={() => handleChange("user_type", type.name)}
                     className={`
                   flex flex-col items-center
                   w-52 pt-10 pb-8 rounded-lg
                   text-sm text-slate-900
                   transition
                   ${
-                    form.user_type === type
+                    form.user_type === type.name
                       ? "bg-gray-100 shadow-[0_-6px_0_theme('colors.gray.200')] translate-y-2"
                       : `
                         border-4 border-gray-100
@@ -299,12 +305,8 @@ const Signup = () => {
                   }
                 `}
                   >
-                    <img
-                      src="http://placehold.co/100"
-                      alt={type}
-                      className="pb-3"
-                    />
-                    <span>{type}</span>
+                    <img src={type.imgSrc} alt={type.name} className="pb-3" />
+                    <span>{type.name}</span>
                   </button>
                 ))}
               </div>
