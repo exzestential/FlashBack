@@ -98,18 +98,54 @@ const Signup = () => {
   ];
 
   const interestItems = [
-    { name: "AI", imgSrc: "http://placehold.co/100" },
-    { name: "ML", imgSrc: "http://placehold.co/100" },
-    { name: "Data Science", imgSrc: "http://placehold.co/100" },
-    { name: "Blockchain", imgSrc: "http://placehold.co/100" },
-    { name: "Cybersecurity", imgSrc: "http://placehold.co/100" },
-    { name: "IoT", imgSrc: "http://placehold.co/100" },
-    { name: "UX/UI", imgSrc: "http://placehold.co/100" },
-    { name: "DevOps", imgSrc: "http://placehold.co/100" },
-    { name: "Cloud", imgSrc: "http://placehold.co/100" },
-    { name: "Big Data", imgSrc: "http://placehold.co/100" },
-    { name: "Quantum", imgSrc: "http://placehold.co/100" },
-    { name: "Gaming", imgSrc: "http://placehold.co/100" },
+    {
+      name: "Designing",
+      imgSrc: "https://cdn-icons-png.flaticon.com/128/2857/2857527.png",
+    },
+    {
+      name: "Foreign Language",
+      imgSrc: "https://cdn-icons-png.flaticon.com/128/12836/12836969.png",
+    },
+    {
+      name: "Networking",
+      imgSrc: "https://cdn-icons-png.flaticon.com/128/2082/2082812.png",
+    },
+    {
+      name: "Media",
+      imgSrc: "https://cdn-icons-png.flaticon.com/128/15127/15127687.png",
+    },
+    {
+      name: "Coding",
+      imgSrc: " https://cdn-icons-png.flaticon.com/128/1197/1197409.png",
+    },
+    {
+      name: "History",
+      imgSrc: " https://cdn-icons-png.flaticon.com/128/2234/2234770.png",
+    },
+    {
+      name: "Virtualization",
+      imgSrc: "https://cdn-icons-png.flaticon.com/128/12154/12154753.png",
+    },
+    {
+      name: "Digital Art",
+      imgSrc: "https://cdn-icons-png.flaticon.com/128/3940/3940120.png",
+    },
+    {
+      name: "Film Making",
+      imgSrc: "https://cdn-icons-png.flaticon.com/128/3874/3874166.png",
+    },
+    {
+      name: "Culture",
+      imgSrc: "https://cdn-icons-png.flaticon.com/128/17870/17870074.png",
+    },
+    {
+      name: "Troubleshooting",
+      imgSrc: "https://cdn-icons-png.flaticon.com/128/9782/9782620.png",
+    },
+    {
+      name: "Marketing",
+      imgSrc: "https://cdn-icons-png.flaticon.com/128/1260/1260235.png",
+    },
   ];
 
   const canContinue = () => {

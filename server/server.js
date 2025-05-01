@@ -6,6 +6,7 @@ require("dotenv").config();
 const userRoutes = require("./routes/userRoutes");
 const authRoutes = require("./routes/authRoutes");
 const healthRoutes = require("./routes/healthRoutes");
+const deckRoutes = require("./routes/deckRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -41,6 +42,7 @@ app.use((req, res, next) => {
 app.use("/api/auth", authRoutes);
 app.use("/api", userRoutes);
 app.use("/api", healthRoutes);
+app.use("/api", deckRoutes);
 
 // Root endpoint for testing
 app.get("/", (req, res) => {

@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-import { Loader } from "../../component/global";
 import { SubHeader, Text } from "../../component/presets";
 
 const EmailVerified = () => {
@@ -24,7 +23,7 @@ const EmailVerified = () => {
         }, 1000);
       } catch (error) {
         console.error("Error sending user data:", error);
-        navigate("/?isLoggingIn=false");
+        navigate("/?isLoggingIn=true");
       }
     };
 

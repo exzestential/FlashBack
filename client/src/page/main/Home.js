@@ -5,11 +5,11 @@ import api from "../../utils/axios";
 
 import { SideNav, Modal } from "../../component/global";
 import { AnimatedTabPanels, Tabs, UserInfo } from "../../component/mainPage";
-import Review from "../../component/homeTabs/Review";
+import Decks from "./homeTabs/Decks";
 import { FloatingButton } from "../../component/cards";
 
 const Home = () => {
-  const tabs = ["Review", "Decks", "Folders", "Favourites", "Statistics"];
+  const tabs = ["Decks", "Folders", "Favourites", "Statistics"];
   const [activeTab, setActiveTab] = useState(tabs[0]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isModalOpen, setModalOpen] = useState(false);
@@ -32,13 +32,8 @@ const Home = () => {
           return;
         }
 
-        console.log("Fetching user data for ID:", userId);
-        console.log("Token available:", !!token);
-
         // Make API request to get user data - notice the updated path
         const res = await api.get(`/api/user/home/${userId}`);
-
-        console.log("User data response:", res.data);
 
         if (res.data && res.data.user) {
           setUser(res.data.user);
@@ -87,7 +82,7 @@ const Home = () => {
           </h2>
           <p>{error}</p>
           <button
-            onClick={() => navigate("/login")}
+            onClick={() => navigate("/?isLoggingIn=true")}
             className="mt-4 bg-sky-700 text-white px-4 py-2 rounded-lg"
           >
             Return to Login
@@ -99,11 +94,7 @@ const Home = () => {
 
   // prepare panels array for AnimatedTabPanels
   const panels = [
-    {
-      key: "Review",
-      content: <Review />,
-    },
-    { key: "Decks", content: <div>Decks content…</div> },
+    { key: "Decks", content: <Decks /> },
     { key: "Folders", content: <div>Folders content…</div> },
     { key: "Favourites", content: <div>Favourites content…</div> },
     { key: "Statistics", content: <div>Statistics content…</div> },
@@ -151,15 +142,32 @@ const Home = () => {
           confirmText="Create"
           onConfirm={handleCreate}
         >
-          <h2 className="text-xl font-semibold mb-4">Create New Deck</h2>
+          <div className="flex flex-col space-y-4">
+            <h2 className="text-xl font-semibold">Create New Deck</h2>
+            <input
+              type="text"
+              id="first_name"
+              className="bg-gray-100 border border-gray-200 focus:ring-sky-700 focus:border-sky-700 focus:outline-none p-2.5 rounded-xl w-full placeholder:text-gray-600 text-gray-600"
+              placeholder="Enter Name..."
+              required
+            />
 
-          <input
-            type="text"
-            id="first_name"
-            className="bg-gray-100 border border-gray-200 focus:ring-sky-700 focus:border-sky-700 focus:outline-none p-2.5 rounded-xl w-full"
-            placeholder="Enter Name..."
-            required
-          />
+            <select
+              id="folder"
+              name="folder"
+              className="appearance-none bg-gray-100 border border-gray-200 focus:ring-sky-700 focus:border-sky-700 focus:outline-none p-2.5 rounded-xl w-full text-gray-600"
+              required
+            >
+              <option value="">Select a folder</option>
+              <option value="1">Net101</option>
+              <option value="2">Gec Art</option>
+              <option value="3">MIL</option>
+              <option value="4">Gec Hist</option>
+              <option value="5">Spanish</option>
+              <option value="6">German</option>
+              <option value="7">Portuguese</option>
+            </select>
+          </div>
         </Modal>
       </div>
     </motion.div>
