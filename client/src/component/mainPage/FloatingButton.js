@@ -1,8 +1,9 @@
 import React from "react";
 
-const FloatingButton = ({ onClick }) => {
+const FloatingButton = ({ setOpen, onClick }) => {
   const handleClick = (e) => {
     e.currentTarget.blur();
+    setOpen((prevState) => !prevState);
     onClick?.();
   };
 

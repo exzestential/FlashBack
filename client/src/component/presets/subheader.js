@@ -1,9 +1,9 @@
 import React from "react";
 
-function SubHeader({ text = "This is a pre-header", logoUrl = null }) {
+function SubHeader({ children }) {
   return (
     <div className="flex items-center space-x-3 p-3">
-      <h2 className="text-lg font-bold text-gray-800 font-futura">{text}</h2>
+      <h2 className="text-xl font-bold font-futura">{children}</h2>
     </div>
   );
 }

@@ -11,3 +11,4 @@ export { default as Save } from "./Save";
 export { default as Options } from "./Options";
 export { default as Forward } from "./Forward";
 export { default as Close } from "./Close";
+export { default as ColorSelect } from "./ColorSelect";

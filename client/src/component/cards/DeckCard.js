@@ -33,7 +33,7 @@ const DeckCard = ({ deck }) => {
       <motion.div
         animate={{ y: isHovered ? 6 : 0 }}
         transition={{ type: "spring", stiffness: 200, damping: 20 }}
-        className="absolute bottom-0 left-0 right-0 h-3/4 z-30 flex flex-col"
+        className="absolute bottom-0 left-0 right-0 h-2/3 z-30 flex flex-col"
       >
         <div className="relative bg-white shadow-sm rounded-b-2xl flex flex-col h-full z-30 ps-2">
           <div className="px-1 py-1 flex flex-col flex-grow text-gray-700">
