@@ -1,7 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaEllipsisVertical } from "react-icons/fa6";
+import { FaEllipsisVertical, FaEllipsis } from "react-icons/fa6";
 
-const KebabMenu = ({ items = [] }) => {
+const KebabMenu = ({
+  items = [],
+  direction = "vertical",
+  color = "gray-400",
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef();
 
@@ -18,13 +22,15 @@ const KebabMenu = ({ items = [] }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const Icon = direction === "horizontal" ? FaEllipsis : FaEllipsisVertical;
+
   return (
     <div className="relative inline-block text-left" ref={menuRef}>
       <button
         onClick={toggleMenu}
-        className="text-xl text-gray-400 cursor-pointer p-2 hover:bg-gray-100 rounded-full"
+        className={`text-xl text-${color} cursor-pointer px-2 py-1 hover:bg-black/10 rounded-xl`}
       >
-        <FaEllipsisVertical />
+        <Icon />
       </button>
 
       {isOpen && (

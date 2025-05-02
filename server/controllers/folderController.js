@@ -49,44 +49,6 @@ const createFolder = async (req, res) => {
   }
 };
 
-const getFoldersWithDecks = async (req, res) => {
-  const userId = req.user.userId; // Assuming user authentication
-
-  try {
-    // Execute the SQL query to get folders and decks
-    const [result] = await db.query(
-      `SELECT folders.folder_id, folders.name AS folder_name, decks.deck_id, decks.name AS deck_name
-      FROM folders
-      LEFT JOIN decks ON folders.folder_id = decks.folder_id
-      WHERE folders.user_id = ?
-      ORDER BY folders.folder_id, decks.created_at`,
-      [userId]
-    );
-
-    // Group the result by folder
-    const folders = result.reduce((acc, row) => {
-      const folder = acc.find((f) => f.folder_id === row.folder_id);
-      if (!folder) {
-        acc.push({
-          folder_id: row.folder_id,
-          folder_name: row.folder_name,
-          decks: row.deck_id
-            ? [{ deck_id: row.deck_id, deck_name: row.deck_name }]
-            : [],
-        });
-      } else if (row.deck_id) {
-        folder.decks.push({ deck_id: row.deck_id, deck_name: row.deck_name });
-      }
-      return acc;
-    }, []);
-
-    res.status(200).json(folders); // Return the folders with their decks
-  } catch (err) {
-    console.error("Error fetching folders and decks:", err);
-    res.status(500).json({ message: "Error fetching folders and decks" });
-  }
-};
-
 const getDecksByFolder = async (req, res) => {
   const { folderId } = req.params;
   const { sortBy = "created_at", sortOrder = "DESC" } = req.query; // Default sorting by date in descending order
@@ -143,10 +105,105 @@ const getFolderById = async (req, res) => {
   }
 };
 
+const deleteFolder = async (req, res) => {
+  const { folderId } = req.params;
+  const userId = req.user.userId;
+
+  try {
+    // First check if the deck exists and belongs to the user
+    const [folder] = await db.query(
+      `SELECT folder_id FROM folders 
+       WHERE folder_id = ? AND user_id = ?`,
+      [folderId, userId]
+    );
+
+    if (folder.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "Folder not found or unauthorized" });
+    }
+
+    // Soft delete the deck by updating is_deleted and deleted_at
+    const [result] = await db.query(
+      `DELETE FROM folders 
+       WHERE folder_id = ?`,
+      [folderId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(400).json({ message: "Failed to delete folder" });
+    }
+
+    res.json({ message: "folder deleted successfully" });
+  } catch (err) {
+    console.error("❌ DB error:", err.message);
+    res.status(500).json({ message: "Server error deleting deck" });
+  }
+};
+
+const updateFolder = async (req, res) => {
+  const { folderId } = req.params;
+  const { name, color } = req.body;
+  const userId = req.user.userId;
+
+  if (!name) {
+    return res.status(400).json({ message: "name is required" });
+  }
+
+  try {
+    // First check if the deck exists and belongs to the user
+    const [folder] = await db.query(
+      `SELECT folder_id FROM folders 
+       WHERE folder_id = ? AND user_id = ?`,
+      [folderId, userId]
+    );
+
+    if (folder.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "Folder not found or unauthorized" });
+    }
+
+    // Update the deck
+    const [result] = await db.query(
+      `UPDATE folders 
+       SET name = ?, color = ?, last_modified = NOW() 
+       WHERE folder_id = ? AND user_id = ?`,
+      [name, color, folderId, userId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(400).json({ message: "Failed to update folders" });
+    }
+
+    // Get the updated deck to return
+    const [updatedFolder] = await db.query(
+      `SELECT
+         folders.folder_id,
+         folders.name,
+         folders.last_modified,
+         folders.color 
+       FROM folders
+       WHERE folders.folder_id = ?`,
+      [folderId]
+    );
+
+    res.json({
+      message: "Folder updated successfully",
+      folder: updatedFolder[0],
+    });
+  } catch (err) {
+    console.error("❌ DB error:", err.message);
+    res.status(500).json({ message: "Server error updating folder" });
+  }
+};
+
 // Add this to your module.exports
 module.exports = {
   getFolders,
   createFolder,
   getDecksByFolder,
   getFolderById,
+  deleteFolder,
+  updateFolder,
 };

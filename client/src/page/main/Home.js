@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import api from "../../utils/axios";
 
-import { SideNav } from "../../component/global";
+import { Loader, SideNav } from "../../component/global";
 import {
   AnimatedTabPanels,
   Tabs,
@@ -53,6 +53,20 @@ const Home = () => {
     );
   };
 
+  const handleFolderDeleted = (deletedId) => {
+    setFolders((prev) =>
+      prev.filter((folder) => folder.folder_id !== deletedId)
+    );
+  };
+
+  const handleFolderUpdated = (updatedFolder) => {
+    setFolders((prev) =>
+      prev.map((folder) =>
+        folder.folder_id === updatedFolder.folder_id ? updatedFolder : folder
+      )
+    );
+  };
+
   // Panels (after folders state is available)
   const panels = [
     {
@@ -62,10 +76,20 @@ const Home = () => {
           decks={decks}
           onDeckUpdated={handleDeckUpdated}
           onDeckDeleted={handleDeckDeleted}
+          folders={folders}
         />
       ),
     },
-    { key: "Folders", content: <FoldersTab folders={folders} /> },
+    {
+      key: "Folders",
+      content: (
+        <FoldersTab
+          folders={folders}
+          onFolderDeleted={handleFolderDeleted}
+          onFolderUpdated={handleFolderUpdated}
+        />
+      ),
+    },
     { key: "Favourites", content: <div>Favourites content...</div> },
     { key: "Statistics", content: <div>Statistics content...</div> },
   ];
@@ -137,11 +161,7 @@ const Home = () => {
 
   // Loading screen
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sky-700"></div>
-      </div>
-    );
+    return <Loader isLoading={isLoading} />;
   }
 
   // Error screen

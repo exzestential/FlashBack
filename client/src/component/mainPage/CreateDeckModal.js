@@ -75,7 +75,9 @@ const CreateDeckModal = ({
             onChange={(e) => setFolder_id(e.target.value)}
             required
           >
-            <option value="">Select a folder</option>
+            <option value="" disabled>
+              Select a folder
+            </option>
             {folders &&
               folders.map((folder) => (
                 <option key={folder.folder_id} value={folder.folder_id}>

@@ -67,7 +67,7 @@ const createDeck = async (req, res) => {
 
 const updateDeck = async (req, res) => {
   const { deckId } = req.params;
-  const { title, description } = req.body;
+  const { title, description, folder_id } = req.body;
   const userId = req.user.userId;
 
   if (!title) {
@@ -78,7 +78,7 @@ const updateDeck = async (req, res) => {
     // First check if the deck exists and belongs to the user
     const [deck] = await db.query(
       `SELECT deck_id FROM decks 
-       WHERE deck_id = ? AND user_id = ? AND is_deleted = 0`,
+       WHERE deck_id = ? AND user_id = ?`,
       [deckId, userId]
     );
 
@@ -88,12 +88,33 @@ const updateDeck = async (req, res) => {
         .json({ message: "Deck not found or unauthorized" });
     }
 
+    // If folder_id is provided, validate it belongs to the user
+    if (folder_id) {
+      const [folder] = await db.query(
+        `SELECT folder_id FROM folders 
+         WHERE folder_id = ? AND user_id = ?`,
+        [folder_id, userId]
+      );
+
+      if (folder.length === 0) {
+        return res
+          .status(400)
+          .json({ message: "Folder not found or unauthorized" });
+      }
+    }
+
     // Update the deck
     const [result] = await db.query(
       `UPDATE decks 
-       SET title = ?, description = ?, last_modified = NOW() 
+       SET title = ?, description = ?, folder_id = ?, last_modified = NOW() 
        WHERE deck_id = ? AND user_id = ?`,
-      [title, description || null, deckId, userId]
+      [
+        title,
+        description || null,
+        folder_id || null, // Allow removing from folder by setting to null
+        deckId,
+        userId,
+      ]
     );
 
     if (result.affectedRows === 0) {
@@ -108,7 +129,8 @@ const updateDeck = async (req, res) => {
         decks.description,
         decks.last_modified,
         decks.folder_id,
-        folders.color AS folder_color
+        folders.color AS folder_color,
+        folders.name AS folder_name
       FROM decks
       LEFT JOIN folders ON folders.folder_id = decks.folder_id
       WHERE decks.deck_id = ?`,
@@ -143,11 +165,9 @@ const deleteDeck = async (req, res) => {
         .json({ message: "Deck not found or unauthorized" });
     }
 
-    // Soft delete the deck by updating is_deleted and deleted_at
     const [result] = await db.query(
-      `UPDATE decks 
-       SET is_deleted = 1, deleted_at = NOW() 
-       WHERE deck_id = ? AND user_id = ?`,
+      `DELETE FROM decks
+      WHERE deck_id = ?`,
       [deckId, userId]
     );
 

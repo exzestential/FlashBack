@@ -1,7 +1,7 @@
 import React from "react";
 import DeckCard from "../../../component/cards/DeckCard";
 
-const DecksTab = ({ decks, onDeckUpdated, onDeckDeleted }) => {
+const DecksTab = ({ decks, onDeckUpdated, onDeckDeleted, folders }) => {
   // Handle deck updates
   const handleDeckUpdated = (updatedDeck) => {
     if (onDeckUpdated) {
@@ -25,6 +25,7 @@ const DecksTab = ({ decks, onDeckUpdated, onDeckDeleted }) => {
             deck={deck}
             onDeckUpdated={handleDeckUpdated}
             onDeckDeleted={handleDeckDeleted}
+            folders={folders}
           />
         ))}
       </div>

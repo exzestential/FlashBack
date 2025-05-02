@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { KebabMenu } from "../global";
 import { Modal } from "../global";
 import axios from "axios"; // Assuming you're using axios for API calls
 
-const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted }) => {
+const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted, folders }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -13,9 +13,19 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted }) => {
   const [editDescription, setEditDescription] = useState(
     deck.description || ""
   );
+  const [editFolderId, setEditFolderId] = useState(deck.folder_id || "");
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  // Reset form state when modal opens
+  useEffect(() => {
+    if (isEditModalOpen) {
+      setEditTitle(deck.title);
+      setEditDescription(deck.description || "");
+      setEditFolderId(deck.folder_id || "");
+    }
+  }, [isEditModalOpen, deck]);
 
   // Handle delete functionality
   const handleDelete = async () => {
@@ -65,6 +75,7 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted }) => {
           body: JSON.stringify({
             title: editTitle,
             description: editDescription,
+            folder_id: editFolderId,
           }),
         }
       );
@@ -82,6 +93,7 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted }) => {
           ...deck,
           title: editTitle,
           description: editDescription,
+          folder_id: editFolderId,
           ...data.deck, // in case backend returns updated values
         });
       }
@@ -96,6 +108,7 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted }) => {
   // Stop event propagation for modal clicks
   const handleCardClick = (e) => {
     if (e.target.closest(".modal-content") || e.target.closest(".kebab-menu")) {
+      // Don't navigate if clicking on modal or menu
     } else {
       navigate(`/deck/${deck.deck_id}`);
     }
@@ -105,8 +118,6 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted }) => {
     {
       label: "Edit",
       onClick: (e) => {
-        setEditTitle(deck.title);
-        setEditDescription(deck.description || "");
         setIsEditModalOpen(true);
       },
     },
@@ -164,7 +175,7 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted }) => {
                 </p>
               </div>
               <div className="px-1 py-2 kebab-menu">
-                <KebabMenu items={menuItems} />
+                <KebabMenu items={menuItems} direction="vertical" />
               </div>
             </div>
           </div>
@@ -184,9 +195,11 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted }) => {
         confirmDisabled={isLoading}
         className="modal-content"
       >
-        <h2 className="text-xl font-semibold mb-4">Delete Deck</h2>
-        <p className="mb-2">Are you sure you want to delete "{deck.title}"?</p>
-        <p className="text-gray-600 text-sm">This action cannot be undone.</p>
+        <h2 className="text-xl font-semibold mb-3">Delete Deck</h2>
+        <p>Are you sure you want to delete "{deck.title}"?</p>
+        <p className="text-red-600 text-sm pt-0 pb-2">
+          This action cannot be undone.
+        </p>
       </Modal>
 
       {/* Edit Modal */}
@@ -232,6 +245,28 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted }) => {
             onChange={(e) => setEditDescription(e.target.value)}
             rows="3"
           ></textarea>
+        </div>
+        <div className="mb-4">
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+            htmlFor="folder"
+          >
+            Folder
+          </label>
+          <select
+            id="folder"
+            name="folder"
+            value={editFolderId}
+            className="appearance-none bg-gray-100 border border-gray-200 focus:ring-sky-700 focus:border-sky-700 focus:outline-none p-2.5 rounded-xl w-full text-gray-600"
+            onChange={(e) => setEditFolderId(e.target.value)}
+          >
+            {folders &&
+              folders.map((folder) => (
+                <option key={folder.folder_id} value={folder.folder_id}>
+                  {folder.name}
+                </option>
+              ))}
+          </select>
         </div>
       </Modal>
     </>

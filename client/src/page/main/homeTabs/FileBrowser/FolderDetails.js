@@ -8,7 +8,7 @@ import {
   FaCalendarAlt,
 } from "react-icons/fa";
 
-import { SideNav, Back } from "../../../../component/global";
+import { SideNav, Back, Loader } from "../../../../component/global";
 import {
   LightFloatingButton,
   CreateDeckModal,
@@ -225,11 +225,7 @@ const FolderDetails = () => {
 
   // Loading screen
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sky-700"></div>
-      </div>
-    );
+    return <Loader isLoading={isLoading} />;
   }
 
   // Error screen
