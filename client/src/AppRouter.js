@@ -12,6 +12,8 @@ import {
   EditCard,
 } from "./page";
 
+import FolderDetails from "./page/main/homeTabs/FileBrowser/FolderDetails";
+
 const AppRouter = () => {
   return (
     <Router>
@@ -25,6 +27,7 @@ const AppRouter = () => {
           {/* Note the :id param */}
           <Route path="/discover" element={<Discover />} />
           <Route path="/edit-card" element={<EditCard />} />
+          <Route path="/folder/:folderId" element={<FolderDetails />} />
         </Routes>
       </AnimatePresence>
     </Router>

@@ -1,11 +1,20 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const FolderIcon = ({ folder }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate();
+
+  const handleFolderClick = () => {
+    navigate(`/folder/${folder.folder_id}`);
+  };
 
   return (
-    <div className=" hover:bg-gray-200 rounded-xl w-48 h-44 ps-2">
+    <div
+      className="hover:bg-gray-200 rounded-xl w-48 h-44 ps-2 cursor-pointer"
+      onClick={handleFolderClick}
+    >
       <motion.div
         className="relative w-48 m-15 p-5 h-40 group"
         onHoverStart={() => setIsHovered(true)} // Track hover start

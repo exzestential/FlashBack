@@ -3,8 +3,14 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import api from "../../utils/axios";
 
-import { SideNav, Modal, ColorSelect } from "../../component/global";
-import { AnimatedTabPanels, Tabs, UserInfo } from "../../component/mainPage";
+import { SideNav } from "../../component/global";
+import {
+  AnimatedTabPanels,
+  Tabs,
+  UserInfo,
+  CreateDeckModal,
+  CreateFolderModal,
+} from "../../component/mainPage";
 import { FloatingButton } from "../../component/mainPage";
 import { FaFolderOpen } from "react-icons/fa";
 import { PiCardsThreeFill } from "react-icons/pi";
@@ -25,13 +31,7 @@ const Home = () => {
 
   // Data States
   const [decks, setDecks] = useState([]);
-  const [title, setTitle] = useState("");
-  const [folder_id, setFolder_id] = useState(1);
-
   const [folders, setFolders] = useState([]);
-  const [name, setName] = useState("");
-  const [folderColor, setFolderColor] = useState("");
-
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -138,50 +138,40 @@ const Home = () => {
     );
   }
 
-  const handleCreateDeck = (e) => {
+  const handleCreateDeck = (deckData) => {
     fetch("http://localhost:5000/api/create-deck", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      body: JSON.stringify({
-        title: title,
-        folder_id: folder_id,
-      }),
+      body: JSON.stringify(deckData),
     })
       .then((res) => res.json())
       .then((data) => {
         console.log("Deck created:", data);
-        setDeckModalOpen(false); // ✅ Close the modal
-        setTitle(""); // Optional: reset form
-        setFolder_id(""); // Optional: reset folder selection
-        fetchDecks(); // ✅ Refresh deck tab content
+        setDeckModalOpen(false);
+        fetchDecks();
       })
       .catch((err) => {
         console.error("Error creating deck:", err);
       });
   };
 
-  const handleCreateFolder = (e) => {
+  const handleCreateFolder = (folderData) => {
     fetch("http://localhost:5000/api/create-folder", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      body: JSON.stringify({
-        name: name,
-        color: folderColor,
-      }),
+      body: JSON.stringify(folderData),
     })
       .then((res) => res.json())
       .then((data) => {
         console.log("Folder created:", data);
-        setFolderModalOpen(false); // ✅ Close the modal
-        setName(""); // Optional: reset input
-        setFolderColor(""); // Optional: reset color picker
-        fetchFolders(); // ✅ Refresh folder tab content
+        setFolderModalOpen(false);
+        fetchFolders();
       })
       .catch((err) => {
         console.error("Error creating Folder:", err);
@@ -266,65 +256,19 @@ const Home = () => {
           </div>
         </div>
 
-        <Modal
+        {/* Use the new modular components */}
+        <CreateDeckModal
           isOpen={isDeckModalOpen}
           onClose={() => setDeckModalOpen(false)}
-          cancelText="Go Back"
-          confirmText="Create"
-          onConfirm={handleCreateDeck}
-        >
-          <div className="flex flex-col space-y-4">
-            <h2 className="text-xl font-semibold">Create New Deck</h2>
-            <input
-              type="text"
-              id="first_name"
-              className="bg-gray-100 border border-gray-200 focus:ring-sky-700 focus:border-sky-700 focus:outline-none p-2.5 rounded-xl w-full placeholder:text-gray-600 text-gray-600"
-              placeholder="Enter Name..."
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-            />
+          onCreateDeck={handleCreateDeck}
+          folders={folders}
+        />
 
-            <select
-              id="folder"
-              name="folder"
-              value={folder_id}
-              className="appearance-none bg-gray-100 border border-gray-200 focus:ring-sky-700 focus:border-sky-700 focus:outline-none p-2.5 rounded-xl w-full text-gray-600"
-              onChange={(e) => setFolder_id(e.target.value)}
-              required
-            >
-              <option value="">Select a folder</option>
-              {folders.map((folder) => (
-                <option key={folder.folder_id} value={folder.folder_id}>
-                  {folder.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </Modal>
-
-        <Modal
+        <CreateFolderModal
           isOpen={isFolderModalOpen}
           onClose={() => setFolderModalOpen(false)}
-          cancelText="Go Back"
-          confirmText="Create"
-          onConfirm={handleCreateFolder}
-        >
-          <div className="flex flex-col space-y-4">
-            <h2 className="text-xl font-semibold">Create New Folder</h2>
-            <input
-              type="text"
-              id="first_name"
-              className="bg-gray-100 border border-gray-200 focus:ring-sky-700 focus:border-sky-700 focus:outline-none p-2.5 rounded-xl w-full placeholder:text-gray-600 text-gray-600"
-              placeholder="Enter Name..."
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-
-            <ColorSelect setFolderColor={setFolderColor} />
-          </div>
-        </Modal>
+          onCreateFolder={handleCreateFolder}
+        />
       </div>
     </motion.div>
   );
