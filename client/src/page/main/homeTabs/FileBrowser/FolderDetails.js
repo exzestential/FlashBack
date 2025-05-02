@@ -331,7 +331,6 @@ const FolderDetails = () => {
                 {decks.map((deck) => (
                   <div
                     key={deck.deck_id}
-                    onClick={() => navigate(`/deck/${deck.deck_id}`)}
                     className={deck.isLoading ? "opacity-50" : ""}
                   >
                     <DeckCard

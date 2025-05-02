@@ -36,9 +36,35 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Deck update and delete handlers
+  const handleDeckUpdated = (updatedDeck) => {
+    setDecks((prevDecks) =>
+      prevDecks.map((deck) =>
+        deck.deck_id === updatedDeck.deck_id
+          ? { ...deck, ...updatedDeck }
+          : deck
+      )
+    );
+  };
+
+  const handleDeckDeleted = (deckId) => {
+    setDecks((prevDecks) =>
+      prevDecks.filter((deck) => deck.deck_id !== deckId)
+    );
+  };
+
   // Panels (after folders state is available)
   const panels = [
-    { key: "Decks", content: <DecksTab decks={decks} /> },
+    {
+      key: "Decks",
+      content: (
+        <DecksTab
+          decks={decks}
+          onDeckUpdated={handleDeckUpdated}
+          onDeckDeleted={handleDeckDeleted}
+        />
+      ),
+    },
     { key: "Folders", content: <FoldersTab folders={folders} /> },
     { key: "Favourites", content: <div>Favourites content...</div> },
     { key: "Statistics", content: <div>Statistics content...</div> },
