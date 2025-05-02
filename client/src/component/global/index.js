@@ -10,3 +10,5 @@ export { default as SideNav } from "./SideNav";
 export { default as Save } from "./Save";
 export { default as Options } from "./Options";
 export { default as Forward } from "./Forward";
+export { default as Settings } from "./Settings";
+export { default as RepetitionButton } from "./RepetitionButton" ;

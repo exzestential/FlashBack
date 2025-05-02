@@ -1,5 +1,5 @@
 import React from "react";
-import { DeckCard, FlipCard } from "../../../component/cards";
+import { DeckCard, FlipCard, FlashCard} from "../../../component/cards";
 
 const Review = () => {
   return (
