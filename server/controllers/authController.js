@@ -1,24 +1,10 @@
-const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const cookieParser = require("cookie-parser");
 const pool = require("../config/db");
 const nodemailer = require("nodemailer");
-const cors = require("cors");
 require("dotenv").config();
 
-const app = express();
-app.use(express.json());
-app.use(cookieParser());
-
-const SECRET_KEY = "your_secret_key"; // or use process.env.SECRET_KEY
-
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    credentials: true,
-  })
-);
+const SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -27,6 +13,9 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASSWORD,
   },
 });
+
+// Verification code storage (should be moved to a database in production)
+const verificationCodes = {};
 
 const checkEmail = async (req, res) => {
   const { email } = req.body;
@@ -47,11 +36,28 @@ const checkEmail = async (req, res) => {
   }
 };
 
+const checkUsername = async (req, res) => {
+  const { username } = req.body;
+
+  try {
+    const [rows] = await pool.query("SELECT * FROM users WHERE username = ?", [
+      username,
+    ]);
+
+    if (rows.length > 0) {
+      return res.status(200).json({ registered: true });
+    } else {
+      return res.status(200).json({ registered: false });
+    }
+  } catch (err) {
+    console.error("Error checking email:", err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
 const generateVerificationCode = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
-
-const verificationCodes = {};
 
 const sendVerificationCode = async (req, res) => {
   const { email } = req.body;
@@ -103,9 +109,7 @@ const verifyCode = (req, res) => {
     return res.status(200).json({ message: "Email verified", verified: true });
   }
   return res.status(400).json({
-    message: `Invalid verification code.`,
-    //receivedCode: code, // Add received code in the response for debugging
-    //expectedCode: verificationCodes[email], // Add expected code in the response for comparison
+    message: "Invalid verification code.",
   });
 };
 
@@ -118,40 +122,85 @@ const login = async (req, res) => {
     ]);
 
     if (rows.length === 0) {
-      return res.status(401).json({ message: "Incorrect Email or Password." });
+      return res.status(401).json({ message: "Incorrect email or password." });
     }
 
     const user = rows[0];
 
-    if (user.password !== password) {
-      return res.status(401).json({ message: "Incorrect Email or Password." });
+    // Compare the hashed password with the input password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Incorrect email or password." });
     }
 
-    const sessionToken = jwt.sign({ userId: user.id }, SECRET_KEY, {
-      expiresIn: "1h",
-    });
+    // If passwords match, generate the token
+    const token = jwt.sign(
+      { userId: user.user_id },
+      process.env.JWT_SECRET_KEY,
+      {
+        expiresIn: "12h",
+      }
+    );
 
+    // Send the session token as both a cookie and in the response body
     res
-      .cookie("session_token", sessionToken, { httpOnly: true })
+      .cookie("session_token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production", // true in production with HTTPS
+        sameSite: "strict",
+        maxAge: 43200000, // 12 hours
+      })
       .status(200)
-      .json({ message: "Logged in successfully!" });
+      .json({
+        message: "Logged in successfully!",
+        token,
+        userId: user.user_id,
+      });
   } catch (err) {
-    console.error(err);
+    console.error("Login error:", err);
     res.status(500).json({ error: "Server error. Please try again later." });
   }
 };
 
-const signup = async (req, res) => {
-  const { userType, username, email, password, interests } = req.body;
+const checkSession = (req, res) => {
+  // At this point, req.user has been set by the authenticateToken middleware
+  res.status(200).json({
+    message: "Session valid",
+    userId: req.user.userId,
+  });
+};
+
+const logout = (req, res) => {
+  res
+    .clearCookie("session_token")
+    .status(200)
+    .json({ message: "Logged out successfully" });
+};
+
+const register = async (req, res) => {
+  const { user_type, username, email, password, interests } = req.body;
   const interestString = JSON.stringify(interests);
 
   try {
+    // Check if user already exists
+    const [existingUsers] = await pool.query(
+      "SELECT * FROM users WHERE email = ?",
+      [email]
+    );
+
+    if (existingUsers.length > 0) {
+      return res.status(409).json({ message: "Email already registered" });
+    }
+
+    // Hash the password before storing it
+    const hashedPassword = await bcrypt.hash(password, 10); // 10 is a safe default saltRounds
+
     const query = `
-      INSERT INTO users (userType, username, email, password, interests)
+      INSERT INTO users (user_type, username, email, password, interests)
       VALUES (?, ?, ?, ?, ?)
     `;
 
-    const values = [userType, username, email, password, interestString];
+    const values = [user_type, username, email, hashedPassword, interestString];
 
     await pool.query(query, values);
 
@@ -166,9 +215,12 @@ const signup = async (req, res) => {
 
 module.exports = {
   login,
+  checkSession,
+  logout,
   sendVerificationCode,
   resendVerificationCode,
   verifyCode,
   checkEmail,
-  signup,
+  checkUsername,
+  register,
 };

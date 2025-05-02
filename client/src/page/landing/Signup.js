@@ -10,7 +10,7 @@ import {
   Notification,
   Loader,
 } from "../../component/global";
-import { Facebook, Google } from "../../assets/global";
+import { Facebook, Google } from "../../assets";
 import { Nav } from "../../component/landingPage";
 import "./Signup.css";
 
@@ -23,7 +23,7 @@ const Signup = () => {
   const [fadeNextClass, setFadeNextClass] = useState("fade-in");
   const [direction, setDirection] = useState("forward");
   const [form, setForm] = useState({
-    userType: "",
+    user_type: "",
     username: "",
     email: "",
     password: "",
@@ -91,24 +91,66 @@ const Signup = () => {
     });
   };
 
+  const userType = [
+    { name: "Teacher", imgSrc: "http://placehold.co/100" },
+    { name: "Student", imgSrc: "http://placehold.co/100" },
+    { name: "Other", imgSrc: "http://placehold.co/100" },
+  ];
+
   const interestItems = [
-    { name: "AI", imgSrc: "http://placehold.co/100" },
-    { name: "ML", imgSrc: "http://placehold.co/100" },
-    { name: "Data Science", imgSrc: "http://placehold.co/100" },
-    { name: "Blockchain", imgSrc: "http://placehold.co/100" },
-    { name: "Cybersecurity", imgSrc: "http://placehold.co/100" },
-    { name: "IoT", imgSrc: "http://placehold.co/100" },
-    { name: "UX/UI", imgSrc: "http://placehold.co/100" },
-    { name: "DevOps", imgSrc: "http://placehold.co/100" },
-    { name: "Cloud", imgSrc: "http://placehold.co/100" },
-    { name: "Big Data", imgSrc: "http://placehold.co/100" },
-    { name: "Quantum", imgSrc: "http://placehold.co/100" },
-    { name: "Gaming", imgSrc: "http://placehold.co/100" },
+    {
+      name: "Designing",
+      imgSrc: "https://cdn-icons-png.flaticon.com/128/2857/2857527.png",
+    },
+    {
+      name: "Foreign Language",
+      imgSrc: "https://cdn-icons-png.flaticon.com/128/12836/12836969.png",
+    },
+    {
+      name: "Networking",
+      imgSrc: "https://cdn-icons-png.flaticon.com/128/2082/2082812.png",
+    },
+    {
+      name: "Media",
+      imgSrc: "https://cdn-icons-png.flaticon.com/128/15127/15127687.png",
+    },
+    {
+      name: "Coding",
+      imgSrc: " https://cdn-icons-png.flaticon.com/128/1197/1197409.png",
+    },
+    {
+      name: "History",
+      imgSrc: " https://cdn-icons-png.flaticon.com/128/2234/2234770.png",
+    },
+    {
+      name: "Virtualization",
+      imgSrc: "https://cdn-icons-png.flaticon.com/128/12154/12154753.png",
+    },
+    {
+      name: "Digital Art",
+      imgSrc: "https://cdn-icons-png.flaticon.com/128/3940/3940120.png",
+    },
+    {
+      name: "Film Making",
+      imgSrc: "https://cdn-icons-png.flaticon.com/128/3874/3874166.png",
+    },
+    {
+      name: "Culture",
+      imgSrc: "https://cdn-icons-png.flaticon.com/128/17870/17870074.png",
+    },
+    {
+      name: "Troubleshooting",
+      imgSrc: "https://cdn-icons-png.flaticon.com/128/9782/9782620.png",
+    },
+    {
+      name: "Marketing",
+      imgSrc: "https://cdn-icons-png.flaticon.com/128/1260/1260235.png",
+    },
   ];
 
   const canContinue = () => {
     if (step === 0) {
-      return form.userType !== "";
+      return form.user_type !== "";
     } else if (step === 1) {
       return form.interests.length > 0;
     }
@@ -175,23 +217,26 @@ const Signup = () => {
 
   const handleSignupClick = async () => {
     localStorage.setItem("userData", JSON.stringify(form));
-    const test = localStorage.getItem("userData");
-    console.log(test);
+    console.log(
+      "Form saved in localStorage:",
+      localStorage.getItem("userData")
+    );
+
     const email = form.email;
+    const username = form.username; // ✅ Add this line
 
     setIsLoading(true);
     try {
       // Check if the email already exists
       const emailCheckResponse = await axios.post(
-        "http://localhost:5000/auth/check-email",
-        {}
+        "http://localhost:5000/api/auth/check-email",
+        { email }
       );
 
       if (emailCheckResponse.data.registered) {
         setIsLoading(false);
-        // Notify the user if the email is already registered
-        setNotification((prevNotification) => [
-          ...prevNotification,
+        setNotification((prev) => [
+          ...prev,
           {
             id: Date.now(),
             message: "Email already exists. Please use another email.",
@@ -200,8 +245,26 @@ const Signup = () => {
         return;
       }
 
-      // If email is not registered, proceed with sending verification code
-      await axios.post("http://localhost:5000/auth/send-code", {
+      // ✅ Check username
+      const usernameCheckResponse = await axios.post(
+        "http://localhost:5000/api/auth/check-username",
+        { username }
+      );
+
+      if (usernameCheckResponse.data.registered) {
+        setIsLoading(false);
+        setNotification((prev) => [
+          ...prev,
+          {
+            id: Date.now(),
+            message: "Username already exists. Please use another username.",
+          },
+        ]);
+        return;
+      }
+
+      // ✅ Proceed to send verification
+      await axios.post("http://localhost:5000/api/auth/send-verification", {
         email,
       });
 
@@ -210,11 +273,11 @@ const Signup = () => {
     } catch (err) {
       setIsLoading(false);
       console.error(
-        "Error during email check or sending verification code:",
-        err
+        "Error during signup process:",
+        err.response?.data || err.message
       );
-      setNotification((prevNotification) => [
-        ...prevNotification,
+      setNotification((prev) => [
+        ...prev,
         {
           id: Date.now(),
           message: "An error occurred. Please try again later.",
@@ -248,7 +311,7 @@ const Signup = () => {
           </div>
         )}
 
-        {/* UserType */}
+        {/* user_type */}
         {step === 0 && (
           <div
             className={`flex flex-col items-center min-h-screen bg-white ${animationClass} transition`}
@@ -257,17 +320,17 @@ const Signup = () => {
             <div className="z-10 absolute top-1/4">
               <h2 className="text-center text-xl font-bold mb-10">I am a...</h2>
               <div className="grid grid-cols-3 gap-20">
-                {["Student", "Teacher", "Other"].map((type) => (
+                {userType.map((type) => (
                   <button
                     key={type}
-                    onClick={() => handleChange("userType", type)}
+                    onClick={() => handleChange("user_type", type.name)}
                     className={`
                   flex flex-col items-center
                   w-52 pt-10 pb-8 rounded-lg
                   text-sm text-slate-900
                   transition
                   ${
-                    form.userType === type
+                    form.user_type === type.name
                       ? "bg-gray-100 shadow-[0_-6px_0_theme('colors.gray.200')] translate-y-2"
                       : `
                         border-4 border-gray-100
@@ -278,12 +341,8 @@ const Signup = () => {
                   }
                 `}
                   >
-                    <img
-                      src="http://placehold.co/100"
-                      alt={type}
-                      className="pb-3"
-                    />
-                    <span>{type}</span>
+                    <img src={type.imgSrc} alt={type.name} className="pb-3" />
+                    <span>{type.name}</span>
                   </button>
                 ))}
               </div>

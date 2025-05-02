@@ -17,7 +17,7 @@ const Tabs = ({ tabs, activeTab, setActiveTab }) => {
 
         {/* Animated Bottom Border */}
         <div
-          className="absolute bottom-0 left-0 h-1 bg-indigo-600 transition-all duration-300 ease-in-out"
+          className="absolute bottom-0 left-0 h-1 bg-sky-500 transition-all duration-300 ease-in-out"
           style={{
             width: `calc(100% / ${tabs.length})`,
             left: `calc(${(tabs.indexOf(activeTab) / tabs.length) * 100}%)`,
