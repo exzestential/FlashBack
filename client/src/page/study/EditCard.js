@@ -181,7 +181,6 @@ const EditCard = () => {
       transition={{ duration: 0.5 }}
     >
       <div className="edit-card flex min-h-screen">
-        <SideNav />
         <div className="page-container flex flex-col w-full py-4 px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">

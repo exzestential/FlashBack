@@ -10,11 +10,11 @@ const SideNav = () => {
 
   const tabs = [
     { label: "Home", icon: FaHome, link: "/home" },
-    { label: "Explore", icon: FaEarthAmericas, link: "/discover" },
-    { label: "Study", icon: FaPlay, link: "#" },
-    { label: "Create", icon: FaPlus, link: "#" },
-    { label: "Notifications", icon: FaBell, link: "#" },
-    { label: "Profile", icon: FaUser, link: "#" },
+    { label: "Explore", icon: FaEarthAmericas, link: "/explore" },
+    { label: "Study", icon: FaPlay, link: "/study" },
+    { label: "Create", icon: FaPlus, link: "/create" },
+    { label: "Notifications", icon: FaBell, link: "/notifications" },
+    { label: "Profile", icon: FaUser, link: "/profile" },
   ];
 
   return (
@@ -70,6 +70,7 @@ const SideNav = () => {
           <SidebarTab
             icon={FaGear}
             label="Settings"
+            link="/settings"
             collapsed={collapsed}
             className="mt-auto"
           />

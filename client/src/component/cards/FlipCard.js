@@ -1,53 +1,238 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { FaXmark } from "react-icons/fa6";
 import "./FlipCard.css";
 
-const FlipCard = () => {
+const FlipCard = ({ card, size = "Full" }) => {
   const [isFlipped, setIsFlipped] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [modalContent, setModalContent] = useState({
+    side: "front",
+    content: "",
+    imageUrl: "",
+  });
+  const [clickTimeout, setClickTimeout] = useState(null);
+  const [hoverTimeout, setHoverTimeout] = useState(null);
 
+  // Clear timeouts when component unmounts
+  useEffect(() => {
+    return () => {
+      if (clickTimeout) clearTimeout(clickTimeout);
+      if (hoverTimeout) clearTimeout(hoverTimeout);
+    };
+  }, [clickTimeout, hoverTimeout]);
+
+  // Handle click to flip the card
   const handleClick = () => {
-    setIsFlipped(!isFlipped);
+    // Clear any pending click timeout
+    if (clickTimeout) {
+      clearTimeout(clickTimeout);
+      setClickTimeout(null);
+      // This was a double click, so don't flip
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      setIsFlipped(!isFlipped);
+      setClickTimeout(null);
+    }, 200); // 200ms delay
+
+    setClickTimeout(timeout);
   };
 
-  return (
-    <div className="w-64 h-96 relative perspective-1000">
-      <div
-        className={`relative w-full h-full duration-700 transform-style-preserve-3d ${
-          isFlipped ? "rotate-y-180" : ""
-        }`}
-      >
-        {/* Front of card */}
-        <div className="absolute w-full h-full backface-hidden bg-blue-500 rounded-lg shadow-lg flex flex-col justify-between p-6">
-          <div className="flex flex-col items-center text-center">
-            <h2 className="text-2xl font-bold text-white mb-4">Front Side</h2>
-            <p className="text-white">ts gay</p>
-          </div>
-          <div className="flex justify-center mt-4">
-            <button
-              onClick={handleClick}
-              className="bg-white text-blue-500 px-4 py-2 rounded-md hover:bg-blue-100 transition-colors"
-            >
-              Flip Card
-            </button>
-          </div>
-        </div>
+  // Handle mouse enter - toggles the flipped state
+  const handleMouseEnter = () => {
+    // You can edit this value to change the hover delay (in milliseconds)
+    const hoverDelayMs = 500; // 1.5 seconds delay before hover triggers flip
 
-        {/* Back of card */}
-        <div className="absolute w-full h-full backface-hidden bg-red-500 rounded-lg shadow-lg rotate-y-180 flex flex-col justify-between p-6">
-          <div className="flex flex-col items-center text-center">
-            <h2 className="text-2xl font-bold text-white mb-4">Back Side</h2>
-            <p className="text-white">homo</p>
+    // Add delay to hover effect to allow for clicking first
+    const timeout = setTimeout(() => {
+      setIsFlipped(!isFlipped); // Toggle the flipped state on hover
+    }, hoverDelayMs);
+
+    setHoverTimeout(timeout);
+  };
+
+  // Handle mouse leave - toggles the flipped state
+  const handleMouseLeave = () => {
+    // Clear any pending hover timeout
+    if (hoverTimeout) {
+      clearTimeout(hoverTimeout);
+      setHoverTimeout(null);
+      return; // Don't toggle if we're just clearing a pending hover
+    }
+
+    setIsFlipped(!isFlipped); // Toggle the flipped state on unhover
+  };
+
+  // Double click handler to open modal
+  const handleDoubleClick = (e, side) => {
+    e.stopPropagation(); // Prevent triggering flip
+    e.preventDefault(); // Prevent default behavior
+
+    // Clear any pending flip timeout
+    if (clickTimeout) {
+      clearTimeout(clickTimeout);
+      setClickTimeout(null);
+    }
+
+    // Clear any pending hover timeout
+    if (hoverTimeout) {
+      clearTimeout(hoverTimeout);
+      setHoverTimeout(null);
+    }
+
+    // Open modal for both Full and Thumbnail sizes
+    setModalContent({
+      side,
+      content: side === "front" ? card.front_content : card.back_content,
+      imageUrl: side === "front" ? card.front_image_url : card.back_image_url,
+    });
+    setShowModal(true);
+  };
+
+  // Close modal when clicking outside
+  const handleModalBackdropClick = (e) => {
+    if (e.target === e.currentTarget) {
+      setShowModal(false);
+    }
+  };
+
+  // Define size-specific classes
+  const sizeClasses = {
+    Thumbnail: {
+      container: "w-32 h-48",
+      textSize: "text-xs",
+      padding: "p-3",
+      imageHeight: "h-20",
+    },
+    Full: {
+      container: "w-64 h-96",
+      textSize: "text-base",
+      padding: "p-4",
+      imageHeight: "h-40",
+    },
+  };
+
+  // Use the appropriate size classes or default to Full
+  const { container, textSize, padding, imageHeight } =
+    sizeClasses[size] || sizeClasses.Full;
+
+  return (
+    <>
+      <div
+        className={`${container} relative perspective-1000 cursor-pointer`}
+        onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <div
+          className={`relative w-full h-full duration-700 transform-style-preserve-3d ${
+            isFlipped ? "rotate-y-180" : ""
+          }`}
+        >
+          {/* Front of card */}
+          <div
+            className={`absolute w-full h-full backface-hidden bg-${card.folder_color}-500 rounded-lg shadow-lg flex flex-col ${padding} overflow-hidden`}
+            onDoubleClick={(e) => handleDoubleClick(e, "front")}
+          >
+            {/* Front image */}
+            {card.front_image_url && (
+              <div className="w-full mb-2">
+                <img
+                  src={card.front_image_url}
+                  alt="Front visual"
+                  className={`w-full ${imageHeight} object-cover rounded-lg`}
+                />
+              </div>
+            )}
+
+            {/* Front content with overflow hidden */}
+            <div className="flex-1 flex flex-col items-center justify-center text-center">
+              <div
+                className={`w-full h-full overflow-hidden flex items-center justify-center ${textSize} text-white`}
+              >
+                {card.front_content}
+              </div>
+            </div>
+
+            <div
+              className={`pointer-events-none absolute bottom-0 left-0 w-full h-10 bg-gradient-to-t from-${card.folder_color}-500 to-transparent rounded-b`}
+            />
           </div>
-          <div className="flex justify-center mt-4">
-            <button
-              onClick={handleClick}
-              className="bg-white text-red-500 px-4 py-2 rounded-md hover:bg-red-100 transition-colors"
-            >
-              Flip Back
-            </button>
+
+          {/* Back of card */}
+          <div
+            className={`absolute w-full h-full backface-hidden bg-${card.folder_color}-600 rounded-lg shadow-lg rotate-y-180 flex flex-col overflow-hidden ${padding}`}
+            onDoubleClick={(e) => handleDoubleClick(e, "back")}
+          >
+            {/* Back image */}
+            {card.back_image_url && (
+              <div className="w-full mb-2">
+                <img
+                  src={card.back_image_url}
+                  alt="Back visual"
+                  className={`w-full ${imageHeight} object-cover rounded-lg`}
+                />
+              </div>
+            )}
+
+            {/* Back content with overflow hidden */}
+            <div className="flex-1 flex flex-col items-center justify-center text-center">
+              <div
+                className={`w-full h-full overflow-hidden flex items-center justify-center ${textSize} text-white`}
+              >
+                {card.back_content}
+              </div>
+            </div>
+
+            <div
+              className={`pointer-events-none absolute bottom-0 left-0 w-full h-10 bg-gradient-to-t from-${card.folder_color}-600 to-transparent rounded-b`}
+            />
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Modal for expanded view */}
+      {showModal && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          onClick={handleModalBackdropClick}
+        >
+          <div
+            className={`bg-${card.folder_color}-${
+              modalContent.side === "front" ? "500" : "600"
+            } rounded-xl max-w-2xl w-11/12 max-h-[90vh] overflow-hidden relative`}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-3 right-3 text-white/80 hover:text-white z-10"
+            >
+              <FaXmark size={24} />
+            </button>
+
+            {/* Modal content */}
+            <div className="p-6 flex flex-col h-full max-h-[90vh]">
+              {/* Image if available */}
+              {modalContent.imageUrl && (
+                <div className="mb-4">
+                  <img
+                    src={modalContent.imageUrl}
+                    alt="Card visual"
+                    className="w-full max-h-80 object-contain rounded-lg"
+                  />
+                </div>
+              )}
+
+              {/* Text content */}
+              <div className="text-white text-lg overflow-y-auto pr-2">
+                {modalContent.content}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

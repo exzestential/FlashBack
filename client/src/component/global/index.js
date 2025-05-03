@@ -13,3 +13,4 @@ export { default as Forward } from "./Forward";
 export { default as Close } from "./Close";
 export { default as ColorSelect } from "./ColorSelect";
 export { default as KebabMenu } from "./KebabMenu";
+export { default as ComingSoon } from "./ComingSoon";

@@ -28,57 +28,12 @@ const FolderDetails = () => {
   // Data States
   const [folder, setFolder] = useState(null);
   const [decks, setDecks] = useState([]);
-  const [user, setUser] = useState(null);
   const [folders, setFolders] = useState([]); // For the dropdown in CreateDeckModal
 
   // Sorting States
   const [sortBy, setSortBy] = useState("last_modified");
   const [sortOrder, setSortOrder] = useState("DESC");
   const [showSortMenu, setShowSortMenu] = useState(false);
-
-  // Fetch user data on mount
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const userId = localStorage.getItem("userId");
-        const token = localStorage.getItem("token");
-
-        if (!userId || !token) {
-          setError("Authentication required");
-          setIsLoading(false);
-          return;
-        }
-
-        const res = await fetch(
-          `http://localhost:5000/api/user/home/${userId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-
-        const data = await res.json();
-
-        if (data?.user) {
-          setUser(data.user);
-        } else {
-          setError("Invalid user data received");
-        }
-      } catch (err) {
-        console.error("Error fetching user data:", err);
-        setError(err.response?.data?.message || "Failed to load user data");
-
-        if (err.response?.status === 401 || err.response?.status === 403) {
-          localStorage.removeItem("token");
-          localStorage.removeItem("userId");
-          setTimeout(() => navigate("/?isLoggingIn=true"), 1500);
-        }
-      }
-    };
-
-    fetchUserData();
-  }, [navigate]);
 
   // Function to fetch decks
   const fetchDecks = async () => {
@@ -256,7 +211,6 @@ const FolderDetails = () => {
       transition={{ duration: 0.5 }}
     >
       <div className="page-container flex min-h-screen">
-        <SideNav />
         <div className="relative w-full flex flex-col">
           <div className="flex justify-between items-center p-4 shadow-sm border z-10 border-b-gray-200">
             <div className="flex items-center">

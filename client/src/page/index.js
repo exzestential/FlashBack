@@ -1,4 +1,3 @@
-export { default as Discover } from "./main/Discover";
 export { default as EditCard } from "./study/EditCard";
 export { default as Home } from "./main/Home";
 export { default as LandingPage } from "./landing/LandingPage";

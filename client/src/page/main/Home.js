@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import api from "../../utils/axios";
 
-import { Loader, SideNav } from "../../component/global";
+import { ComingSoon, Loader } from "../../component/global";
 import {
   AnimatedTabPanels,
   Tabs,
@@ -90,8 +90,8 @@ const Home = () => {
         />
       ),
     },
-    { key: "Favourites", content: <div>Favourites content...</div> },
-    { key: "Statistics", content: <div>Statistics content...</div> },
+    { key: "Favourites", content: <ComingSoon /> },
+    { key: "Statistics", content: <ComingSoon /> },
   ];
 
   const tabs = panels.map((panel) => panel.key);
@@ -232,7 +232,6 @@ const Home = () => {
       transition={{ duration: 0.5 }}
     >
       <div className="page-container flex min-h-screen">
-        <SideNav />
         <div className="relative home w-full flex flex-col">
           <UserInfo user={user} />
 
