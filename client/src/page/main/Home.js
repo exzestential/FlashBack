@@ -294,6 +294,7 @@ const Home = () => {
                   ? "opacity-100 translate-y-0 delay-100" // Option 3 comes up first with delay 300ms
                   : "opacity-0 translate-y-4"
               }`}
+              onClick={() => navigate("/edit-card")}
             >
               Create Card
               <TbCardsFilled className="text-white text-5xl ms-3" />

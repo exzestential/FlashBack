@@ -36,6 +36,9 @@ const AppRouter = () => {
             <Route path="folder/:folderId" element={<FolderDetails />} />
             <Route path="deck/:deckId" element={<DeckDetails />} />
             <Route path="/study/:deckId" element={<StudyPage />} />
+            <Route path="/card/:cardId" element={<EditCard />} />
+            <Route path="/create" element={<EditCard />} />
+            <Route path="/create/deck/:deckId" element={<EditCard />} />
 
             {/* COming Soon */}
             <Route path="explore" element={<ComingSoon />} />

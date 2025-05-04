@@ -1,3 +1,4 @@
+//flipcard.js
 import { useState, useEffect } from "react";
 import { FaXmark } from "react-icons/fa6";
 import "./FlipCard.css";

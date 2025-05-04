@@ -7,13 +7,17 @@ import React, {
 import { FaCamera } from "react-icons/fa";
 
 const SingleCard = forwardRef(function RichTextCard(
-  { showNotification, isActive },
+  { showNotification, isActive, cardColor = "sky", side = "front" },
   ref
 ) {
   const [imageSrc, setImageSrc] = useState(null);
   const contentEditableRef = useRef(null);
   const fileInputRef = useRef(null);
   const [textContent, setTextContent] = useState("");
+
+  // Make card back slightly darker, just like in FlipCard
+  const bgColorClass =
+    side === "front" ? `bg-${cardColor}-500` : `bg-${cardColor}-600`;
 
   useImperativeHandle(ref, () => ({
     // Expose methods to parent
@@ -67,7 +71,9 @@ const SingleCard = forwardRef(function RichTextCard(
   };
 
   return (
-    <div className="w-[275px] h-[450px] p-4 bg-midnight rounded-2xl relative">
+    <div
+      className={`w-[275px] h-[450px] p-4 ${bgColorClass} rounded-2xl relative shadow-lg`}
+    >
       <div className="flex flex-col items-center h-full">
         <div className="relative flex flex-col items-center w-full h-full">
           {/* Image Preview */}
@@ -82,7 +88,7 @@ const SingleCard = forwardRef(function RichTextCard(
           {/* Rich Text Editor - Using contentEditable instead of textarea */}
           <div className="relative w-full h-full">
             {!textContent && (
-              <span className="absolute top-2 left-2 text-black/30 pointer-events-none">
+              <span className="absolute top-2 left-2 text-white/50 pointer-events-none">
                 Enter text...
               </span>
             )}
@@ -94,7 +100,7 @@ const SingleCard = forwardRef(function RichTextCard(
               onKeyDown={handleKeyDown}
               onPaste={handlePaste}
               spellCheck={false}
-              className="bg-midnight text-white rounded w-full h-full outline-none resize-none p-2 overflow-y-auto"
+              className={`${bgColorClass} text-white rounded w-full h-full outline-none resize-none p-2 overflow-y-auto`}
               style={{
                 minHeight: "200px",
                 cursor: isActive ? "text" : "default",
@@ -103,7 +109,11 @@ const SingleCard = forwardRef(function RichTextCard(
           </div>
 
           {/* Gradient at the bottom of the text area */}
-          <div className="pointer-events-none absolute bottom-0 left-0 w-full h-6 bg-gradient-to-t from-midnight to-transparent rounded-b" />
+          <div
+            className={`pointer-events-none absolute bottom-0 left-0 w-full h-6 bg-gradient-to-t from-${cardColor}-${
+              side === "front" ? "500" : "600"
+            } to-transparent rounded-b`}
+          />
         </div>
 
         {/* Hidden file input */}
@@ -118,7 +128,7 @@ const SingleCard = forwardRef(function RichTextCard(
         {/* Camera Icon (at the bottom of the card) */}
         <FaCamera
           onClick={handleIconClick}
-          className="absolute bottom-4 right-4 text-black/30 text-3xl cursor-pointer hover:text-black/50"
+          className="absolute bottom-4 right-4 text-white/30 text-3xl cursor-pointer hover:text-white/70"
         />
       </div>
     </div>
