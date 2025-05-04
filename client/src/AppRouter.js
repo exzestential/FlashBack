@@ -8,8 +8,8 @@ import {
   Verification,
   EmailVerified,
   Home,
-  Discover,
   EditCard,
+  StudyPage,
 } from "./page";
 
 import { ComingSoon } from "./component/global";
@@ -35,10 +35,10 @@ const AppRouter = () => {
             <Route path="edit-card" element={<EditCard />} />
             <Route path="folder/:folderId" element={<FolderDetails />} />
             <Route path="deck/:deckId" element={<DeckDetails />} />
+            <Route path="/study/:deckId" element={<StudyPage />} />
 
             {/* COming Soon */}
             <Route path="explore" element={<ComingSoon />} />
-
             <Route path="/study" element={<ComingSoon />} />
             <Route path="/create" element={<ComingSoon />} />
             <Route path="/notifications" element={<ComingSoon />} />

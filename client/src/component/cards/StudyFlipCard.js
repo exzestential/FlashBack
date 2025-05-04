@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FlipCard } from "../../component/cards";
+import FlipCard from "../components/FlipCard"; // Using your existing FlipCard component
 import { FaArrowLeft } from "react-icons/fa";
 
 const StudyPage = () => {
@@ -24,15 +24,7 @@ const StudyPage = () => {
     easy: 0,
     total: 0,
   });
-  // Track card ratings to handle re-ratings properly
-  const [cardRatings, setCardRatings] = useState({});
   const [deckInfo, setDeckInfo] = useState(null);
-  const [cardTransition, setCardTransition] = useState({
-    isChanging: false,
-    isNew: false,
-  });
-  // Add state for queue countdown timer
-  const [queueCountdown, setQueueCountdown] = useState([]);
 
   // Fetch cards when component mounts
   useEffect(() => {
@@ -79,8 +71,8 @@ const StudyPage = () => {
   }, [deckId, navigate]);
 
   // Handle card flip
-  const handleCardFlip = (isFlipped) => {
-    setShowButtons(isFlipped); // Only show buttons when card is flipped to back
+  const handleCardFlip = () => {
+    setShowButtons(true);
   };
 
   // Submit a review and handle card reappearance
@@ -90,65 +82,43 @@ const StudyPage = () => {
     setReviewInProgress(true);
     setReviewing(true);
 
-    // Hide buttons IMMEDIATELY before any card transition
-    setShowButtons(false);
-
-    // Then start card transition
-    setTimeout(() => {
-      setCardTransition({ isChanging: true, isNew: false });
-    }, 10); // tiny delay to ensure buttons hide first
-
     try {
       // Calculate delay based on rating
       let delayInSeconds;
       switch (rating.toLowerCase()) {
         case "again":
           delayInSeconds = 10;
+          setStats((prev) => ({
+            ...prev,
+            again: prev.again + 1,
+            total: prev.total + 1,
+          }));
           break;
         case "hard":
           delayInSeconds = 30;
+          setStats((prev) => ({
+            ...prev,
+            hard: prev.hard + 1,
+            total: prev.total + 1,
+          }));
           break;
         case "easy":
           delayInSeconds = 60;
+          setStats((prev) => ({
+            ...prev,
+            easy: prev.easy + 1,
+            total: prev.total + 1,
+          }));
           break;
         default:
           delayInSeconds = 10;
       }
 
+      // Update stats locally
+
       // Create a timestamp for when this card should reappear
       const currentCard = cards[currentCardIndex];
-      const cardId = currentCard.card_id;
       const reappearTime = new Date(Date.now() + delayInSeconds * 1000);
-
-      // Update ratings tracking and stats
-      const previousRating = cardRatings[cardId];
-
-      // If this card was rated before, decrement the previous rating count
-      if (previousRating) {
-        setStats((prev) => ({
-          ...prev,
-          [previousRating]: prev[previousRating] - 1,
-          // Don't decrement total since we're re-rating the same card
-        }));
-      } else {
-        // Only increment total for first-time ratings
-        setStats((prev) => ({
-          ...prev,
-          total: prev.total + 1,
-        }));
-      }
-
-      // Increment the new rating count
-      setStats((prev) => ({
-        ...prev,
-        [rating.toLowerCase()]: prev[rating.toLowerCase()] + 1,
-      }));
-
-      // Store the new rating for this card
-      setCardRatings((prev) => ({
-        ...prev,
-        [cardId]: rating.toLowerCase(),
-      }));
 
       // Add to queue with reappear time
       setCardsInQueue((prev) => [
@@ -177,31 +147,23 @@ const StudyPage = () => {
         }
       );
 
-      // Wait for the card to flip back to front before changing card
-      setTimeout(() => {
-        // Move to the next card if available
-        if (currentCardIndex < cards.length - 1) {
-          setCurrentCardIndex(currentCardIndex + 1);
+      // Move to the next card if available
+      if (currentCardIndex < cards.length - 1) {
+        setCurrentCardIndex(currentCardIndex + 1);
+      } else {
+        // If we've reached the end of the original deck and still have cards in queue
+        if (cardsInQueue.length > 0) {
+          // Just wait for queued cards
         } else {
-          // If we've reached the end of the original deck and still have cards in queue
-          if (cardsInQueue.length > 0) {
-            // Just wait for queued cards
-          } else {
-            // Completely done with the deck
-            setReviewing(false);
-          }
+          // Completely done with the deck
+          setReviewing(false);
         }
-
-        // After a small delay, complete the transition
-        setTimeout(() => {
-          setCardTransition({ isChanging: false, isNew: true });
-          setShowButtons(false); // Ensure buttons are hidden for the new card
-        }, 150);
-      }, 400); // Time for the card to flip back to front
+      }
     } catch (err) {
       console.error("Error submitting review:", err);
       // Continue anyway to not block the user
     } finally {
+      setShowButtons(false);
       setReviewInProgress(false);
     }
   };
@@ -218,8 +180,6 @@ const StudyPage = () => {
       // Check each card in the queue
       cardsInQueue.forEach((queueItem) => {
         if (now >= queueItem.reappearTime) {
-          // For cards that are ready, we need to reset their place in the queue
-          // but keep their previous rating for stats tracking
           readyCards.push(queueItem.card);
         } else {
           remainingCards.push(queueItem);
@@ -248,36 +208,21 @@ const StudyPage = () => {
     }
   }, [reviewing, currentCardIndex, cards.length, cardsInQueue.length]);
 
-  // Calculate remaining time for each card in queue and update in real-time
-  useEffect(() => {
-    if (cardsInQueue.length === 0) {
-      setQueueCountdown([]);
-      return;
-    }
+  // Calculate remaining time for each card in queue
+  const getQueueStatus = useCallback(() => {
+    if (cardsInQueue.length === 0) return [];
 
-    // Initial calculation
-    updateQueueCountdown();
-
-    // Set up interval to update every second
-    const countdownInterval = setInterval(updateQueueCountdown, 1000);
-
-    // Clean up interval
-    return () => clearInterval(countdownInterval);
-
-    function updateQueueCountdown() {
-      const now = new Date();
-      const updatedCountdown = cardsInQueue.map((item) => {
-        const secondsRemaining = Math.max(
-          0,
-          Math.floor((item.reappearTime - now) / 1000)
-        );
-        return {
-          rating: item.rating,
-          secondsRemaining,
-        };
-      });
-      setQueueCountdown(updatedCountdown);
-    }
+    const now = new Date();
+    return cardsInQueue.map((item) => {
+      const secondsRemaining = Math.max(
+        0,
+        Math.floor((item.reappearTime - now) / 1000)
+      );
+      return {
+        rating: item.rating,
+        secondsRemaining,
+      };
+    });
   }, [cardsInQueue]);
 
   if (loading) {
@@ -340,6 +285,8 @@ const StudyPage = () => {
     );
   }
 
+  const queueStatus = getQueueStatus();
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       {/* Header with back button and deck title */}
@@ -360,23 +307,19 @@ const StudyPage = () => {
       {/* Main study area */}
       <div className="flex-grow flex flex-col items-center justify-center p-4">
         {/* Current card */}
-        <div className="mb-4">
-          {cards[currentCardIndex] && !cardTransition.isChanging && (
-            <FlipCard
-              card={cards[currentCardIndex]}
-              size="Full"
-              isNew={cardTransition.isNew}
-              onFlip={handleCardFlip}
-            />
+        <div
+          className="mb-4 transform transition-transform duration-300"
+          onClick={handleCardFlip}
+        >
+          {cards[currentCardIndex] && (
+            <FlipCard card={cards[currentCardIndex]} size="Full" />
           )}
         </div>
 
-        {/* Review buttons - faster transition */}
+        {/* Review buttons */}
         <div
-          className={`flex space-x-4 mt-4 transition-opacity duration-150 ${
-            showButtons && !cardTransition.isChanging
-              ? "opacity-100"
-              : "opacity-0"
+          className={`flex space-x-4 mt-4 transition-opacity duration-300 ${
+            showButtons ? "opacity-100" : "opacity-0"
           }`}
         >
           <button
@@ -413,10 +356,10 @@ const StudyPage = () => {
               <span className="text-green-500">Easy: {stats.easy}</span>
             </div>
             <div className="queue-info">
-              <span>Cards in queue: {queueCountdown.length}</span>
-              {queueCountdown.length > 0 && (
+              <span>Cards in queue: {queueStatus.length}</span>
+              {queueStatus.length > 0 && (
                 <span className="ml-2 text-sm text-gray-500">
-                  (Next: {queueCountdown[0].secondsRemaining}s)
+                  (Next: {queueStatus[0].secondsRemaining}s)
                 </span>
               )}
             </div>

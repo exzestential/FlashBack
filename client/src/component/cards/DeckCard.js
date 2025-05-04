@@ -110,7 +110,7 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted, folders }) => {
     if (e.target.closest(".modal-content") || e.target.closest(".kebab-menu")) {
       // Don't navigate if clicking on modal or menu
     } else {
-      navigate(`/deck/${deck.deck_id}`);
+      navigate(`/study/${deck.deck_id}`); // Navigate to the study page
     }
   };
 
@@ -126,6 +126,10 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted, folders }) => {
       onClick: (e) => {
         setIsDeleteModalOpen(true);
       },
+    },
+    {
+      label: "Browse Cards",
+      onClick: () => navigate(`/deck/${deck.deck_id}`),
     },
   ];
 

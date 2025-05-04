@@ -108,7 +108,7 @@ const DeckDetails = () => {
 
           <div className="bg-gray-100 grow overflow-auto p-8 px-20">
             {cards.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-8 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
                 {cards.map((card) => (
                   <div
                     key={card.card_id}

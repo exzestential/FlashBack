@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { FaXmark } from "react-icons/fa6";
 import "./FlipCard.css";
 
-const FlipCard = ({ card, size = "Full" }) => {
+const FlipCard = ({ card, size = "Full", isNew = false, onFlip }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState({
@@ -12,6 +12,8 @@ const FlipCard = ({ card, size = "Full" }) => {
   });
   const [clickTimeout, setClickTimeout] = useState(null);
   const [hoverTimeout, setHoverTimeout] = useState(null);
+  const [slideIn, setSlideIn] = useState(isNew);
+  const [displayCard, setDisplayCard] = useState(card); // Store the current card for display
 
   // Clear timeouts when component unmounts
   useEffect(() => {
@@ -21,39 +23,77 @@ const FlipCard = ({ card, size = "Full" }) => {
     };
   }, [clickTimeout, hoverTimeout]);
 
-  // Handle click to flip the card
+  useEffect(() => {
+    if (displayCard !== card && isFlipped) {
+    } else if (displayCard !== card) {
+      setDisplayCard(card);
+    }
+  }, [card, displayCard, isFlipped]);
+
+  useEffect(() => {
+    setIsFlipped(false);
+
+    if (isNew) {
+      setSlideIn(true);
+      const timeout = setTimeout(() => {
+        setSlideIn(false);
+      }, 500); // Animation duration
+
+      return () => clearTimeout(timeout);
+    }
+  }, [card, isNew]);
+
   const handleClick = () => {
-    // Clear any pending click timeout
     if (clickTimeout) {
       clearTimeout(clickTimeout);
       setClickTimeout(null);
-      // This was a double click, so don't flip
       return;
     }
 
     const timeout = setTimeout(() => {
-      setIsFlipped(!isFlipped);
+      handleFlip();
       setClickTimeout(null);
     }, 200); // 200ms delay
 
     setClickTimeout(timeout);
   };
 
-  // Handle mouse enter - toggles the flipped state
+  // Handle the flipping logic
+  const handleFlip = () => {
+    const newFlippedState = !isFlipped;
+    setIsFlipped(newFlippedState);
+
+    if (!newFlippedState && displayCard !== card) {
+      setTimeout(() => {
+        setDisplayCard(card);
+      }, 150); // Half the flip animation time
+    }
+
+    // Call the onFlip callback if provided
+    if (onFlip) {
+      onFlip(newFlippedState);
+    }
+  };
+
+  // Handle mouse enter - toggles the flipped state only for Thumbnail size
   const handleMouseEnter = () => {
-    // You can edit this value to change the hover delay (in milliseconds)
-    const hoverDelayMs = 500; // 1.5 seconds delay before hover triggers flip
+    // Only apply hover effect for Thumbnail size
+    if (size !== "Thumbnail") return;
+
+    const hoverDelayMs = 500; // 500ms delay before hover triggers flip
 
     // Add delay to hover effect to allow for clicking first
     const timeout = setTimeout(() => {
-      setIsFlipped(!isFlipped); // Toggle the flipped state on hover
+      handleFlip(); // Use the handleFlip function instead of directly setting state
     }, hoverDelayMs);
 
     setHoverTimeout(timeout);
   };
 
-  // Handle mouse leave - toggles the flipped state
   const handleMouseLeave = () => {
+    // Only apply hover effect for Thumbnail size
+    if (size !== "Thumbnail") return;
+
     // Clear any pending hover timeout
     if (hoverTimeout) {
       clearTimeout(hoverTimeout);
@@ -61,10 +101,9 @@ const FlipCard = ({ card, size = "Full" }) => {
       return; // Don't toggle if we're just clearing a pending hover
     }
 
-    setIsFlipped(!isFlipped); // Toggle the flipped state on unhover
+    handleFlip(); // Use the handleFlip function instead of directly setting state
   };
 
-  // Double click handler to open modal
   const handleDoubleClick = (e, side) => {
     e.stopPropagation(); // Prevent triggering flip
     e.preventDefault(); // Prevent default behavior
@@ -100,14 +139,14 @@ const FlipCard = ({ card, size = "Full" }) => {
   // Define size-specific classes
   const sizeClasses = {
     Thumbnail: {
-      container: "w-32 h-48",
+      container: "w-40 h-56",
       textSize: "text-xs",
       padding: "p-3",
       imageHeight: "h-20",
     },
     Full: {
-      container: "w-64 h-96",
-      textSize: "text-base",
+      container: "w-80 h-[500px]",
+      textSize: "text-xl",
       padding: "p-4",
       imageHeight: "h-40",
     },
@@ -120,7 +159,9 @@ const FlipCard = ({ card, size = "Full" }) => {
   return (
     <>
       <div
-        className={`${container} relative perspective-1000 cursor-pointer`}
+        className={`${container} relative perspective-1000 cursor-pointer ${
+          slideIn ? "slide-in-right" : ""
+        }`}
         onClick={handleClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -132,14 +173,14 @@ const FlipCard = ({ card, size = "Full" }) => {
         >
           {/* Front of card */}
           <div
-            className={`absolute w-full h-full backface-hidden bg-${card.folder_color}-500 rounded-lg shadow-lg flex flex-col ${padding} overflow-hidden`}
+            className={`absolute w-full h-full backface-hidden bg-${displayCard.folder_color}-500 rounded-lg shadow-lg flex flex-col ${padding} overflow-hidden`}
             onDoubleClick={(e) => handleDoubleClick(e, "front")}
           >
             {/* Front image */}
-            {card.front_image_url && (
+            {displayCard.front_image_url && (
               <div className="w-full mb-2">
                 <img
-                  src={card.front_image_url}
+                  src={displayCard.front_image_url}
                   alt="Front visual"
                   className={`w-full ${imageHeight} object-cover rounded-lg`}
                 />
@@ -151,25 +192,25 @@ const FlipCard = ({ card, size = "Full" }) => {
               <div
                 className={`w-full h-full overflow-hidden flex items-center justify-center ${textSize} text-white`}
               >
-                {card.front_content}
+                {displayCard.front_content}
               </div>
             </div>
 
             <div
-              className={`pointer-events-none absolute bottom-0 left-0 w-full h-10 bg-gradient-to-t from-${card.folder_color}-500 to-transparent rounded-b`}
+              className={`pointer-events-none absolute bottom-0 left-0 w-full h-10 bg-gradient-to-t from-${displayCard.folder_color}-500 to-transparent rounded-b`}
             />
           </div>
 
           {/* Back of card */}
           <div
-            className={`absolute w-full h-full backface-hidden bg-${card.folder_color}-600 rounded-lg shadow-lg rotate-y-180 flex flex-col overflow-hidden ${padding}`}
+            className={`absolute w-full h-full backface-hidden bg-${displayCard.folder_color}-600 rounded-lg shadow-lg rotate-y-180 flex flex-col overflow-hidden ${padding}`}
             onDoubleClick={(e) => handleDoubleClick(e, "back")}
           >
             {/* Back image */}
-            {card.back_image_url && (
+            {displayCard.back_image_url && (
               <div className="w-full mb-2">
                 <img
-                  src={card.back_image_url}
+                  src={displayCard.back_image_url}
                   alt="Back visual"
                   className={`w-full ${imageHeight} object-cover rounded-lg`}
                 />
@@ -181,12 +222,12 @@ const FlipCard = ({ card, size = "Full" }) => {
               <div
                 className={`w-full h-full overflow-hidden flex items-center justify-center ${textSize} text-white`}
               >
-                {card.back_content}
+                {displayCard.back_content}
               </div>
             </div>
 
             <div
-              className={`pointer-events-none absolute bottom-0 left-0 w-full h-10 bg-gradient-to-t from-${card.folder_color}-600 to-transparent rounded-b`}
+              className={`pointer-events-none absolute bottom-0 left-0 w-full h-10 bg-gradient-to-t from-${displayCard.folder_color}-600 to-transparent rounded-b`}
             />
           </div>
         </div>
