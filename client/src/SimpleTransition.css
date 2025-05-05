@@ -1,0 +1,34 @@
+/* SimpleTransition.css */
+
+.simple-transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  background-color: #3b82f6; /* Default blue */
+  clip-path: circle(0px at var(--origin-x) var(--origin-y));
+}
+
+/* Active animation state */
+.simple-transition-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  animation: simple-circle-expand 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Circle expansion animation */
+@keyframes simple-circle-expand {
+  0% {
+    clip-path: circle(0px at var(--origin-x) var(--origin-y));
+    opacity: 0.8;
+  }
+  100% {
+    clip-path: circle(150vmax at var(--origin-x) var(--origin-y));
+    opacity: 1;
+  }
+}

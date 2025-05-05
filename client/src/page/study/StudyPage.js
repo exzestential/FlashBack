@@ -1,9 +1,10 @@
 // src/pages/StudyPage.js
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import axios from "axios";
-import { FlipCard } from "../../component/cards";
 
+import { FlipCard } from "../../component/cards";
 import { Back } from "../../component/global";
 
 const StudyPage = () => {
@@ -245,7 +246,6 @@ const StudyPage = () => {
       cardsInQueue.length === 0
     ) {
       // Study session completed
-      console.log("Study session completed!");
     }
   }, [reviewing, currentCardIndex, cards.length, cardsInQueue.length]);
 
@@ -342,89 +342,96 @@ const StudyPage = () => {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
-      {/* Header with back button and deck title */}
-      <header className="bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-3 flex items-center">
-          <button
-            onClick={() => navigate(-1)}
-            className="mr-4 p-2 rounded-full hover:bg-gray-100"
-          >
-            <Back className="text-gray-600" />
-          </button>
-          <h1 className="text-xl font-semibold">
-            {deckInfo?.title || "Study Deck"}
-          </h1>
-        </div>
-      </header>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="flex flex-col min-h-screen bg-gray-100">
+        {/* Header with back button and deck title */}
+        <header className="bg-white shadow-sm">
+          <div className="container mx-auto px-4 py-3 flex items-center">
+            <button
+              onClick={() => navigate(-1)}
+              className="mr-4 p-2 rounded-full hover:bg-gray-100"
+            >
+              <Back className="text-gray-600" />
+            </button>
+            <h1 className="text-xl font-semibold">
+              {deckInfo?.title || "Study Deck"}
+            </h1>
+          </div>
+        </header>
 
-      {/* Main study area */}
-      <div className="flex-grow flex flex-col items-center justify-center p-4">
-        {/* Current card */}
-        <div className="mb-4">
-          {cards[currentCardIndex] && !cardTransition.isChanging && (
-            <FlipCard
-              card={cards[currentCardIndex]}
-              size="Full"
-              isNew={cardTransition.isNew}
-              onFlip={handleCardFlip}
-            />
-          )}
+        {/* Main study area */}
+        <div className="flex-grow flex flex-col items-center justify-center p-4">
+          {/* Current card */}
+          <div className="mb-4">
+            {cards[currentCardIndex] && !cardTransition.isChanging && (
+              <FlipCard
+                card={cards[currentCardIndex]}
+                size="Full"
+                isNew={cardTransition.isNew}
+                onFlip={handleCardFlip}
+              />
+            )}
+          </div>
+
+          {/* Review buttons - faster transition */}
+          <div
+            className={`flex space-x-4 mt-4 transition-opacity duration-150 ${
+              showButtons && !cardTransition.isChanging
+                ? "opacity-100"
+                : "opacity-0"
+            }`}
+          >
+            <button
+              disabled={reviewInProgress}
+              onClick={() => handleReview("again")}
+              className="px-10 py-4 bg-red-500 text-white font-bold rounded-lg disabled:opacity-50"
+            >
+              Again (10s)
+            </button>
+            <button
+              disabled={reviewInProgress}
+              onClick={() => handleReview("hard")}
+              className="px-10 py-4 bg-yellow-500 text-white font-bold rounded-lg disabled:opacity-50"
+            >
+              Hard (30s)
+            </button>
+            <button
+              disabled={reviewInProgress}
+              onClick={() => handleReview("easy")}
+              className="px-10 py-4 bg-green-500 text-white font-bold rounded-lg disabled:opacity-50"
+            >
+              Easy (60s)
+            </button>
+          </div>
         </div>
 
-        {/* Review buttons - faster transition */}
-        <div
-          className={`flex space-x-4 mt-4 transition-opacity duration-150 ${
-            showButtons && !cardTransition.isChanging
-              ? "opacity-100"
-              : "opacity-0"
-          }`}
-        >
-          <button
-            disabled={reviewInProgress}
-            onClick={() => handleReview("again")}
-            className="px-10 py-4 bg-red-500 text-white font-bold rounded-lg disabled:opacity-50"
-          >
-            Again (10s)
-          </button>
-          <button
-            disabled={reviewInProgress}
-            onClick={() => handleReview("hard")}
-            className="px-10 py-4 bg-yellow-500 text-white font-bold rounded-lg disabled:opacity-50"
-          >
-            Hard (30s)
-          </button>
-          <button
-            disabled={reviewInProgress}
-            onClick={() => handleReview("easy")}
-            className="px-10 py-4 bg-green-500 text-white font-bold rounded-lg disabled:opacity-50"
-          >
-            Easy (60s)
-          </button>
-        </div>
-      </div>
-
-      {/* Queue status and stats */}
-      <div className="bg-white shadow-sm p-4">
-        <div className="container mx-auto">
-          <div className="flex justify-between items-center">
-            <div className="stats flex space-x-3 p-3">
-              <span className="text-red-500">Again: {stats.again}</span>
-              <span className="text-yellow-500">Hard: {stats.hard}</span>
-              <span className="text-green-500">Easy: {stats.easy}</span>
-            </div>
-            <div className="queue-info">
-              <span>Cards in queue: {queueCountdown.length}</span>
-              {queueCountdown.length > 0 && (
-                <span className="ml-2 text-sm text-gray-500">
-                  (Next: {queueCountdown[0].secondsRemaining}s)
-                </span>
-              )}
+        {/* Queue status and stats */}
+        <div className="bg-white shadow-sm p-4">
+          <div className="container mx-auto">
+            <div className="flex justify-between items-center">
+              <div className="stats flex space-x-3 p-3">
+                <span className="text-red-500">Again: {stats.again}</span>
+                <span className="text-yellow-500">Hard: {stats.hard}</span>
+                <span className="text-green-500">Easy: {stats.easy}</span>
+              </div>
+              <div className="queue-info">
+                <span>Cards in queue: {queueCountdown.length}</span>
+                {queueCountdown.length > 0 && (
+                  <span className="ml-2 text-sm text-gray-500">
+                    (Next: {queueCountdown[0].secondsRemaining}s)
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { KebabMenu } from "../global";
 import { Modal } from "../global";
-import axios from "axios"; // Assuming you're using axios for API calls
+import { useTransition } from "../utility/TransitionContext";
+import { useNavigate } from "react-router-dom";
 
 const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted, folders }) => {
+  const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -16,9 +17,9 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted, folders }) => {
   const [editFolderId, setEditFolderId] = useState(deck.folder_id || "");
   const [isLoading, setIsLoading] = useState(false);
 
-  const navigate = useNavigate();
+  const [isAnimating, setIsAnimating] = useState(false);
+  const { startTransition } = useTransition();
 
-  // Reset form state when modal opens
   useEffect(() => {
     if (isEditModalOpen) {
       setEditTitle(deck.title);
@@ -94,7 +95,7 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted, folders }) => {
           title: editTitle,
           description: editDescription,
           folder_id: editFolderId,
-          ...data.deck, // in case backend returns updated values
+          ...data.deck,
         });
       }
     } catch (error) {
@@ -105,25 +106,82 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted, folders }) => {
     }
   };
 
-  // Stop event propagation for modal clicks
+  const getTailwindColor = (colorName) => {
+    const colors = {
+      slate: "rgb(100, 116, 139)",
+      gray: "rgb(107, 114, 128)",
+      zinc: "rgb(113, 113, 122)",
+      neutral: "rgb(115, 115, 115)",
+      stone: "rgb(120, 113, 108)",
+      red: "rgb(239, 68, 68)",
+      orange: "rgb(249, 115, 22)",
+      amber: "rgb(245, 158, 11)",
+      yellow: "rgb(234, 179, 8)",
+      lime: "rgb(132, 204, 22)",
+      green: "rgb(34, 197, 94)",
+      emerald: "rgb(16, 185, 129)",
+      teal: "rgb(20, 184, 166)",
+      cyan: "rgb(6, 182, 212)",
+      sky: "rgb(14, 165, 233)",
+      blue: "rgb(59, 130, 246)",
+      indigo: "rgb(99, 102, 241)",
+      violet: "rgb(139, 92, 246)",
+      purple: "rgb(168, 85, 247)",
+      fuchsia: "rgb(217, 70, 239)",
+      pink: "rgb(236, 72, 153)",
+      rose: "rgb(244, 63, 94)",
+    };
+    return colors[colorName] || "rgb(255, 255, 255)"; // white as default
+  };
+
   const handleCardClick = (e) => {
+    console.log("Card clicked");
+
+    // Prevent triggering when clicking on menu or modal
     if (e.target.closest(".modal-content") || e.target.closest(".kebab-menu")) {
-      // Don't navigate if clicking on modal or menu
-    } else {
-      navigate(`/study/${deck.deck_id}`); // Navigate to the study page
+      console.log("Click ignored - clicked on modal or menu");
+      return;
     }
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Use clientX/Y directly from the event
+    const originX = e.clientX;
+    const originY = e.clientY;
+
+    console.log("Click position:", { originX, originY });
+
+    // Get the folder color for transition using hardcoded values
+    const color = deck.folder_color
+      ? getTailwindColor(deck.folder_color)
+      : "white";
+
+    console.log("Using color:", color);
+
+    // Set animation state
+    setIsAnimating(true);
+
+    // Start transition with the captured position
+    startTransition(
+      color,
+      { x: originX, y: originY },
+      `/study/${deck.deck_id}`
+    );
   };
 
   const menuItems = [
     {
       label: "Edit",
       onClick: (e) => {
+        e.stopPropagation();
         setIsEditModalOpen(true);
       },
     },
     {
       label: "Delete",
       onClick: (e) => {
+        e.stopPropagation();
         setIsDeleteModalOpen(true);
       },
     },
@@ -133,58 +191,117 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted, folders }) => {
     },
   ];
 
+  // Animation variants for the cards
+  const cardStackVariants = {
+    initial: { y: 0 },
+    hover: { y: -6 },
+    animate: {
+      y: -40,
+      transition: {
+        duration: 0.3,
+        ease: "easeOut",
+      },
+    },
+  };
+
+  const whiteJacketVariants = {
+    initial: { y: 0 },
+    hover: { y: 6 },
+    animate: {
+      y: 20,
+      opacity: 0.6,
+      transition: {
+        duration: 0.3,
+        ease: "easeOut",
+      },
+    },
+  };
+
+  const cardAnimationVariants = {
+    initial: {
+      zIndex: 10,
+    },
+    animate: {
+      scale: 1.1,
+      zIndex: 30,
+      transition: {
+        scale: { duration: 0.3, ease: "easeOut" },
+      },
+    },
+  };
+
   return (
     <>
       <motion.div
         className="deck-card relative h-36 rounded-2xl cursor-pointer"
-        onHoverStart={() => setIsHovered(true)}
-        onHoverEnd={() => setIsHovered(false)}
+        onHoverStart={() => !isAnimating && setIsHovered(true)}
+        onHoverEnd={() => !isAnimating && setIsHovered(false)}
         onClick={handleCardClick}
       >
-        {/* Cards inside white jacket */}
+        {/* Main card animation container */}
         <motion.div
-          className="absolute inset-0"
-          animate={{ y: isHovered ? -6 : 0 }}
-          transition={{ type: "spring", stiffness: 200, damping: 20 }}
+          className="absolute inset-0 origin-center"
+          variants={cardAnimationVariants}
+          initial="initial"
+          animate={isAnimating ? "animate" : "initial"}
+          style={{
+            transformStyle: "preserve-3d",
+            backfaceVisibility: "hidden",
+          }}
         >
-          <div
-            className={`absolute inset-0 bg-${
-              deck.folder_color || "gray"
-            }-600 z-0 rounded-2xl`}
-          />
-          <div
-            className={`absolute inset-0 bg-${
-              deck.folder_color || "gray"
-            }-500 left-2 z-10 rounded-2xl`}
-          />
-          <div
-            className={`absolute inset-0 bg-${
-              deck.folder_color || "gray"
-            }-400 left-4 z-20 rounded-2xl`}
-          />
-        </motion.div>
-        {/* White jacket in front, positioned at bottom */}
-        <motion.div
-          animate={{ y: isHovered ? 6 : 0 }}
-          transition={{ type: "spring", stiffness: 200, damping: 20 }}
-          className="absolute bottom-0 left-0 right-0 h-2/3 z-30 flex flex-col"
-        >
-          <div className="relative bg-white shadow-sm rounded-b-2xl flex flex-col h-full z-30 ps-2">
-            <div className="flex flex-grow">
-              <div className="px-1 py-1 flex flex-col w-full text-gray-700">
-                <p className="p-0 text-lg">{deck.title}</p>
-                <p className="p-0 text-sm">{deck.description}</p>
-                <p className="p-0 text-sm mt-auto mb-1">
-                  {deck.card_count} cards
-                </p>
-              </div>
-              <div className="px-1 py-2 kebab-menu">
-                <KebabMenu items={menuItems} direction="vertical" />
+          {/* Cards inside white jacket */}
+          <motion.div
+            className="absolute inset-0"
+            variants={cardStackVariants}
+            initial="initial"
+            animate={isAnimating ? "animate" : isHovered ? "hover" : "initial"}
+            transition={{ type: "spring", stiffness: 200, damping: 20 }}
+          >
+            <div
+              className={`absolute inset-0 bg-${
+                deck.folder_color || "gray"
+              }-600 z-0 rounded-2xl`}
+            />
+            <div
+              className={`absolute inset-0 bg-${
+                deck.folder_color || "gray"
+              }-500 left-2 z-10 rounded-2xl`}
+            />
+            <div
+              className={`absolute inset-0 bg-${
+                deck.folder_color || "gray"
+              }-400 left-4 z-20 rounded-2xl`}
+            />
+          </motion.div>
+
+          {/* White jacket in front, positioned at bottom */}
+          <motion.div
+            variants={whiteJacketVariants}
+            initial="initial"
+            animate={isAnimating ? "animate" : isHovered ? "hover" : "initial"}
+            transition={{ type: "spring", stiffness: 200, damping: 20 }}
+            className="absolute bottom-0 left-0 right-0 h-2/3 z-30 flex flex-col"
+          >
+            <div className="relative bg-white shadow-sm rounded-b-2xl flex flex-col h-full z-30 ps-2">
+              <div className="flex flex-grow">
+                <div className="px-1 py-1 flex flex-col w-full text-gray-700">
+                  <p className="p-0 text-lg">{deck.title}</p>
+                  <p className="p-0 text-sm">{deck.description}</p>
+                  <p className="p-0 text-sm mt-auto mb-1">
+                    {deck.card_count} cards
+                  </p>
+                </div>
+                <div
+                  className="px-1 py-2 kebab-menu"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <KebabMenu items={menuItems} direction="vertical" />
+                </div>
               </div>
             </div>
-          </div>
-          {/* Shadow attached just above the white jacket */}
-          <div className="absolute -top-1 left-0 right-0 h-4 bg-gradient-to-b from-transparent to-black/10 pointer-events-none z-0"></div>
+            {/* Shadow attached just above the white jacket */}
+            <div className="absolute -top-1 left-0 right-0 h-4 bg-gradient-to-b from-transparent to-black/10 pointer-events-none z-0"></div>
+          </motion.div>
         </motion.div>
       </motion.div>
 
@@ -192,6 +309,7 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted, folders }) => {
       <Modal
         isOpen={isDeleteModalOpen}
         onClose={(e) => {
+          e.stopPropagation();
           setIsDeleteModalOpen(false);
         }}
         onConfirm={handleDelete}
@@ -210,6 +328,7 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted, folders }) => {
       <Modal
         isOpen={isEditModalOpen}
         onClose={(e) => {
+          e.stopPropagation();
           setIsEditModalOpen(false);
         }}
         onConfirm={handleEdit}
@@ -226,12 +345,13 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted, folders }) => {
             Title
           </label>
           <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="appearance-none bg-gray-100 border border-gray-200 focus:ring-sky-700 focus:border-sky-700 focus:outline-none p-2.5 rounded-xl w-full text-gray-600"
             id="title"
             type="text"
             placeholder="Deck Title"
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
+            onClick={(e) => e.stopPropagation()}
           />
         </div>
         <div className="mb-4">
@@ -242,11 +362,12 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted, folders }) => {
             Description (optional)
           </label>
           <textarea
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="appearance-none bg-gray-100 border border-gray-200 focus:ring-sky-700 focus:border-sky-700 focus:outline-none p-2.5 rounded-xl w-full text-gray-600"
             id="description"
             placeholder="Deck Description"
             value={editDescription}
             onChange={(e) => setEditDescription(e.target.value)}
+            onClick={(e) => e.stopPropagation()}
             rows="3"
           ></textarea>
         </div>
@@ -263,7 +384,9 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted, folders }) => {
             value={editFolderId}
             className="appearance-none bg-gray-100 border border-gray-200 focus:ring-sky-700 focus:border-sky-700 focus:outline-none p-2.5 rounded-xl w-full text-gray-600"
             onChange={(e) => setEditFolderId(e.target.value)}
+            onClick={(e) => e.stopPropagation()}
           >
+            <option value="">No Folder</option>
             {folders &&
               folders.map((folder) => (
                 <option key={folder.folder_id} value={folder.folder_id}>
