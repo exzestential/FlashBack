@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 01, 2025 at 09:32 AM
+-- Generation Time: May 04, 2025 at 10:20 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -24,8 +24,28 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Independent Tables (No Foreign Key Dependencies)
+-- Table structure for table `schools`
 --
+
+CREATE TABLE `schools` (
+  `school_id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `domain` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tags`
+--
+
+CREATE TABLE `tags` (
+  `tag_id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `color` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `users`
@@ -44,40 +64,14 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Table structure for table `schools`
+-- Dumping data for table `users`
 --
 
-CREATE TABLE `schools` (
-  `school_id` int(11) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `domain` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Table structure for table `tags`
---
-
-CREATE TABLE `tags` (
-  `tag_id` int(11) NOT NULL,
-  `name` varchar(50) NOT NULL,
-  `color` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Table structure for table `categories`
---
-
-CREATE TABLE `categories` (
-  `category_id` int(11) NOT NULL,
-  `name` varchar(50) NOT NULL,
-  `description` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+INSERT INTO `users` (`user_id`, `username`, `email`, `password`, `created_at`, `theme_preference`, `last_login`, `user_type`, `interests`) VALUES
+(1, 'exze', 'akina.alegre@gmail.com', '$2b$10$5DeNgiab5HWT9dcFUwYwCe3sPSP0WwQqNExVEBWkEifL5fjHtB84K', '2025-04-30 17:00:05', NULL, NULL, NULL, '[\"coding\",\"design\"]'),
+(2, 'example', 'example@email.com', '$2b$10$42x.IOz611DDExs3ycr9UeRInK0C.uO/eg.Kv7w0c94bEnw9OlQq6', '2025-05-02 14:06:31', NULL, NULL, 'Other', '[\"Media\"]');
 
 -- --------------------------------------------------------
-
---
--- First Level Dependencies (Depend on independent tables)
---
 
 --
 -- Table structure for table `folders`
@@ -89,24 +83,26 @@ CREATE TABLE `folders` (
   `name` varchar(100) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `last_modified` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `is_favorite` tinyint(1) NOT NULL DEFAULT 0
+  `is_favorite` tinyint(1) NOT NULL DEFAULT 0,
+  `color` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Table structure for table `user_schools`
+-- Dumping data for table `folders`
 --
 
-CREATE TABLE `user_schools` (
-  `user_id` int(11) NOT NULL,
-  `school_id` int(11) NOT NULL,
-  `is_verified` tinyint(1) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+INSERT INTO `folders` (`folder_id`, `user_id`, `name`, `created_at`, `last_modified`, `is_favorite`, `color`) VALUES
+(1, 1, 'Technology', '2025-05-01 15:29:31', '2025-05-02 01:52:59', 1, 'sky'),
+(2, 1, 'Language', '2025-05-01 15:29:31', '2025-05-02 01:52:45', 0, 'pink'),
+(3, 1, 'Gec Subs', '2025-05-01 15:29:31', '2025-05-02 01:53:14', 1, 'yellow'),
+(4, 1, 'Folder 4', '2025-05-01 15:29:31', '2025-05-02 23:45:24', 1, 'lime'),
+(5, 1, 'Folder 5', '2025-05-01 15:29:31', '2025-05-02 14:01:05', 0, 'red'),
+(18, 1, 'Math', '2025-05-02 16:21:27', '2025-05-02 16:21:27', 0, 'blue'),
+(19, 1, 'Fit Me', '2025-05-02 16:21:27', '2025-05-02 16:21:27', 0, 'green');
+
+
 
 -- --------------------------------------------------------
-
---
--- Second Level Dependencies (Depend on users and folders)
---
 
 --
 -- Table structure for table `decks`
@@ -127,11 +123,25 @@ CREATE TABLE `decks` (
   `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
+--
+-- Dumping data for table `decks`
+--
 
---
--- Third Level Dependencies (Depend on decks and categories)
---
+INSERT INTO `decks` (`deck_id`, `user_id`, `folder_id`, `title`, `description`, `created_at`, `last_modified`, `last_studied`, `is_favorite`, `is_public`, `is_deleted`, `deleted_at`) VALUES
+(1, 1, 1, 'Net101', 'Networking my ass', '2025-05-01 15:29:41', '2025-05-02 20:52:15', NULL, 0, 0, 0, NULL),
+(2, 1, 3, 'Gec Art', 'Art Appreciation', '2025-05-01 15:29:41', '2025-05-02 20:31:54', NULL, 0, 0, 0, NULL),
+(3, 1, 1, 'MIL', 'Media', '2025-05-01 15:29:41', '2025-05-02 01:54:39', NULL, 0, 0, 0, NULL),
+(4, 1, 3, 'Gec Hist', 'Philippine History', '2025-05-01 15:29:41', '2025-05-02 01:54:20', NULL, 0, 0, 0, NULL),
+(5, 1, 2, 'Spanish', 'Basic Spanish', '2025-05-01 15:29:41', '2025-05-02 01:54:51', NULL, 0, 0, 0, NULL),
+(6, 1, 2, 'German', 'Basic German', '2025-05-01 15:29:41', '2025-05-02 20:53:30', NULL, 0, 0, 0, NULL),
+(7, 1, 4, 'Portugues', 'Basic Portuguese', '2025-05-01 15:29:41', '2025-05-02 01:55:26', NULL, 0, 0, 0, NULL),
+(10, 1, 18, 'Gec Math', NULL, '2025-05-02 16:22:57', '2025-05-02 16:22:57', NULL, 0, 0, 0, NULL),
+(11, 1, 2, 'Test Deck', NULL, '2025-05-02 17:52:54', '2025-05-02 20:28:58', NULL, 0, 0, 1, '2025-05-02 20:28:58'),
+(12, 1, 2, 'Another test deck', NULL, '2025-05-02 17:53:17', '2025-05-02 20:28:55', NULL, 0, 0, 1, '2025-05-02 20:28:55'),
+(13, 1, 19, 'Fit Me', 'Movement Enchancement' , '2025-05-02 17:53:17', '2025-05-02 20:28:55', NULL, 0, 0, 1, '2025-05-02 20:28:55');
+
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `cards`
@@ -149,112 +159,6 @@ CREATE TABLE `cards` (
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `last_modified` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Table structure for table `deck_categories`
---
-
-CREATE TABLE `deck_categories` (
-  `deck_id` int(11) NOT NULL,
-  `category_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Table structure for table `deck_statistics`
---
-
-CREATE TABLE `deck_statistics` (
-  `stat_id` int(11) NOT NULL,
-  `deck_id` int(11) NOT NULL,
-  `total_cards` int(11) NOT NULL DEFAULT 0,
-  `mastered_cards` int(11) NOT NULL DEFAULT 0,
-  `learning_cards` int(11) NOT NULL DEFAULT 0,
-  `new_cards` int(11) NOT NULL DEFAULT 0,
-  `mastery_percentage` float NOT NULL DEFAULT 0,
-  `last_calculated` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Table structure for table `study_sessions`
---
-
-CREATE TABLE `study_sessions` (
-  `session_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `deck_id` int(11) NOT NULL,
-  `started_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `ended_at` datetime DEFAULT NULL,
-  `cards_studied` int(11) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Fourth Level Dependencies (Depend on cards)
---
-
---
--- Table structure for table `card_tags`
---
-
-CREATE TABLE `card_tags` (
-  `card_id` int(11) NOT NULL,
-  `tag_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Table structure for table `study_progress`
---
-
-CREATE TABLE `study_progress` (
-  `progress_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `card_id` int(11) NOT NULL,
-  `ease_factor` float NOT NULL DEFAULT 2.5,
-  `last_studied` datetime DEFAULT NULL,
-  `next_review` datetime DEFAULT NULL,
-  `review_count` int(11) NOT NULL DEFAULT 0,
-  `last_performance` varchar(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Dumping data for tables
---
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`user_id`, `username`, `email`, `password`, `created_at`, `theme_preference`, `last_login`, `user_type`, `interests`) VALUES
-(1, 'example', 'example@email.com', '$2b$10$42x.IOz611DDExs3ycr9UeRInK0C.uO/eg.Kv7w0c94bEnw9OlQq6', '2025-04-30 17:00:05', NULL, NULL, NULL, '[\"coding\",\"design\"]');
-
---
--- Dumping data for table `folders`
---
-
-INSERT INTO `folders` (`folder_id`, `user_id`, `name`, `created_at`, `last_modified`, `is_favorite`) VALUES
-(1, 1, 'Net101', '2025-05-01 15:29:31', '2025-05-01 15:29:31', 1),
-(2, 1, 'Gec Art', '2025-05-01 15:29:31', '2025-05-01 15:29:31', 0),
-(3, 1, 'MIL', '2025-05-01 15:29:31', '2025-05-01 15:29:31', 1),
-(4, 1, 'Gec Hist', '2025-05-01 15:29:31', '2025-05-01 15:29:31', 1),
-(5, 1, 'Spanish', '2025-05-01 15:29:31', '2025-05-01 15:29:31', 0),
-(6, 1, 'German', '2025-05-01 15:29:31', '2025-05-01 15:29:31', 1),
-(7, 1, 'Portuguese', '2025-05-01 15:29:31', '2025-05-01 15:29:31', 1);
-
---
--- Dumping data for table `decks`
---
-
-INSERT INTO `decks` (`deck_id`, `user_id`, `folder_id`, `title`, `description`, `created_at`, `last_modified`, `last_studied`, `is_favorite`, `is_public`, `is_deleted`, `deleted_at`) VALUES
-(1, 1, 1, 'Net101', 'Networking', '2025-05-01 15:29:41', '2025-05-01 15:29:41', NULL, 0, 0, 0, NULL),
-(2, 1, 2, 'Gec Art', 'Art History', '2025-05-01 15:29:41', '2025-05-01 15:29:41', NULL, 0, 0, 0, NULL),
-(3, 1, 3, 'MIL', 'Media', '2025-05-01 15:29:41', '2025-05-01 15:29:41', NULL, 0, 0, 0, NULL),
-(4, 1, 4, 'Gec Hist', 'Philippine History', '2025-05-01 15:29:41', '2025-05-01 15:29:41', NULL, 0, 0, 0, NULL),
-(5, 1, 5, 'Spanish', 'Basic Spanish', '2025-05-01 15:29:41', '2025-05-01 15:29:41', NULL, 0, 0, 0, NULL),
-(6, 1, 6, 'German', 'Basic German', '2025-05-01 15:29:41', '2025-05-01 15:29:41', NULL, 0, 0, 0, NULL),
-(7, 1, 7, 'Portugues', 'Basic Portuguese', '2025-05-01 15:29:41', '2025-05-01 15:29:41', NULL, 0, 0, 0, NULL);
 
 --
 -- Dumping data for table `cards`
@@ -291,67 +195,59 @@ INSERT INTO `cards` (`card_id`, `deck_id`, `front_content`, `back_content`, `fro
 (28, 6, 'Der Schnee', 'The Snow', NULL, NULL, NULL, 0, '2025-05-01 15:29:59', '2025-05-01 15:29:59'),
 (29, 6, 'Der Regen', 'The rain', NULL, NULL, NULL, 0, '2025-05-01 15:29:59', '2025-05-01 15:29:59'),
 (30, 6, 'Das wetter', 'The Weather', NULL, NULL, NULL, 0, '2025-05-01 15:29:59', '2025-05-01 15:29:59'),
-(31, 7, 'e importante que nos falemos', 'its important that we speak', NULL, NULL, NULL, 0, '2025-05-01 15:29:59', '2025-05-01 15:29:59'),
-(32, 7, 'e necessario que ele trabalhe', 'its necessary that he works', NULL, NULL, NULL, 0, '2025-05-01 15:29:59', '2025-05-01 15:29:59'),
+(31, 7, 'e importante que nos falemos', 'its important that we speak', 'https://placehold.co/100', NULL, NULL, 0, '2025-05-01 15:29:59', '2025-05-04 05:59:17'),
+(32, 7, 'e necessario que ele trabalhe\ne necessario que ele trabalhe\ne necessario que ele trabalhe\ne necessario que ele trabalhe\ne necessario que ele trabalhe\ne necessario que ele trabalhe\ne necessario que ele trabalhe\ne necessario que ele trabalhe e necessario que ele trabalhe\ne necessario que ele trabalhe\ne necessario que ele trabalhe\ne necessario que ele trabalhe\ne necessario que ele trabalhe\ne necessario que ele trabalhe\ne necessario que ele trabalhe\ne necessario que ele trabalhe\ne necessario que ele trabalhe\ne necessario que ele trabalhe\ne necessario que ele trabalhe e necessario que ele trabalhe\ne necessario que ele trabalhe\ne necessario que ele trabalhe\n', 'its necessary that he works', NULL, NULL, NULL, 0, '2025-05-01 15:29:59', '2025-05-04 06:08:10'),
 (33, 7, 'que nós tenhamos', 'That he does', NULL, NULL, NULL, 0, '2025-05-01 15:29:59', '2025-05-01 15:29:59'),
 (34, 7, 'que ele faca', 'That he does', NULL, NULL, NULL, 0, '2025-05-01 15:29:59', '2025-05-01 15:29:59'),
-(35, 7, 'que você venha', 'that we have', NULL, NULL, NULL, 0, '2025-05-01 15:29:59', '2025-05-01 15:29:59');
+(35, 13, 'What is movement enhancement?', 'Training focused on improving quality, efficiency, and range of movement', NULL, NULL, NULL, 0, NOW(), NOW()),
+(36, 13, 'What are the benefits of movement enhancement?', 'Improved posture, reduced injury risk, better athletic performance', NULL, NULL, NULL, 0, NOW(), NOW()),
+(37, 13, 'What is proprioception?', 'The body''s ability to sense movement, action, and location', NULL, NULL, NULL, 0, NOW(), NOW()),
+(38, 13, 'What are the 3 planes of movement?', 'Sagittal (forward/backward), Frontal (side-to-side), Transverse (rotational)', NULL, NULL, NULL, 0, NOW(), NOW()),
+(39, 13, 'What is the difference between mobility and flexibility?', 'Mobility is active movement, flexibility is passive range', NULL, NULL, NULL, 0, NOW(), NOW()),
+(40, 13, 'What are primal movement patterns?', 'Basic human movements: squat, lunge, push, pull, bend, twist, gait', NULL, NULL, NULL, 0, NOW(), NOW()),
+(41, 13, 'What is a corrective exercise?', 'Exercises designed to improve movement imbalances', NULL, NULL, NULL, 0, NOW(), NOW()),
+(42, 13, 'What is kinetic chain movement?', 'How different body segments work together during motion', NULL, NULL, NULL, 0, NOW(), NOW()),
+(43, 13, 'What is the importance of scapular mobility?', 'Essential for proper shoulder function and upper body movements', NULL, NULL, NULL, 0, NOW(), NOW()),
+(44, 13, 'What is the difference between open and closed kinetic chain exercises?', 'Open: distal segment moves (leg kick); Closed: fixed (squat)', NULL, NULL, NULL, 0, NOW(), NOW()),
+(45, 13, 'What are the components of proper breathing during movement?', 'Diaphragmatic breathing, maintaining intra-abdominal pressure', NULL, NULL, NULL, 0, NOW(), NOW()),
+(46, 13, 'What is neuromuscular efficiency?', 'The ability of the nervous system to properly recruit muscles', NULL, NULL, NULL, 0, NOW(), NOW()),
+(47, 13, 'What is reciprocal inhibition?', 'When one muscle contracts, its antagonist relaxes', NULL, NULL, NULL, 0, NOW(), NOW()),
+(48, 13, 'What are common movement compensations?', 'When the body alters movement patterns due to limitations', NULL, NULL, NULL, 0, NOW(), NOW()),
+(49, 13, 'What is the importance of hip mobility?', 'Affects lower back health, squat depth, and athletic performance', NULL, NULL, NULL, 0, NOW(), NOW()),
+(50, 13, 'What is the joint-by-joint approach?', 'Concept that alternating joints need stability/mobility (ankle-mobile, knee-stable, etc.)', NULL, NULL, NULL, 0, NOW(), NOW()),
+(51, 13, 'What are common ankle mobility restrictions?', 'Limited dorsiflexion from tight calves or joint issues', NULL, NULL, NULL, 0, NOW(), NOW()),
+(52, 13, 'What is the importance of thoracic spine mobility?', 'Essential for rotational movements and overhead motions', NULL, NULL, NULL, 0, NOW(), NOW()),
+(53, 13, 'What are movement prep exercises?', 'Dynamic exercises to prepare the body for activity', NULL, NULL, NULL, 0, NOW(), NOW()),
+(54, 13, 'What is the difference between bilateral and unilateral movements?', 'Bilateral: both sides together; Unilateral: one side at a time', NULL, NULL, NULL, 0, NOW(), NOW()),
+(55, 13, 'What is a movement screen?', 'Assessment to identify movement limitations/imbalances', NULL, NULL, NULL, 0, NOW(), NOW()),
+(56, 13, 'What are common causes of poor movement patterns?', 'Muscle imbalances, past injuries, poor posture, sedentary lifestyle', NULL, NULL, NULL, 0, NOW(), NOW()),
+(57, 13, 'What is the importance of core stability in movement?', 'Provides foundation for efficient force transfer between upper/lower body', NULL, NULL, NULL, 0, NOW(), NOW()),
+(58, 13, 'What is the role of fascia in movement?', 'Connective tissue that transmits force and affects movement quality', NULL, NULL, NULL, 0, NOW(), NOW()),
+(59, 13, 'What are the benefits of barefoot training?', 'Improves foot strength, proprioception, and natural movement patterns', NULL, NULL, NULL, 0, NOW(), NOW()),
+(60, 13, 'What is dynamic joint mobility?', 'Active movements that take joints through their full range', NULL, NULL, NULL, 0, NOW(), NOW()),
+(61, 13, 'What is the importance of grip strength in movement?', 'Affects pulling movements and overall force production', NULL, NULL, NULL, 0, NOW(), NOW()),
+(62, 13, 'What are common shoulder mobility restrictions?', 'Limited overhead mobility from tight lats or rotator cuff issues', NULL, NULL, NULL, 0, NOW(), NOW()),
+(63, 13, 'What is the role of the vestibular system in movement?', 'Provides balance and spatial orientation information', NULL, NULL, NULL, 0, NOW(), NOW()),
+(64, 13, 'What is the importance of foot mobility?', 'Affects entire kinetic chain from ground up', NULL, NULL, NULL, 0, NOW(), NOW());
 
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `reviews`
+--
+
+CREATE TABLE `reviews` (
+  `review_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `card_id` int(11) NOT NULL,
+  `deck_id` int(11) NOT NULL,
+  `rating` varchar(10) NOT NULL,
+  `timestamp` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `cards`
---
-ALTER TABLE `cards`
-  ADD PRIMARY KEY (`card_id`),
-  ADD KEY `deck_id` (`deck_id`);
-
---
--- Indexes for table `card_tags`
---
-ALTER TABLE `card_tags`
-  ADD PRIMARY KEY (`card_id`,`tag_id`),
-  ADD KEY `tag_id` (`tag_id`);
-
---
--- Indexes for table `categories`
---
-ALTER TABLE `categories`
-  ADD PRIMARY KEY (`category_id`),
-  ADD UNIQUE KEY `name` (`name`);
-
---
--- Indexes for table `decks`
---
-ALTER TABLE `decks`
-  ADD PRIMARY KEY (`deck_id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `folder_id` (`folder_id`);
-
---
--- Indexes for table `deck_categories`
---
-ALTER TABLE `deck_categories`
-  ADD PRIMARY KEY (`deck_id`,`category_id`),
-  ADD KEY `category_id` (`category_id`);
-
---
--- Indexes for table `deck_statistics`
---
-ALTER TABLE `deck_statistics`
-  ADD PRIMARY KEY (`stat_id`),
-  ADD UNIQUE KEY `deck_id` (`deck_id`);
-
---
--- Indexes for table `folders`
---
-ALTER TABLE `folders`
-  ADD PRIMARY KEY (`folder_id`),
-  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `schools`
@@ -359,22 +255,6 @@ ALTER TABLE `folders`
 ALTER TABLE `schools`
   ADD PRIMARY KEY (`school_id`),
   ADD UNIQUE KEY `domain` (`domain`);
-
---
--- Indexes for table `study_progress`
---
-ALTER TABLE `study_progress`
-  ADD PRIMARY KEY (`progress_id`),
-  ADD UNIQUE KEY `user_id` (`user_id`,`card_id`),
-  ADD KEY `card_id` (`card_id`);
-
---
--- Indexes for table `study_sessions`
---
-ALTER TABLE `study_sessions`
-  ADD PRIMARY KEY (`session_id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `deck_id` (`deck_id`);
 
 --
 -- Indexes for table `tags`
@@ -392,63 +272,45 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `email` (`email`);
 
 --
--- Indexes for table `user_schools`
+-- Indexes for table `folders`
 --
-ALTER TABLE `user_schools`
-  ADD PRIMARY KEY (`user_id`,`school_id`),
-  ADD KEY `school_id` (`school_id`);
+ALTER TABLE `folders`
+  ADD PRIMARY KEY (`folder_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `decks`
+--
+ALTER TABLE `decks`
+  ADD PRIMARY KEY (`deck_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `folder_id` (`folder_id`);
+
+--
+-- Indexes for table `cards`
+--
+ALTER TABLE `cards`
+  ADD PRIMARY KEY (`card_id`),
+  ADD KEY `deck_id` (`deck_id`);
+
+--
+-- Indexes for table `reviews`
+--
+ALTER TABLE `reviews`
+  ADD PRIMARY KEY (`review_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `card_id` (`card_id`),
+  ADD KEY `deck_id` (`deck_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT for table `cards`
---
-ALTER TABLE `cards`
-  MODIFY `card_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
-
---
--- AUTO_INCREMENT for table `categories`
---
-ALTER TABLE `categories`
-  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `decks`
---
-ALTER TABLE `decks`
-  MODIFY `deck_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
--- AUTO_INCREMENT for table `deck_statistics`
---
-ALTER TABLE `deck_statistics`
-  MODIFY `stat_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `folders`
---
-ALTER TABLE `folders`
-  MODIFY `folder_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
 -- AUTO_INCREMENT for table `schools`
 --
 ALTER TABLE `schools`
   MODIFY `school_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `study_progress`
---
-ALTER TABLE `study_progress`
-  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `study_sessions`
---
-ALTER TABLE `study_sessions`
-  MODIFY `session_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tags`
@@ -460,24 +322,41 @@ ALTER TABLE `tags`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT for table `folders`
+--
+ALTER TABLE `folders`
+  MODIFY `folder_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT for table `decks`
+--
+ALTER TABLE `decks`
+  MODIFY `deck_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
+-- AUTO_INCREMENT for table `cards`
+--
+ALTER TABLE `cards`
+  MODIFY `card_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+
+--
+-- AUTO_INCREMENT for table `reviews`
+--
+ALTER TABLE `reviews`
+  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `cards`
+-- Constraints for table `folders`
 --
-ALTER TABLE `cards`
-  ADD CONSTRAINT `cards_ibfk_1` FOREIGN KEY (`deck_id`) REFERENCES `decks` (`deck_id`) ON DELETE CASCADE;
-
---
--- Constraints for table `card_tags`
---
-ALTER TABLE `card_tags`
-  ADD CONSTRAINT `card_tags_ibfk_1` FOREIGN KEY (`card_id`) REFERENCES `cards` (`card_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `card_tags_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`tag_id`) ON DELETE CASCADE;
+ALTER TABLE `folders`
+  ADD CONSTRAINT `folders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `decks`
@@ -487,44 +366,18 @@ ALTER TABLE `decks`
   ADD CONSTRAINT `decks_ibfk_2` FOREIGN KEY (`folder_id`) REFERENCES `folders` (`folder_id`) ON DELETE SET NULL;
 
 --
--- Constraints for table `deck_categories`
+-- Constraints for table `cards`
 --
-ALTER TABLE `deck_categories`
-  ADD CONSTRAINT `deck_categories_ibfk_1` FOREIGN KEY (`deck_id`) REFERENCES `decks` (`deck_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `deck_categories_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`) ON DELETE CASCADE;
+ALTER TABLE `cards`
+  ADD CONSTRAINT `cards_ibfk_1` FOREIGN KEY (`deck_id`) REFERENCES `decks` (`deck_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `deck_statistics`
+-- Constraints for table `reviews`
 --
-ALTER TABLE `deck_statistics`
-  ADD CONSTRAINT `deck_statistics_ibfk_1` FOREIGN KEY (`deck_id`) REFERENCES `decks` (`deck_id`) ON DELETE CASCADE;
-
---
--- Constraints for table `folders`
---
-ALTER TABLE `folders`
-  ADD CONSTRAINT `folders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
-
---
--- Constraints for table `study_progress`
---
-ALTER TABLE `study_progress`
-  ADD CONSTRAINT `study_progress_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `study_progress_ibfk_2` FOREIGN KEY (`card_id`) REFERENCES `cards` (`card_id`) ON DELETE CASCADE;
-
---
--- Constraints for table `study_sessions`
---
-ALTER TABLE `study_sessions`
-  ADD CONSTRAINT `study_sessions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `study_sessions_ibfk_2` FOREIGN KEY (`deck_id`) REFERENCES `decks` (`deck_id`) ON DELETE CASCADE;
-
---
--- Constraints for table `user_schools`
---
-ALTER TABLE `user_schools`
-  ADD CONSTRAINT `user_schools_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `user_schools_ibfk_2` FOREIGN KEY (`school_id`) REFERENCES `schools` (`school_id`) ON DELETE CASCADE;
+ALTER TABLE `reviews`
+  ADD CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
+  ADD CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`card_id`) REFERENCES `cards` (`card_id`),
+  ADD CONSTRAINT `reviews_ibfk_3` FOREIGN KEY (`deck_id`) REFERENCES `decks` (`deck_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

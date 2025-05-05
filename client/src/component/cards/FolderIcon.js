@@ -166,7 +166,7 @@ const FolderIcon = ({ folder, onFolderDeleted, onFolderUpdated }) => {
             <KebabMenu
               items={menuItems}
               direction="horizontal"
-              color="black/30"
+              color="gray-300"
             />
           </div>
         </div>

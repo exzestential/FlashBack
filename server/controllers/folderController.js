@@ -51,12 +51,19 @@ const createFolder = async (req, res) => {
 
 const getDecksByFolder = async (req, res) => {
   const { folderId } = req.params;
-  const { sortBy = "created_at", sortOrder = "DESC" } = req.query; // Default sorting by date in descending order
+  const { sortBy = "created_at", sortOrder = "DESC" } = req.query;
 
   try {
-    // Fetch decks from the folder
+    // Updated query to include card count
     const [decks] = await db.query(
-      `SELECT * FROM decks WHERE folder_id = ? AND is_deleted = 0 ORDER BY ${sortBy} ${sortOrder}`,
+      `SELECT 
+        decks.*,
+        COUNT(cards.card_id) AS card_count
+      FROM decks 
+      LEFT JOIN cards ON cards.deck_id = decks.deck_id
+      WHERE decks.folder_id = ? AND decks.is_deleted = 0 
+      GROUP BY decks.deck_id
+      ORDER BY ${sortBy} ${sortOrder}`,
       [folderId]
     );
 
@@ -66,7 +73,6 @@ const getDecksByFolder = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch decks" });
   }
 };
-
 // Add this function to your existing folderController.js
 
 const getFolderById = async (req, res) => {

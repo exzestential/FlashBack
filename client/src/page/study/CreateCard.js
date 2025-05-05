@@ -511,7 +511,6 @@ const CreateCard = () => {
         showNotification("Card updated successfully!");
       } else {
         showNotification("Card created successfully!");
-        // Update URL to edit mode for the newly created card
         navigate(`/card/${savedCard.card_id}`, { replace: true });
         setIsNewCard(false); // Now we're editing an existing card
       }
@@ -527,7 +526,6 @@ const CreateCard = () => {
   };
 
   const handleNewCard = () => {
-    // Reset the card contents
     if (frontCardRef.current) frontCardRef.current.setContent("");
     if (backCardRef.current) backCardRef.current.setContent("");
 
@@ -539,14 +537,10 @@ const CreateCard = () => {
       notes: "",
     });
 
-    // Focus on the front card
     setActive("front");
 
-    // Update state to indicate we're creating a new card
     setIsNewCard(true);
 
-    // Remove cardId from URL so we're in "create" mode
-    // Keep the deck ID if we have one
     if (selectedDeckId) {
       navigate(`/create/deck/${selectedDeckId}`);
     } else {
@@ -558,24 +552,6 @@ const CreateCard = () => {
   const currentDeckName =
     decks.find((d) => d.deck_id.toString() === selectedDeckId?.toString())
       ?.title || "Deck";
-
-  // Debug - right before rendering
-  console.log("🎨 RENDER - Current deck color:", deckColor);
-  console.log("🎨 RENDER - Selected deck ID:", selectedDeckId);
-  console.log("🎨 RENDER - Current deck name:", currentDeckName);
-  console.log("🎨 RENDER - Is new card:", isNewCard);
-  console.log(
-    "🎨 RENDER - Header class:",
-    `flex items-center justify-between p-4 shadow-sm border z-10 border-b-gray-200 bg-${deckColor}-50`
-  );
-
-  // For debugging - print this on every render
-  useEffect(() => {
-    console.log("🔄 Component re-rendered");
-    console.log("🔄 Current color at render time:", deckColor);
-    console.log("🔄 Card ID:", cardId);
-    console.log("🔄 Is new card:", isNewCard);
-  });
 
   return (
     <motion.div

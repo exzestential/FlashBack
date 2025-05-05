@@ -17,6 +17,7 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted, folders }) => {
   const [editFolderId, setEditFolderId] = useState(deck.folder_id || "");
   const [isLoading, setIsLoading] = useState(false);
 
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const { startTransition } = useTransition();
 
@@ -173,21 +174,21 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted, folders }) => {
   const menuItems = [
     {
       label: "Edit",
-      onClick: (e) => {
-        e.stopPropagation();
+      onClick: () => {
         setIsEditModalOpen(true);
       },
     },
     {
       label: "Delete",
-      onClick: (e) => {
-        e.stopPropagation();
+      onClick: () => {
         setIsDeleteModalOpen(true);
       },
     },
     {
       label: "Browse Cards",
-      onClick: () => navigate(`/deck/${deck.deck_id}`),
+      onClick: () => {
+        navigate(`/deck/${deck.deck_id}`);
+      },
     },
   ];
 
@@ -219,14 +220,17 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted, folders }) => {
 
   const cardAnimationVariants = {
     initial: {
-      zIndex: 10,
+      zIndex: 1,
     },
     animate: {
       scale: 1.1,
-      zIndex: 30,
+      zIndex: 2,
       transition: {
         scale: { duration: 0.3, ease: "easeOut" },
       },
+    },
+    menuOpen: {
+      zIndex: 3,
     },
   };
 
@@ -237,13 +241,13 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted, folders }) => {
         onHoverStart={() => !isAnimating && setIsHovered(true)}
         onHoverEnd={() => !isAnimating && setIsHovered(false)}
         onClick={handleCardClick}
+        animate={isMenuOpen ? "menuOpen" : isAnimating ? "animate" : "initial"}
       >
         {/* Main card animation container */}
         <motion.div
           className="absolute inset-0 origin-center"
           variants={cardAnimationVariants}
           initial="initial"
-          animate={isAnimating ? "animate" : "initial"}
           style={{
             transformStyle: "preserve-3d",
             backfaceVisibility: "hidden",
@@ -280,7 +284,7 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted, folders }) => {
             initial="initial"
             animate={isAnimating ? "animate" : isHovered ? "hover" : "initial"}
             transition={{ type: "spring", stiffness: 200, damping: 20 }}
-            className="absolute bottom-0 left-0 right-0 h-2/3 z-30 flex flex-col"
+            className="absolute bottom-0 left-0 right-0 h-2/3 z-40 flex flex-col"
           >
             <div className="relative bg-white shadow-sm rounded-b-2xl flex flex-col h-full z-30 ps-2">
               <div className="flex flex-grow">
@@ -295,7 +299,11 @@ const DeckCard = ({ deck, onDeckUpdated, onDeckDeleted, folders }) => {
                   className="px-1 py-2 kebab-menu"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <KebabMenu items={menuItems} direction="vertical" />
+                  <KebabMenu
+                    items={menuItems}
+                    direction="vertical"
+                    onOpenChange={setIsMenuOpen}
+                  />
                 </div>
               </div>
             </div>
