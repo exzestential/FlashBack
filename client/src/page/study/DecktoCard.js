@@ -5,22 +5,32 @@ import {
   Settings,
   SideNav,
   Notification,
-  ColoredButton,
   Forward,
   RepetitionButton
 } from "../../component/global";
 import { FlipCard } from "../../component/cards";
 
-
 const DecktoCard = () => {
   const [notifications, setNotifications] = useState([]);
   const [activeRepetition, setActiveRepetition] = useState(null);
+  const [isFlipped, setIsFlipped] = useState(false);
   
+  // Default card data - ensure all required fields are present
+  const defaultCard = {
+    front_content: "No card loaded",
+    back_content: "Add content to this card",
+    folder_color: "blue", // Default color
+    front_image_url: null,
+    back_image_url: null
+  };
+
+  const [currentCard, setCurrentCard] = useState(defaultCard);
+
   // Mock data - replace with your actual card counts
   const cardStats = {
-    new: 5,    // Blue
-    hard: 3,    // Red
-    easy: 12    // Green
+    new: 5,
+    hard: 3,
+    easy: 12
   };
 
   const showNotification = (message) => {
@@ -33,7 +43,10 @@ const DecktoCard = () => {
   const handleRepetitionClick = (type) => {
     setActiveRepetition(type);
     showNotification(`Card marked as: ${type}`);
-    // Add your actual repetition logic here
+  };
+
+  const handleFlip = (flippedState) => {
+    setIsFlipped(flippedState);
   };
 
   return (
@@ -50,13 +63,11 @@ const DecktoCard = () => {
           <div className="flex items-center justify-between relative">
             <Back />
             
-            {/* Centered Deck Title */}
             <div className="absolute left-1/2 transform -translate-x-1/2">
               <h1 className="text-xl font-bold text-center">Deck Title</h1>
             </div>
             
             <div className="flex items-center space-x-4">
-              {/* Card Status Indicators */}
               <div className="flex space-x-2">
                 <div className="flex items-center space-x-1 bg-blue-100 px-2 py-1 rounded-lg">
                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
@@ -77,12 +88,15 @@ const DecktoCard = () => {
            
           {/* Main Card Area */}
           <div className="card-holder flex items-start mt-4 h-full justify-center space-x-20">
-            <FlipCard />
+            <FlipCard 
+              card={currentCard} 
+              onFlip={handleFlip}
+              size="Full"
+            />
           </div>
 
           {/* Bottom Section */}
           <div className="mt-auto w-full">
-            {/* Spaced Repetition Buttons */}
             <div className="grid grid-cols-4 gap-2 mb-4">
               <RepetitionButton 
                 type="again" 
@@ -106,18 +120,17 @@ const DecktoCard = () => {
               />
             </div>
 
-            {/* Navigation Buttons */}
             <div className="flex justify-between items-center py-4">
-  <div className="flex items-center space-x-4">
-    <Back />
-    <p>Previous</p>
-  </div>
-  
-  <div className="flex items-center space-x-4">
-    <Forward />
-    <p>Next</p>
-  </div>
-</div>
+              <div className="flex items-center space-x-4">
+                <Back />
+                <p>Previous</p>
+              </div>
+              
+              <div className="flex items-center space-x-4">
+                <Forward />
+                <p>Next</p>
+              </div>
+            </div>
           </div>
         </div>
 
