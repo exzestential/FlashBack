@@ -3,7 +3,8 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FlipCard } from "../../component/cards";
-import { FaArrowLeft } from "react-icons/fa";
+
+import { Back } from "../../component/global";
 
 const StudyPage = () => {
   const { deckId } = useParams();
@@ -349,7 +350,7 @@ const StudyPage = () => {
             onClick={() => navigate(-1)}
             className="mr-4 p-2 rounded-full hover:bg-gray-100"
           >
-            <FaArrowLeft className="text-gray-600" />
+            <Back className="text-gray-600" />
           </button>
           <h1 className="text-xl font-semibold">
             {deckInfo?.title || "Study Deck"}
@@ -382,21 +383,21 @@ const StudyPage = () => {
           <button
             disabled={reviewInProgress}
             onClick={() => handleReview("again")}
-            className="px-6 py-2 bg-red-500 text-white rounded-lg disabled:opacity-50"
+            className="px-10 py-4 bg-red-500 text-white font-bold rounded-lg disabled:opacity-50"
           >
             Again (10s)
           </button>
           <button
             disabled={reviewInProgress}
             onClick={() => handleReview("hard")}
-            className="px-6 py-2 bg-yellow-500 text-white rounded-lg disabled:opacity-50"
+            className="px-10 py-4 bg-yellow-500 text-white font-bold rounded-lg disabled:opacity-50"
           >
             Hard (30s)
           </button>
           <button
             disabled={reviewInProgress}
             onClick={() => handleReview("easy")}
-            className="px-6 py-2 bg-green-500 text-white rounded-lg disabled:opacity-50"
+            className="px-10 py-4 bg-green-500 text-white font-bold rounded-lg disabled:opacity-50"
           >
             Easy (60s)
           </button>
@@ -407,7 +408,7 @@ const StudyPage = () => {
       <div className="bg-white shadow-sm p-4">
         <div className="container mx-auto">
           <div className="flex justify-between items-center">
-            <div className="stats flex space-x-3">
+            <div className="stats flex space-x-3 p-3">
               <span className="text-red-500">Again: {stats.again}</span>
               <span className="text-yellow-500">Hard: {stats.hard}</span>
               <span className="text-green-500">Easy: {stats.easy}</span>

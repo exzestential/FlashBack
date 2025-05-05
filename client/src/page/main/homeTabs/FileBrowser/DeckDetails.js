@@ -1,4 +1,3 @@
-//deckdetail.js
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
@@ -6,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { SideNav, Back, Loader } from "../../../../component/global";
 import { LightFloatingButton } from "../../../../component/mainPage";
 import { FlipCard } from "../../../../component/cards";
+import { Notification } from "../../../../component/global";
 
 const DeckDetails = () => {
   const navigate = useNavigate();
@@ -19,44 +19,80 @@ const DeckDetails = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
-    const fetchCards = async () => {
-      setIsLoading(true); // Set loading to true when the fetch starts
-      try {
-        const cardRes = await fetch(
-          `http://localhost:5000/api/decks/${deckId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+    fetchDeckAndCards();
+  }, [deckId]);
 
-        if (!cardRes.ok) {
-          throw new Error(`Failed to fetch cards: ${cardRes.status}`);
-        }
+  const fetchDeckAndCards = async () => {
+    setIsLoading(true);
+    try {
+      // Fetch deck details and cards in one request
+      const cardRes = await fetch(`http://localhost:5000/api/decks/${deckId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
-        const cardData = await cardRes.json();
-        setCards(cardData); // Set the fetched cards into state
-
-        // Extract deck info from the first card if available
-        if (cardData.length > 0) {
-          setDeckInfo({
-            deck_name: cardData[0].deck_name,
-            folder_color: cardData[0].folder_color,
-          });
-        }
-      } catch (err) {
-        console.error("Error fetching cards: ", err);
-        setError("Failed to load cards"); // Handle error
-      } finally {
-        setIsLoading(false); // Set loading to false after the fetch finishes
+      if (!cardRes.ok) {
+        throw new Error(`Failed to fetch deck data: ${cardRes.status}`);
       }
-    };
 
-    fetchCards(); // Actually call the function to fetch the cards
-  }, [deckId]); // Run this effect when the `deckId` changes
+      const cardData = await cardRes.json();
+      setCards(cardData);
+
+      // Extract deck info from the first card if available
+      if (cardData.length > 0) {
+        setDeckInfo({
+          deck_name: cardData[0].deck_name,
+          folder_color: cardData[0].folder_color,
+        });
+      }
+    } catch (err) {
+      console.error("Error fetching data: ", err);
+      setError("Failed to load deck data");
+      showNotification("Failed to load deck data. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const showNotification = (message) => {
+    setNotifications((prev) => [
+      ...prev,
+      { id: Date.now() + Math.random(), message },
+    ]);
+  };
+
+  const handleCreateCard = () => {
+    navigate(`/create/deck/${deckId}`);
+  };
+
+  // Handle card deletion
+  const handleDeleteCard = async (deletedCardId) => {
+    try {
+      const deleteResponse = await fetch(
+        `http://localhost:5000/api/cards/${deletedCardId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (!deleteResponse.ok) {
+        throw new Error("Failed to delete card");
+      }
+
+      setCards(cards.filter((card) => card.card_id !== deletedCardId));
+      showNotification("Card deleted successfully");
+    } catch (error) {
+      console.error("Error deleting card:", error);
+      showNotification("Failed to delete card. Please try again.");
+    }
+  };
 
   if (isLoading) {
     return <Loader isLoading={isLoading} />;
@@ -94,7 +130,7 @@ const DeckDetails = () => {
             <div className="flex items-center">
               <button
                 onClick={() => navigate(-1)}
-                className="flex items-center space-x-4 mr-4 text-gray-600 "
+                className="flex items-center space-x-4 mr-4 text-gray-600"
               >
                 <Back /> <p className="text-xl">Back</p>
               </button>
@@ -105,9 +141,12 @@ const DeckDetails = () => {
                 {deckInfo.deck_name}
               </h1>
             </div>
+            <div className="flex items-center space-x-4"></div>
           </div>
 
           <div className="bg-gray-100 grow overflow-auto p-8 px-20">
+            <h2 className="text-lg font-medium mb-4">Cards ({cards.length})</h2>
+
             {cards.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
                 {cards.map((card) => (
@@ -115,7 +154,11 @@ const DeckDetails = () => {
                     key={card.card_id}
                     className={card.isLoading ? "opacity-50" : ""}
                   >
-                    <FlipCard card={card} size="Thumbnail" />
+                    <FlipCard
+                      card={card}
+                      size="Thumbnail"
+                      onDelete={() => handleDeleteCard(card.card_id)}
+                    />
                     {card.isLoading && (
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-sky-700"></div>
@@ -124,7 +167,7 @@ const DeckDetails = () => {
                   </div>
                 ))}
                 <div className="flex items-start mt-11 justify-start">
-                  <LightFloatingButton onClick={null} />
+                  <LightFloatingButton onClick={handleCreateCard} />
                 </div>
               </div>
             ) : (
@@ -133,14 +176,20 @@ const DeckDetails = () => {
                   No cards in this folder yet
                 </div>
                 <button
-                  onClick={null}
+                  onClick={handleCreateCard}
                   className="px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700"
                 >
-                  Create a Deck
+                  Create a Card
                 </button>
               </div>
             )}
           </div>
+
+          {/* Notifications */}
+          <Notification
+            notification={notifications}
+            setNotification={setNotifications}
+          />
         </div>
       </div>
     </motion.div>

@@ -30,6 +30,43 @@ const getCards = async (req, res) => {
   }
 };
 
+const getSingleCard = async (req, res) => {
+  const userId = req.user.userId;
+  const { cardId } = req.params;
+
+  try {
+    const [card] = await db.query(
+      `SELECT
+                cards.card_id,
+                cards.deck_id,
+                cards.front_content,
+                cards.back_content,
+                cards.front_image_url,
+                cards.back_image_url,
+                cards.notes,
+                cards.position,
+                cards.created_at,
+                cards.last_modified,
+                decks.title as deck_name,
+                folders.color as folder_color
+            FROM cards
+            JOIN decks ON cards.deck_id = decks.deck_id
+            JOIN folders ON decks.folder_id = folders.folder_id
+            WHERE cards.card_id = ? AND decks.user_id = ?`,
+      [cardId, userId]
+    );
+
+    if (card.length === 0) {
+      return res.status(404).json({ message: "Card not found" });
+    }
+
+    res.status(200).json(card[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to retrieve card" });
+  }
+};
+
 const createCard = async (req, res) => {
   const userId = req.user.userId;
   const {
@@ -182,8 +219,57 @@ const updateCard = async (req, res) => {
   }
 };
 
+const deleteCard = async (req, res) => {
+  const userId = req.user.userId;
+  const { cardId } = req.params;
+
+  try {
+    // Verify the card belongs to the user
+    const [cardCheck] = await db.query(
+      `SELECT cards.card_id, cards.deck_id, cards.position 
+       FROM cards 
+       JOIN decks ON cards.deck_id = decks.deck_id 
+       WHERE cards.card_id = ? AND decks.user_id = ?`,
+      [cardId, userId]
+    );
+
+    if (cardCheck.length === 0) {
+      return res
+        .status(403)
+        .json({ message: "You don't have permission to delete this card" });
+    }
+
+    const deckId = cardCheck[0].deck_id;
+    const cardPosition = cardCheck[0].position;
+
+    // Begin transaction
+    await db.query("START TRANSACTION");
+
+    // Delete the card
+    await db.query("DELETE FROM cards WHERE card_id = ?", [cardId]);
+
+    // Update the positions of other cards in the same deck
+    await db.query(
+      "UPDATE cards SET position = position - 1 WHERE deck_id = ? AND position > ?",
+      [deckId, cardPosition]
+    );
+
+    // Commit transaction
+    await db.query("COMMIT");
+
+    res.status(200).json({ message: "Card deleted successfully" });
+  } catch (err) {
+    // Rollback in case of error
+    await db.query("ROLLBACK");
+    console.error("Error deleting card:", err);
+    res.status(500).json({ message: "Failed to delete card" });
+  }
+};
+
 module.exports = {
   getCards,
+  getSingleCard,
   createCard,
   updateCard,
+  deleteCard,
 };

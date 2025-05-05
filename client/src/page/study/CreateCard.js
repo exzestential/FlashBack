@@ -14,10 +14,7 @@ import {
 import { TextFormatting, SingleCard } from "../../component/cards";
 import { SelectDeckModal } from "../../component/mainPage";
 
-// =======================================
-// Main EditCard component
-// =======================================
-const EditCard = () => {
+const CreateCard = () => {
   const navigate = useNavigate();
   const { cardId, deckId } = useParams(); // For editing existing cards or creating within a specific deck
 
@@ -593,11 +590,11 @@ const EditCard = () => {
             className={`flex items-center justify-between p-4 shadow-sm z-10 border-b-gray-200`}
           >
             <div
-              className="flex items-center space-x-4"
+              className="flex items-center space-x-4 py-2"
               onClick={() => navigate(-1)}
             >
               <Back />
-              <p>
+              <p className="p-0 flex items-center">
                 <span
                   className={`inline-block w-4 h-4 rounded-full bg-${deckColor}-500 mr-2`}
                 ></span>
@@ -694,4 +691,4 @@ const EditCard = () => {
   );
 };
 
-export default EditCard;
+export default CreateCard;

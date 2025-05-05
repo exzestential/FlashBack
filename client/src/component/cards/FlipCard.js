@@ -1,11 +1,16 @@
-//flipcard.js
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FaXmark } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 import "./FlipCard.css";
 
-const FlipCard = ({ card, size = "Full", isNew = false, onFlip }) => {
+import { Modal } from "../global";
+
+const FlipCard = ({ card, size = "Full", isNew = false, onFlip, onDelete }) => {
+  const navigate = useNavigate();
   const [isFlipped, setIsFlipped] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [modalContent, setModalContent] = useState({
     side: "front",
     content: "",
@@ -16,6 +21,14 @@ const FlipCard = ({ card, size = "Full", isNew = false, onFlip }) => {
   const [slideIn, setSlideIn] = useState(isNew);
   const [displayCard, setDisplayCard] = useState(card); // Store the current card for display
 
+  // Context menu states
+  const [showContextMenu, setShowContextMenu] = useState(false);
+  const [contextMenuPosition, setContextMenuPosition] = useState({
+    x: 0,
+    y: 0,
+  });
+  const contextMenuRef = useRef(null);
+
   // Clear timeouts when component unmounts
   useEffect(() => {
     return () => {
@@ -23,6 +36,23 @@ const FlipCard = ({ card, size = "Full", isNew = false, onFlip }) => {
       if (hoverTimeout) clearTimeout(hoverTimeout);
     };
   }, [clickTimeout, hoverTimeout]);
+
+  // Add event listener to close context menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        contextMenuRef.current &&
+        !contextMenuRef.current.contains(event.target)
+      ) {
+        setShowContextMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     if (displayCard !== card && isFlipped) {
@@ -137,6 +167,71 @@ const FlipCard = ({ card, size = "Full", isNew = false, onFlip }) => {
     }
   };
 
+  // Handle right click to show context menu
+  const handleContextMenu = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Clear any pending timeouts that might cause unwanted behavior
+    if (clickTimeout) {
+      clearTimeout(clickTimeout);
+      setClickTimeout(null);
+    }
+
+    if (hoverTimeout) {
+      clearTimeout(hoverTimeout);
+      setHoverTimeout(null);
+    }
+
+    // Calculate position for context menu
+    const x = e.clientX;
+    const y = e.clientY;
+
+    // Set context menu position and show it
+    setContextMenuPosition({ x, y });
+    setShowContextMenu(true);
+  };
+
+  // Handle edit card action
+  const handleEditCard = () => {
+    setShowContextMenu(false);
+    navigate(`/card/${card.card_id}`);
+  };
+
+  // Handle delete card action
+  const handleDeleteClick = () => {
+    setShowContextMenu(false);
+    setIsDeleteModalOpen(true);
+  };
+
+  // Perform the actual deletion
+  const handleDelete = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/cards/${card.card_id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to delete card");
+
+      // Close modal and notify parent component
+      setIsDeleteModalOpen(false);
+      if (onDelete) {
+        onDelete(card.card_id);
+      }
+    } catch (error) {
+      console.error("Error deleting card:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Define size-specific classes
   const sizeClasses = {
     Thumbnail: {
@@ -166,6 +261,7 @@ const FlipCard = ({ card, size = "Full", isNew = false, onFlip }) => {
         onClick={handleClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onContextMenu={handleContextMenu}
       >
         <div
           className={`relative w-full h-full duration-700 transform-style-preserve-3d ${
@@ -233,6 +329,47 @@ const FlipCard = ({ card, size = "Full", isNew = false, onFlip }) => {
           </div>
         </div>
       </div>
+
+      {/* Context Menu */}
+      {showContextMenu && (
+        <div
+          ref={contextMenuRef}
+          className="fixed bg-white rounded-md shadow-lg py-2 z-50 w-48"
+          style={{
+            left: `${contextMenuPosition.x}px`,
+            top: `${contextMenuPosition.y}px`,
+          }}
+        >
+          <button
+            onClick={handleEditCard}
+            className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+          >
+            Edit Card
+          </button>
+          <button
+            onClick={handleDeleteClick}
+            className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600 flex items-center"
+          >
+            Delete Card
+          </button>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDelete}
+        confirmText="Delete"
+        confirmDisabled={isLoading}
+        className="modal-content"
+      >
+        <h2 className="text-xl font-semibold mb-3">Delete Card</h2>
+        <p>Are you sure you want to delete this card?</p>
+        <p className="text-red-600 text-sm pt-0 pb-2">
+          This action cannot be undone.
+        </p>
+      </Modal>
 
       {/* Modal for expanded view */}
       {showModal && (

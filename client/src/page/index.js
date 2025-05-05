@@ -1,4 +1,4 @@
-export { default as EditCard } from "./study/EditCard";
+export { default as EditCard } from "./study/CreateCard";
 export { default as Home } from "./main/Home";
 export { default as LandingPage } from "./landing/LandingPage";
 export { default as Login } from "./landing/Login";

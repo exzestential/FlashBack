@@ -32,7 +32,6 @@ const AppRouter = () => {
           {/* Internal Routes with Sidebar */}
           <Route path="/" element={<Layout />}>
             <Route path="home" element={<Home />} />
-            <Route path="edit-card" element={<EditCard />} />
             <Route path="folder/:folderId" element={<FolderDetails />} />
             <Route path="deck/:deckId" element={<DeckDetails />} />
             <Route path="/study/:deckId" element={<StudyPage />} />
