@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LightButton } from "../global";
 import { Modal } from "../global";
+import { UserIcon } from "../../assets";
 
 const UserInfo = ({ user }) => {
   const navigate = useNavigate();
@@ -33,9 +34,9 @@ const UserInfo = ({ user }) => {
       <div className="user-welcome mb-3 pt-5 px-32 w-full flex items-center justify-between">
         <div className="flex items-center">
           <img
-            src={user.profilePicture || "http://placehold.co/65?text=Profile"}
+            src={user.profilePicture || UserIcon}
             alt="Profile"
-            className="rounded-full me-4"
+            className="rounded-full me-4 w-16 h-16"
           />
           <div>
             <p className="p-0">Welcome {user.username}</p>

@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { FaHome, FaBook, FaPlay, FaPlus, FaBell, FaUser } from "react-icons/fa";
 import { FaEarthAmericas, FaGear } from "react-icons/fa6";
 import { BiSidebar } from "react-icons/bi";
+import { Logo } from "../../assets";
 
 const SideNav = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -34,8 +35,8 @@ const SideNav = () => {
             }`}
             to={"/"}
           >
-            <img src="http://placehold.co/50" className="pe-4" alt="Logo" />
-            <h1 className="text-xl font-bold">FlashBack</h1>
+            <img src={Logo} className="pe-4 h-12" alt="Logo" />
+            <h1 className="text-2xl font-bold">FlashBack</h1>
           </Link>
 
           <div className="flex items-center h-14">

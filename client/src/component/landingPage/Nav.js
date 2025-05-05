@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../presets/Header";
+import { Logo } from "../../assets";
 
 const Nav = () => {
   const navigate = useNavigate();
@@ -17,8 +18,8 @@ const Nav = () => {
             className="flex items-center cursor-pointer"
             onClick={handleBrandClick}
           >
-            <img src="http://placehold.co/75" alt="" className="logo pe-5" />
-            <h1 className="brand-name">FlashBack</h1>
+            <img src={Logo} alt="" className="logo pe-5 w-20" />
+            <h1 className="text-2xl font-semibold brand-name">FlashBack</h1>
           </a>
         </div>
         <div className="flex items-center justify-end">

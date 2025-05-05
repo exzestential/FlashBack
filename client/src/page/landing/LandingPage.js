@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import SessionChecker from "../../SessionChecker";
 
 import {
@@ -191,11 +191,9 @@ const LandingPage = () => {
             <img src={StudyBanner} alt="" />
           </div>
           <Footer />
-          <div className={`modal-fade ${isLoggingIn ? "visible" : ""}`}>
-            <div className="modal-content">
-              <Login onClose={handleCloseLogin} />
-            </div>
-          </div>{" "}
+          <AnimatePresence mode="wait">
+            {isLoggingIn && <Login onClose={handleCloseLogin} />}
+          </AnimatePresence>
         </div>
       </motion.div>
     </SessionChecker>
