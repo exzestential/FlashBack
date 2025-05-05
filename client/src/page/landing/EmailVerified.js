@@ -36,7 +36,7 @@ const EmailVerified = () => {
 
   return (
     <div className="flex flex-col min-h-screen items-center justify-center">
-      <SubHeader text="Email Verified!" />
+      < SubHeader text="Email Verified!" />
       <Text text="Redirecting you to login page..." />
     </div>
   );

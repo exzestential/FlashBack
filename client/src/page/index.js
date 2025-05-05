@@ -9,3 +9,4 @@ export { default as Signup } from "./landing/Signup";
 export { default as StudyPage } from "./study/StudyPage";
 export { default as Verification } from "./landing/Verification";
 export { default as EmailVerified } from "./landing/EmailVerified";
+export { default as DecktoCard } from "./study/DecktoCard";

@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import SessionChecker from "../../SessionChecker";
 
-import { Nav, LandingMascot } from "../../component/landingPage";
+import { Nav, LandingMascot, Clock, Brain, Access } from "../../component/landingPage";
 import { ColoredButton, LightButton, Footer } from "../../component/global";
 import Login from "./Login";
 import "./LandingPage.css";
@@ -124,7 +124,7 @@ const LandingPage = () => {
           <div className="value-blocks-container">
             <div className="grid grid-cols-5 py-20">
               <div className="col-span-2 flex justify-end">
-                <img src="http://placehold.co/300" alt="" className="value-1" />
+                <Brain />
               </div>
               <div className="col-span-3 h-full flex items-center justify-center">
                 <div className="text-center">
@@ -156,13 +156,13 @@ const LandingPage = () => {
                 </div>
               </div>
               <div className="col-span-2 flex justify-start">
-                <img src="http://placehold.co/300" alt="" className="value-1" />
+                < Clock/>
               </div>
             </div>
 
             <div className="grid grid-cols-5 py-20">
               <div className="col-span-2 flex justify-end">
-                <img src="http://placehold.co/300" alt="" className="value-1" />
+                <Access />
               </div>
               <div className="col-span-3 h-full flex items-center justify-center">
                 <div className="text-center">

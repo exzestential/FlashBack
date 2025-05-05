@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import Header from "../presets/Header";
 
 const Nav = () => {
   const navigate = useNavigate();
@@ -17,12 +18,13 @@ const Nav = () => {
             onClick={handleBrandClick}
           >
             <img src="http://placehold.co/75" alt="" className="logo pe-5" />
-            <h1 className="brand-name">Flashback</h1>
+            <h1 className="brand-name">FlashBack</h1>
           </a>
         </div>
         <div className="flex items-center justify-end">
           <button>About</button>
         </div>
+        <Header />
       </div>
     </nav>
   );
