@@ -24,7 +24,6 @@ const Nav = () => {
         <div className="flex items-center justify-end">
           <button>About</button>
         </div>
-        <Header />
       </div>
     </nav>
   );

@@ -1,10 +1,3 @@
-.download-plug-container {
-  background-image: url("http://placehold.co/1000");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
 .modal-fade {
   position: fixed;
   top: 0;

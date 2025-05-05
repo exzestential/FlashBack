@@ -3,10 +3,17 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import SessionChecker from "../../SessionChecker";
 
-import { Nav, LandingMascot, Clock, Brain, Access } from "../../component/landingPage";
+import {
+  Nav,
+  LandingMascot,
+  Clock,
+  Brain,
+  Access,
+} from "../../component/landingPage";
 import { ColoredButton, LightButton, Footer } from "../../component/global";
 import Login from "./Login";
 import "./LandingPage.css";
+import { StudyBanner } from "../../assets";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -79,7 +86,7 @@ const LandingPage = () => {
                 </div>
                 <div className="flex items-center justify-center flex-col">
                   <div className="w-100">
-                    <h2 className="text-center mb-10">
+                    <h2 className="text-center mb-10 text-lg">
                       Flashback helps you master anything, anytime, <br /> one
                       digital card at a time.
                     </h2>
@@ -156,7 +163,7 @@ const LandingPage = () => {
                 </div>
               </div>
               <div className="col-span-2 flex justify-start">
-                < Clock/>
+                <Clock />
               </div>
             </div>
 
@@ -180,28 +187,8 @@ const LandingPage = () => {
             </div>
           </div>
           {/* DOWNLOAD PLUG */}
-          <div className="download-plug-container text-center items-center pt-60 min-h-screen">
-            <h3 className="pb-10">Train your brain, one flash at a time.</h3>
-            <div className="download-buttons flex justify-center">
-              <button
-                type="button"
-                className="flex items-center py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 text-left gap-2"
-              >
-                <img src="http://placehold.co/75" alt="" className="apple" />
-                <div>
-                  Download on <br /> Apple
-                </div>
-              </button>
-              <button
-                type="button"
-                className="flex items-center py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 text-left gap-2"
-              >
-                <img src="http://placehold.co/75" alt="" className="apple" />
-                <div>
-                  Download on <br /> Apple
-                </div>
-              </button>
-            </div>
+          <div className="download-plug-container text-center items-center min-h-screen">
+            <img src={StudyBanner} alt="" />
           </div>
           <Footer />
           <div className={`modal-fade ${isLoggingIn ? "visible" : ""}`}>

@@ -4,7 +4,7 @@ import mascotAnimation from "../../assets/landingPage/landingPageMascot.lottie";
 
 const LandingMascot = () => {
   return (
-    <div className="w-[455px] h-[400px]">
+    <div className="w-[555px] h-[500px]">
       <DotLottieReact src={mascotAnimation} loop autoplay />
     </div>
   );

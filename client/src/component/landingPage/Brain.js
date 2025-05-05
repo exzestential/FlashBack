@@ -1,13 +1,15 @@
-import React from 'react';
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import React from "react";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const Brain = () => {
   return (
-    <DotLottieReact
-      src="https://lottie.host/93f78899-b2fa-4c75-81b1-7735892c0e45/lkMieS197F.lottie"
-      loop
-      autoplay
-    />
+    <div className="w-[455px] h-[400px]">
+      <DotLottieReact
+        src="https://lottie.host/63e4c51e-03b2-4437-8c07-b979f42d1ca6/3iayU0QJ4Y.lottie"
+        loop
+        autoplay
+      />
+    </div>
   );
 };
- export default Brain;
+export default Brain;

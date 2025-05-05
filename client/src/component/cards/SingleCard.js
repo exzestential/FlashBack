@@ -32,6 +32,8 @@ const SingleCard = forwardRef(function RichTextCard(
     setContent: (html) => {
       if (contentEditableRef.current) {
         contentEditableRef.current.innerHTML = html;
+        // Update textContent state when setting content
+        setTextContent(contentEditableRef.current.textContent);
       }
     },
   }));
