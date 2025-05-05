@@ -228,7 +228,7 @@ CREATE TABLE `study_progress` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `email`, `password`, `created_at`, `theme_preference`, `last_login`, `user_type`, `interests`) VALUES
-(1, 'exze', 'akina.alegre@gmail.com', '$2b$10$5DeNgiab5HWT9dcFUwYwCe3sPSP0WwQqNExVEBWkEifL5fjHtB84K', '2025-04-30 17:00:05', NULL, NULL, NULL, '[\"coding\",\"design\"]');
+(1, 'example', 'example@email.com', '$2b$10$42x.IOz611DDExs3ycr9UeRInK0C.uO/eg.Kv7w0c94bEnw9OlQq6', '2025-04-30 17:00:05', NULL, NULL, NULL, '[\"coding\",\"design\"]');
 
 --
 -- Dumping data for table `folders`

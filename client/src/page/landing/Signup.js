@@ -10,7 +10,6 @@ import {
   Notification,
   Loader,
 } from "../../component/global";
-import { Facebook, Google } from "../../assets";
 import { Nav } from "../../component/landingPage";
 import "./Signup.css";
 
@@ -92,9 +91,9 @@ const Signup = () => {
   };
 
   const userType = [
-    { name: "Teacher", imgSrc: "http://placehold.co/100" },
-    { name: "Student", imgSrc: "http://placehold.co/100" },
-    { name: "Other", imgSrc: "http://placehold.co/100" },
+    { name: "Teacher", imgSrc: "https://cdn-icons-png.flaticon.com/128/15673/15673377.png" },
+    { name: "Student", imgSrc: "https://cdn-icons-png.flaticon.com/128/3153/3153024.png" },
+    { name: "Other", imgSrc: "https://cdn-icons-png.flaticon.com/128/12492/12492310.png" },
   ];
 
   const interestItems = [
@@ -518,13 +517,13 @@ const Signup = () => {
                   <div className="grid grid-cols-2 gap-4">
                     <LightButton
                       text={"Facebook"}
-                      img={Facebook}
+                      
                       imgClass="h-5 rounded-full me-2"
                     />
 
                     <LightButton
                       text={"Google"}
-                      img={Google}
+                      
                       imgClass="h-5 rounded-full me-2"
                     />
                   </div>

@@ -1,23 +1,21 @@
 const express = require("express");
 const router = express.Router();
 const { authenticateToken } = require("../middleware/authMiddleware");
-const db = require("../config/db"); // Your DB connection (e.g. using pg, mysql2, or Sequelize)
 
-router.get("/folders", authenticateToken, async (req, res) => {
-  const userId = req.user.userId;
+const {
+  getFolders,
+  createFolder,
+  getDecksByFolder,
+  getFolderById,
+  deleteFolder,
+  updateFolder,
+} = require("../controllers/folderController");
 
-  try {
-    // Join decks with folders to get the color of the folder associated with each deck
-    const [folders] = await db.query(
-      `SELECT * FROM folders WHERE folders.user_id = ?`,
-      [userId]
-    );
-
-    res.json(folders);
-  } catch (err) {
-    console.error("❌ DB error:", err.message);
-    res.status(500).json({ message: "Server error fetching folders" });
-  }
-});
+router.get("/folders", authenticateToken, getFolders); // Fetch all folders for user
+router.get("/folders/:folderId", authenticateToken, getFolderById); // Fetch a specific folder
+router.get("/folders/:folderId/decks", authenticateToken, getDecksByFolder); // Fetch decks for a specific folder
+router.post("/create-folder", authenticateToken, createFolder); // Create a new folder
+router.delete("/folders/:folderId", authenticateToken, deleteFolder);
+router.put("/folders/:folderId", authenticateToken, updateFolder);
 
 module.exports = router;

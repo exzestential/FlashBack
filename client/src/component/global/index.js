@@ -13,4 +13,6 @@ export { default as Forward } from "./Forward";
 export { default as Settings } from "./Settings";
 export { default as RepetitionButton } from "./RepetitionButton" ;
 export { default as Close } from "./Close";
-
+export { default as ColorSelect } from "./ColorSelect";
+export { default as KebabMenu } from "./KebabMenu";
+export { default as ComingSoon } from "./ComingSoon";

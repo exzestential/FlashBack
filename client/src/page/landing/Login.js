@@ -5,7 +5,7 @@ import { jwtDecode } from "jwt-decode";
 
 import { ColoredButton, Close } from "../../component/global";
 import { Facebook, Google } from "../../assets/";
-import { Header } from "../../component/presets";
+import { Header, SubHeader, Text } from "../../component/presets";
 
 const Login = ({ onClose }) => {
   const [email, setEmail] = useState("");
@@ -72,7 +72,7 @@ const Login = ({ onClose }) => {
       </button>
 
       <div className="flex flex-col items-center justify-center min-h-screen">
-        <Header title="Login" />
+        <SubHeader>Login</SubHeader>
 
         {/* LOGIN FORM */}
         <div className="w-80">

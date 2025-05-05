@@ -3,85 +3,168 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import api from "../../utils/axios";
 
-import { SideNav, Modal } from "../../component/global";
-import { AnimatedTabPanels, Tabs, UserInfo } from "../../component/mainPage";
-import { FloatingButton } from "../../component/cards";
+import { ComingSoon, Loader } from "../../component/global";
+import {
+  AnimatedTabPanels,
+  Tabs,
+  UserInfo,
+  CreateDeckModal,
+  CreateFolderModal,
+} from "../../component/mainPage";
+import { FloatingButton } from "../../component/mainPage";
+import { FaFolderOpen } from "react-icons/fa";
+import { PiCardsThreeFill } from "react-icons/pi";
+import { TbCardsFilled } from "react-icons/tb";
+
 import DecksTab from "./homeTabs/DecksTab";
 import FoldersTab from "./homeTabs/FoldersTab";
 
 const Home = () => {
-  const panels = [
-    { key: "Decks", content: <DecksTab /> },
-    { key: "Folders", content: <FoldersTab /> },
-    { key: "Favourites", content: <div>Favourites content...</div> },
-    { key: "Statistics", content: <div>Statistics content...</div> },
-  ];
+  const navigate = useNavigate();
 
-  // Derive tabs from panels
-  const tabs = panels.map((panel) => panel.key);
-  const [activeTab, setActiveTab] = useState(tabs[0]);
+  // UI States
+  const [open, setOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("Decks");
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isFolderModalOpen, setFolderModalOpen] = useState(false);
+  const [isDeckModalOpen, setDeckModalOpen] = useState(false);
+
+  // Data States
+  const [decks, setDecks] = useState([]);
+  const [folders, setFolders] = useState([]);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
+  // Deck update and delete handlers
+  const handleDeckUpdated = (updatedDeck) => {
+    setDecks((prevDecks) =>
+      prevDecks.map((deck) =>
+        deck.deck_id === updatedDeck.deck_id
+          ? { ...deck, ...updatedDeck }
+          : deck
+      )
+    );
+  };
+
+  const handleDeckDeleted = (deckId) => {
+    setDecks((prevDecks) =>
+      prevDecks.filter((deck) => deck.deck_id !== deckId)
+    );
+  };
+
+  const handleFolderDeleted = (deletedId) => {
+    setFolders((prev) =>
+      prev.filter((folder) => folder.folder_id !== deletedId)
+    );
+  };
+
+  const handleFolderUpdated = (updatedFolder) => {
+    setFolders((prev) =>
+      prev.map((folder) =>
+        folder.folder_id === updatedFolder.folder_id ? updatedFolder : folder
+      )
+    );
+  };
+
+  // Panels (after folders state is available)
+  const panels = [
+    {
+      key: "Decks",
+      content: (
+        <DecksTab
+          decks={decks}
+          onDeckUpdated={handleDeckUpdated}
+          onDeckDeleted={handleDeckDeleted}
+          folders={folders}
+        />
+      ),
+    },
+    {
+      key: "Folders",
+      content: (
+        <FoldersTab
+          folders={folders}
+          onFolderDeleted={handleFolderDeleted}
+          onFolderUpdated={handleFolderUpdated}
+        />
+      ),
+    },
+    { key: "Favourites", content: <ComingSoon /> },
+    { key: "Statistics", content: <ComingSoon /> },
+  ];
+
+  const tabs = panels.map((panel) => panel.key);
+
+  // Fetch user data on mount
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // Get userId from localStorage
         const userId = localStorage.getItem("userId");
         const token = localStorage.getItem("token");
 
         if (!userId || !token) {
-          console.error("No userId or token found in localStorage");
           setError("Authentication required");
           setIsLoading(false);
           return;
         }
 
-        // Make API request to get user data - notice the updated path
         const res = await api.get(`/api/user/home/${userId}`);
-
-        if (res.data && res.data.user) {
+        if (res.data?.user) {
           setUser(res.data.user);
-          setIsLoading(false);
         } else {
           setError("Invalid user data received");
-          setIsLoading(false);
         }
       } catch (err) {
         console.error("Error fetching user data:", err);
         setError(err.response?.data?.message || "Failed to load user data");
-        setIsLoading(false);
 
-        // If unauthorized, redirect to login
-        if (
-          err.response &&
-          (err.response.status === 401 || err.response.status === 403)
-        ) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
           localStorage.removeItem("token");
           localStorage.removeItem("userId");
-          // Redirect to login after a short delay
           setTimeout(() => navigate("/?isLoggingIn=true"), 1500);
         }
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchUserData();
   }, [navigate]);
 
-  // Show loading state while data is being fetched
+  const fetchDecks = () => {
+    fetch("http://localhost:5000/api/decks", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setDecks(data))
+      .catch((err) => console.error("Failed to fetch decks:", err));
+  };
+
+  const fetchFolders = () => {
+    fetch("http://localhost:5000/api/folders", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setFolders(data))
+      .catch((err) => console.error("Failed to fetch folders:", err));
+  };
+
+  useEffect(() => {
+    fetchFolders();
+    fetchDecks();
+  }, []);
+
+  // Loading screen
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sky-700"></div>
-      </div>
-    );
+    return <Loader isLoading={isLoading} />;
   }
 
-  // If error occurred after loading completes
+  // Error screen
   if (error) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -101,9 +184,44 @@ const Home = () => {
     );
   }
 
-  const handleCreate = () => {
-    alert("Item created!");
-    setModalOpen(false);
+  const handleCreateDeck = (deckData) => {
+    fetch("http://localhost:5000/api/create-deck", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(deckData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Deck created:", data);
+        setDeckModalOpen(false);
+        fetchDecks();
+      })
+      .catch((err) => {
+        console.error("Error creating deck:", err);
+      });
+  };
+
+  const handleCreateFolder = (folderData) => {
+    fetch("http://localhost:5000/api/create-folder", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(folderData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Folder created:", data);
+        setFolderModalOpen(false);
+        fetchFolders();
+      })
+      .catch((err) => {
+        console.error("Error creating Folder:", err);
+      });
   };
 
   return (
@@ -114,7 +232,6 @@ const Home = () => {
       transition={{ duration: 0.5 }}
     >
       <div className="page-container flex min-h-screen">
-        <SideNav />
         <div className="relative home w-full flex flex-col">
           <UserInfo user={user} />
 
@@ -134,42 +251,70 @@ const Home = () => {
             />
           </div>
         </div>
-        <FloatingButton onClick={() => setModalOpen(true)} />
 
-        <Modal
-          isOpen={isModalOpen}
-          onClose={() => setModalOpen(false)}
-          cancelText="Go Back"
-          confirmText="Create"
-          onConfirm={handleCreate}
-        >
-          <div className="flex flex-col space-y-4">
-            <h2 className="text-xl font-semibold">Create New Deck</h2>
-            <input
-              type="text"
-              id="first_name"
-              className="bg-gray-100 border border-gray-200 focus:ring-sky-700 focus:border-sky-700 focus:outline-none p-2.5 rounded-xl w-full placeholder:text-gray-600 text-gray-600"
-              placeholder="Enter Name..."
-              required
-            />
+        <div className="relative">
+          <FloatingButton setOpen={setOpen} />
 
-            <select
-              id="folder"
-              name="folder"
-              className="appearance-none bg-gray-100 border border-gray-200 focus:ring-sky-700 focus:border-sky-700 focus:outline-none p-2.5 rounded-xl w-full text-gray-600"
-              required
+          <div
+            className={`absolute bottom-[150px] right-2 mr-10 w-48 flex flex-col items-end space-y-4 transition-all duration-300 ${
+              open ? "pointer-events-auto" : "pointer-events-none"
+            }`}
+          >
+            <button
+              className={`bg-sky-500 w-full text-white flex py-1 px-4 items-center justify-between rounded-md shadow transition-all duration-300 hover:bg-sky-400  ${
+                open
+                  ? "opacity-100 translate-y-0 delay-300" // Option 3 comes up first with delay 300ms
+                  : "opacity-0 translate-y-4"
+              }`}
+              onClick={() => {
+                setFolderModalOpen(true);
+                setOpen(false);
+              }}
             >
-              <option value="">Select a folder</option>
-              <option value="1">Net101</option>
-              <option value="2">Gec Art</option>
-              <option value="3">MIL</option>
-              <option value="4">Gec Hist</option>
-              <option value="5">Spanish</option>
-              <option value="6">German</option>
-              <option value="7">Portuguese</option>
-            </select>
+              Create Folder
+              <FaFolderOpen className="text-white text-5xl ms-3 " />
+            </button>
+            <button
+              className={`bg-sky-500 w-full text-white flex py-1 px-4 items-center justify-between rounded-md shadow transition-all duration-300 hover:bg-sky-400  ${
+                open
+                  ? "opacity-100 translate-y-0 delay-200" // Option 3 comes up first with delay 300ms
+                  : "opacity-0 translate-y-4"
+              }`}
+              onClick={() => {
+                setDeckModalOpen(true);
+                setOpen(false);
+              }}
+            >
+              Create Deck
+              <PiCardsThreeFill className="text-white text-5xl ms-" />
+            </button>
+            <button
+              className={`bg-sky-500 w-full text-white flex py-1 px-4 items-center justify-between rounded-md shadow transition-all duration-300 hover:bg-sky-400  ${
+                open
+                  ? "opacity-100 translate-y-0 delay-100" // Option 3 comes up first with delay 300ms
+                  : "opacity-0 translate-y-4"
+              }`}
+              onClick={() => navigate("/edit-card")}
+            >
+              Create Card
+              <TbCardsFilled className="text-white text-5xl ms-3" />
+            </button>
           </div>
-        </Modal>
+        </div>
+
+        {/* Use the new modular components */}
+        <CreateDeckModal
+          isOpen={isDeckModalOpen}
+          onClose={() => setDeckModalOpen(false)}
+          onCreateDeck={handleCreateDeck}
+          folders={folders}
+        />
+
+        <CreateFolderModal
+          isOpen={isFolderModalOpen}
+          onClose={() => setFolderModalOpen(false)}
+          onCreateFolder={handleCreateFolder}
+        />
       </div>
     </motion.div>
   );

@@ -1,4 +1,3 @@
-export { default as Discover } from "./main/Discover";
 export { default as EditCard } from "./study/EditCard";
 export { default as Home } from "./main/Home";
 export { default as LandingPage } from "./landing/LandingPage";
@@ -10,3 +9,4 @@ export { default as Signup } from "./landing/Signup";
 export { default as StudyPage } from "./study/StudyPage";
 export { default as Verification } from "./landing/Verification";
 export { default as EmailVerified } from "./landing/EmailVerified";
+export { default as DecktoCard } from "./study/DecktoCard";

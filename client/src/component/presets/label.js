@@ -11,10 +11,10 @@ function Label({ children, variant = "normal" }) {
 
   const fontClass = "font-encode-sans"; // Using Encode Sans Semi Expanded
 
-  return React.createElement(
-    "label",
-    { className: `${base} ${variants[variant]} ${fontClass}` },
-    children
+  return (
+    <label className={`${base} ${variants[variant]} ${fontClass}`}>
+      {children}
+    </label>
   );
 }
 

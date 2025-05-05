@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-import { Subheader, Text } from "../../component/presets";
+import { SubHeader, Text } from "../../component/presets";
 
 const EmailVerified = () => {
   const navigate = useNavigate();
@@ -36,7 +36,7 @@ const EmailVerified = () => {
 
   return (
     <div className="flex flex-col min-h-screen items-center justify-center">
-      < Subheader text="Email Verified!" />
+      < SubHeader text="Email Verified!" />
       <Text text="Redirecting you to login page..." />
     </div>
   );
